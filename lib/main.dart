@@ -5,7 +5,7 @@ import 'screens/home_screen.dart';
 import 'screens/favorites_screen.dart';
 import 'screens/orders_screen.dart';
 import 'screens/settings_screen.dart';
-import 'screens/login_screen.dart';
+import 'screens/auth/login_screen.dart';
 import 'providers/auth_provider.dart';
 import 'providers/cart_provider.dart';
 
