@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../providers/cart_provider.dart';
 import '../theme/app_theme.dart';
 
@@ -8,15 +9,17 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cart'),
+        title: Text(l10n.cart),
       ),
       body: Consumer<CartProvider>(
         builder: (context, cart, child) {
           if (cart.itemCount == 0) {
-            return const Center(
-              child: Text('Your cart is empty'),
+            return Center(
+              child: Text(l10n.yourCartIsEmpty),
             );
           }
 
@@ -27,24 +30,22 @@ class CartScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   itemCount: cart.items.length,
                   itemBuilder: (context, index) {
-                    final item = cart.items.values.elementAt(index);
+                    final item = cart.items[index];
+                    if (item == null) return const SizedBox.shrink();
+
                     return Card(
+                      margin: const EdgeInsets.only(bottom: 16),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           children: [
-                            SizedBox(
-                              width: 80,
-                              height: 80,
-                              child: Image.asset(
-                                item.item.imageUrl,
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                item.item?.imageUrl ?? '',
+                                width: 80,
+                                height: 80,
                                 fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Container(
-                                    color: Colors.grey[300],
-                                    child: const Icon(Icons.restaurant),
-                                  );
-                                },
                               ),
                             ),
                             const SizedBox(width: 16),
@@ -53,7 +54,7 @@ class CartScreen extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    item.item.name,
+                                    item.item?.name ?? '',
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
@@ -61,16 +62,17 @@ class CartScreen extends StatelessWidget {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    '\$${(item.item.price * item.quantity).toStringAsFixed(2)}',
+                                    '\$${((item.item?.price ?? 0) * (item.quantity ?? 0)).toStringAsFixed(2)}',
                                     style: const TextStyle(
                                       color: AppTheme.primaryColor,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  if (item.customizations.isNotEmpty) ...[
+                                  if ((item.customizations?.isNotEmpty ??
+                                      false)) ...[
                                     const SizedBox(height: 4),
                                     Text(
-                                      item.customizations.join(', '),
+                                      item.customizations?.join(', ') ?? '',
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: Colors.grey[600],
@@ -80,31 +82,29 @@ class CartScreen extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            Row(
+                            Column(
                               children: [
                                 IconButton(
-                                  icon: const Icon(Icons.remove),
+                                  icon: const Icon(Icons.add),
                                   onPressed: () {
-                                    cart.updateQuantity(
-                                      item.item.id,
-                                      item.quantity - 1,
-                                    );
+                                    if (item.item != null) {
+                                      cart.incrementItem(item.item!);
+                                    }
                                   },
                                 ),
                                 Text(
-                                  '${item.quantity}',
+                                  '${item.quantity ?? 0}',
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 IconButton(
-                                  icon: const Icon(Icons.add),
+                                  icon: const Icon(Icons.remove),
                                   onPressed: () {
-                                    cart.updateQuantity(
-                                      item.item.id,
-                                      item.quantity + 1,
-                                    );
+                                    if (item.item != null) {
+                                      cart.decrementItem(item.item!);
+                                    }
                                   },
                                 ),
                               ],
@@ -134,9 +134,9 @@ class CartScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Total:',
-                          style: TextStyle(
+                        Text(
+                          '${l10n.total}:',
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -158,7 +158,7 @@ class CartScreen extends StatelessWidget {
                         onPressed: () {
                           // TODO: Navigate to checkout
                         },
-                        child: const Text('Proceed to Checkout'),
+                        child: Text(l10n.proceedToCheckout),
                       ),
                     ),
                   ],
