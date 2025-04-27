@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../providers/auth_provider.dart';
 import '../providers/cart_provider.dart';
 import '../services/food_service.dart';
@@ -59,6 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: SafeArea(
@@ -70,9 +72,9 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'QuickBite',
-                    style: TextStyle(
+                  Text(
+                    l10n.appTitle,
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: AppTheme.primaryColor,
@@ -137,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
-                'Welcome back, ${authProvider.userName ?? "Guest"}!',
+                l10n.welcomeBack(authProvider.userName ?? l10n.guest),
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
@@ -145,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.all(16.0),
               child: TextField(
                 decoration: InputDecoration(
-                  hintText: 'Search for meals...',
+                  hintText: l10n.searchHint,
                   prefixIcon: const Icon(Icons.search),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -186,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: _isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : _items == null || _items!.isEmpty
-                      ? const Center(child: Text('No items found'))
+                      ? Center(child: Text(l10n.noItemsFound))
                       : GridView.builder(
                           padding: const EdgeInsets.all(16),
                           gridDelegate:
@@ -204,29 +206,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               onTap: () {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (context) => FoodItemDetailsScreen(
-                                      item: item,
-                                    ),
-                                  ),
-                                );
-                              },
-                              onAddToCart: () {
-                                final cart = context.read<CartProvider>();
-                                cart.addItem(item);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('${item.name} added to cart'),
-                                    action: SnackBarAction(
-                                      label: 'VIEW CART',
-                                      onPressed: () {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const CartScreen(),
-                                          ),
-                                        );
-                                      },
-                                    ),
+                                    builder: (context) =>
+                                        FoodItemDetailsScreen(item: item),
                                   ),
                                 );
                               },

@@ -61,7 +61,7 @@ class ForgetPasswordScreen extends StatelessWidget {
                   filled: true,
                   fillColor: Colors.white,
                   contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(color: Colors.grey.shade300),
