@@ -34,9 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
       try {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         final success = await authProvider.login(
-          _emailController.text,
-          _passwordController.text,
-        );
+            _emailController.text, _passwordController.text, context);
 
         if (success && mounted) {
           Navigator.of(context).pushReplacement(

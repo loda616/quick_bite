@@ -97,6 +97,41 @@ class CartProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void incrementItem(FoodItem foodItem) {
+    if (_items.containsKey(foodItem.id)) {
+      _items.update(
+        foodItem.id,
+        (existingItem) => CartItem(
+          item: existingItem.item,
+          quantity: existingItem.quantity + 1,
+          customizations: existingItem.customizations,
+        ),
+      );
+      notifyListeners();
+    } else {
+      addItem(foodItem);
+    }
+  }
+
+  void decrementItem(FoodItem foodItem) {
+    if (_items.containsKey(foodItem.id)) {
+      final existingItem = _items[foodItem.id]!;
+      if (existingItem.quantity > 1) {
+        _items.update(
+          foodItem.id,
+          (item) => CartItem(
+            item: item.item,
+            quantity: item.quantity - 1,
+            customizations: item.customizations,
+          ),
+        );
+      } else {
+        removeItem(foodItem.id);
+      }
+      notifyListeners();
+    }
+  }
+
   void clear() {
     _items.clear();
     notifyListeners();

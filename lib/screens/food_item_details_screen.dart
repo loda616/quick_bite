@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../models/food_item.dart';
 import '../providers/cart_provider.dart';
 import '../theme/app_theme.dart';
@@ -47,26 +48,18 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 300,
+            expandedHeight: 200,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
-              background: Image.asset(
+              background: Image.network(
                 widget.item.imageUrl,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    color: Colors.grey[300],
-                    child: const Icon(
-                      Icons.restaurant,
-                      size: 100,
-                      color: Colors.grey,
-                    ),
-                  );
-                },
               ),
             ),
           ),
@@ -133,9 +126,9 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
                   ),
                   if (widget.item.customizationOptions.isNotEmpty) ...[
                     const SizedBox(height: 24),
-                    const Text(
-                      'Customizations',
-                      style: TextStyle(
+                    Text(
+                      l10n.customizations,
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -209,7 +202,7 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
           children: [
             Expanded(
               child: Text(
-                'Total: \$${(widget.item.price * _quantity).toStringAsFixed(2)}',
+                '${l10n.total}: \$${(widget.item.price * _quantity).toStringAsFixed(2)}',
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -226,14 +219,24 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
                           quantity: _quantity,
                           customizations: _selectedCustomizations.toList(),
                         );
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
+
+                        // Store the current context before popping
+                        final scaffoldMessenger = ScaffoldMessenger.of(context);
+                        final navigator = Navigator.of(context);
+
+                        // Pop the current screen
+                        navigator.pop(context);
+
+                        // Show the snackbar with the stored context
+                        scaffoldMessenger.showSnackBar(
                           SnackBar(
-                            content: Text('${widget.item.name} added to cart'),
+                            content:
+                                Text('${widget.item.name} ${l10n.addToCart}'),
                             action: SnackBarAction(
-                              label: 'VIEW CART',
+                              label: l10n.cart,
                               onPressed: () {
-                                Navigator.of(context).push(
+                                // Use the navigator to push to the cart screen
+                                navigator.push(
                                   MaterialPageRoute(
                                     builder: (context) => const CartScreen(),
                                   ),
@@ -245,7 +248,7 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
                       }
                     : null,
                 child: Text(
-                  widget.item.isAvailable ? 'Add to Cart' : 'Not Available',
+                  widget.item.isAvailable ? l10n.addToCart : l10n.notAvailable,
                 ),
               ),
             ),

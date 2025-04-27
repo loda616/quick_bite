@@ -40,10 +40,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       try {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         final success = await authProvider.register(
-          _emailController.text,
-          _passwordController.text,
-          '${_firstNameController.text} ${_lastNameController.text}',
-        );
+            _emailController.text,
+            _passwordController.text,
+            '${_firstNameController.text} ${_lastNameController.text}',
+            context);
 
         if (success && mounted) {
           Navigator.of(context).pushReplacement(
