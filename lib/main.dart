@@ -113,6 +113,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
         currentIndex: _selectedIndex,
+        backgroundColor: const Color(0xFFf8f1df),
         selectedItemColor: AppTheme.primaryColor,
         unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,

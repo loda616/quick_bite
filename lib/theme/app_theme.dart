@@ -4,18 +4,18 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTheme {
   static const Color primaryColor = Color(0xFFFF6B00);
   static const Color accentColor = Color(0xFF2E2E2E);
-  static const Color backgroundColor = Color(0xFFF7F7F7);
+  static const Color backgroundColor = Color(0xFFf8f1df);
 
   static ThemeData lightTheme = ThemeData(
     primaryColor: primaryColor,
     scaffoldBackgroundColor: backgroundColor,
-    colorScheme: ColorScheme.light(
+    colorScheme: const ColorScheme.light(
       primary: primaryColor,
       secondary: accentColor,
-      background: backgroundColor,
+      surface: backgroundColor,
     ),
     appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xFFf8f1df),
       elevation: 0,
       iconTheme: IconThemeData(color: accentColor),
       titleTextStyle: TextStyle(
@@ -28,7 +28,7 @@ class AppTheme {
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: primaryColor,
-        foregroundColor: Colors.white,
+        foregroundColor: const Color(0xFFf8f1df),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -40,7 +40,7 @@ class AppTheme {
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: Colors.white,
+      fillColor: const Color(0xFFf8f1df),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         borderSide: BorderSide.none,
@@ -59,7 +59,7 @@ class AppTheme {
       ),
     ),
     cardTheme: CardTheme(
-      color: Colors.white,
+      color: const Color(0xFFf8f1df),
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
