@@ -17,7 +17,7 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.settings),
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFf8f1df),
         elevation: 0,
         iconTheme: const IconThemeData(color: AppTheme.accentColor),
         titleTextStyle: const TextStyle(
@@ -30,7 +30,7 @@ class SettingsScreen extends StatelessWidget {
         children: [
           ListTile(
             leading:
-                const Icon(Icons.notifications, color: AppTheme.accentColor),
+            const Icon(Icons.notifications, color: AppTheme.accentColor),
             title: Text(l10n.notifications),
             trailing: Switch(
               value: true, // TODO: Implement notifications state

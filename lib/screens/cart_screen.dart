@@ -42,7 +42,7 @@ class CartScreen extends StatelessWidget {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(8),
                               child: Image.network(
-                                item.item?.imageUrl ?? '',
+                                item.item.imageUrl,
                                 width: 80,
                                 height: 80,
                                 fit: BoxFit.cover,
@@ -54,7 +54,7 @@ class CartScreen extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    item.item?.name ?? '',
+                                    item.item.name,
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
@@ -62,17 +62,16 @@ class CartScreen extends StatelessWidget {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    '\$${((item.item?.price ?? 0) * (item.quantity ?? 0)).toStringAsFixed(2)}',
+                                    '\$${((item.item.price) * (item.quantity)).toStringAsFixed(2)}',
                                     style: const TextStyle(
                                       color: AppTheme.primaryColor,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  if ((item.customizations?.isNotEmpty ??
-                                      false)) ...[
+                                  if ((item.customizations.isNotEmpty)) ...[
                                     const SizedBox(height: 4),
                                     Text(
-                                      item.customizations?.join(', ') ?? '',
+                                      item.customizations.join(', '),
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: Colors.grey[600],
@@ -87,13 +86,11 @@ class CartScreen extends StatelessWidget {
                                 IconButton(
                                   icon: const Icon(Icons.add),
                                   onPressed: () {
-                                    if (item.item != null) {
-                                      cart.incrementItem(item.item!);
-                                    }
-                                  },
+                                    cart.incrementItem(item.item);
+                                    },
                                 ),
                                 Text(
-                                  '${item.quantity ?? 0}',
+                                  '${item.quantity}',
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -102,10 +99,8 @@ class CartScreen extends StatelessWidget {
                                 IconButton(
                                   icon: const Icon(Icons.remove),
                                   onPressed: () {
-                                    if (item.item != null) {
-                                      cart.decrementItem(item.item!);
-                                    }
-                                  },
+                                    cart.decrementItem(item.item);
+                                    },
                                 ),
                               ],
                             ),

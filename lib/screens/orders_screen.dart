@@ -14,7 +14,7 @@ class OrdersScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.orders),
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFf8f1df),
         foregroundColor: AppTheme.accentColor,
       ),
       body: Consumer<OrderProvider>(
@@ -92,28 +92,28 @@ class OrdersScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       ...order.items.map((item) => Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    '${item.quantity}x ${item.name}',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                    ),
-                                  ),
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                '${item.quantity}x ${item.name}',
+                                style: const TextStyle(
+                                  fontSize: 16,
                                 ),
-                                Text(
-                                  '\$${(item.price * item.quantity).toStringAsFixed(2)}',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
-                          )),
+                            Text(
+                              '\$${(item.price * item.quantity).toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )),
                       const Divider(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
