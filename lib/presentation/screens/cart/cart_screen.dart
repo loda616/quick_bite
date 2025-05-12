@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../providers/cart_provider.dart';
-import '../theme/app_theme.dart';
+import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
+import 'package:quick_bite/presentation/view_models/stats/cart_state.dart';
+import 'package:quick_bite/theme/app_theme.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -15,9 +16,9 @@ class CartScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(l10n.cart),
       ),
-      body: Consumer<CartProvider>(
-        builder: (context, cart, child) {
-          if (cart.itemCount == 0) {
+      body: BlocBuilder<CartCubit, CartState>(
+        builder: (context, state) {
+          if (state.itemCount == 0) {
             return Center(
               child: Text(l10n.yourCartIsEmpty),
             );
@@ -28,11 +29,9 @@ class CartScreen extends StatelessWidget {
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.all(16),
-                  itemCount: cart.items.length,
+                  itemCount: state.items.length,
                   itemBuilder: (context, index) {
-                    final item = cart.items[index];
-                    if (item == null) return const SizedBox.shrink();
-
+                    final item = state.items.values.elementAt(index);
                     return Card(
                       margin: const EdgeInsets.only(bottom: 16),
                       child: Padding(
@@ -42,7 +41,7 @@ class CartScreen extends StatelessWidget {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(8),
                               child: Image.network(
-                                item.item?.imageUrl ?? '',
+                                item.item.imageUrl,
                                 width: 80,
                                 height: 80,
                                 fit: BoxFit.cover,
@@ -54,7 +53,7 @@ class CartScreen extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    item.item?.name ?? '',
+                                    item.item.name,
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
@@ -62,17 +61,16 @@ class CartScreen extends StatelessWidget {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    '\$${((item.item?.price ?? 0) * (item.quantity ?? 0)).toStringAsFixed(2)}',
+                                    '\$${(item.item.price * item.quantity).toStringAsFixed(2)}',
                                     style: const TextStyle(
                                       color: AppTheme.primaryColor,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  if ((item.customizations?.isNotEmpty ??
-                                      false)) ...[
+                                  if (item.customizations.isNotEmpty) ...[
                                     const SizedBox(height: 4),
                                     Text(
-                                      item.customizations?.join(', ') ?? '',
+                                      item.customizations.join(', '),
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: Colors.grey[600],
@@ -87,13 +85,11 @@ class CartScreen extends StatelessWidget {
                                 IconButton(
                                   icon: const Icon(Icons.add),
                                   onPressed: () {
-                                    if (item.item != null) {
-                                      cart.incrementItem(item.item!);
-                                    }
+                                    context.read<CartCubit>().addItem(item.item);
                                   },
                                 ),
                                 Text(
-                                  '${item.quantity ?? 0}',
+                                  '${item.quantity}',
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -102,9 +98,7 @@ class CartScreen extends StatelessWidget {
                                 IconButton(
                                   icon: const Icon(Icons.remove),
                                   onPressed: () {
-                                    if (item.item != null) {
-                                      cart.decrementItem(item.item!);
-                                    }
+                                    context.read<CartCubit>().removeItem(item.item.id);
                                   },
                                 ),
                               ],
@@ -142,7 +136,7 @@ class CartScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '\$${cart.total.toStringAsFixed(2)}',
+                          '\$${state.total.toStringAsFixed(2)}',
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,

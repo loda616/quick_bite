@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../models/food_item.dart';
-import '../providers/cart_provider.dart';
-import '../theme/app_theme.dart';
-import 'cart_screen.dart';
+import 'package:quick_bite/data/models/food_item.dart';
+import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
+import '../../../theme/app_theme.dart';
+import '../cart/cart_screen.dart';
 
 class FoodItemDetailsScreen extends StatefulWidget {
   final FoodItem item;
@@ -213,7 +213,7 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
               child: ElevatedButton(
                 onPressed: widget.item.isAvailable
                     ? () {
-                        final cart = context.read<CartProvider>();
+                        final cart = context.read<CartCubit>();
                         cart.addItem(
                           widget.item,
                           quantity: _quantity,

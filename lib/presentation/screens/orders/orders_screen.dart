@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../providers/order_provider.dart';
-import '../theme/app_theme.dart';
+import 'package:quick_bite/presentation/view_models/cubit/order_cubit.dart';
+import 'package:quick_bite/presentation/view_models/stats/order_state.dart';
+import 'package:quick_bite/theme/app_theme.dart';
 
 class OrdersScreen extends StatelessWidget {
   const OrdersScreen({super.key});
@@ -14,12 +15,12 @@ class OrdersScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.orders),
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFf8f1df),
         foregroundColor: AppTheme.accentColor,
       ),
-      body: Consumer<OrderProvider>(
-        builder: (context, orderProvider, child) {
-          if (orderProvider.orders.isEmpty) {
+      body: BlocBuilder<OrderCubit, OrderState>(
+        builder: (context, state) {
+          if (state.orders.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -44,9 +45,9 @@ class OrdersScreen extends StatelessWidget {
 
           return ListView.builder(
             padding: const EdgeInsets.all(16),
-            itemCount: orderProvider.orders.length,
+            itemCount: state.orders.length,
             itemBuilder: (context, index) {
-              final order = orderProvider.orders[index];
+              final order = state.orders[index];
               return Card(
                 margin: const EdgeInsets.only(bottom: 16),
                 child: Padding(
@@ -92,28 +93,28 @@ class OrdersScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       ...order.items.map((item) => Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    '${item.quantity}x ${item.name}',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                    ),
-                                  ),
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                '${item.quantity}x ${item.name}',
+                                style: const TextStyle(
+                                  fontSize: 16,
                                 ),
-                                Text(
-                                  '\$${(item.price * item.quantity).toStringAsFixed(2)}',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
-                          )),
+                            Text(
+                              '\$${(item.price * item.quantity).toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )),
                       const Divider(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

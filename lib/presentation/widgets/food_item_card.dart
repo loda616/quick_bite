@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/food_item.dart';
-import '../theme/app_theme.dart';
+import 'package:quick_bite/data/models/food_item.dart';
+
 
 class FoodItemCard extends StatelessWidget {
   final FoodItem item;
@@ -51,8 +51,8 @@ class FoodItemCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     '\$${item.price.toStringAsFixed(2)}',
-                    style: const TextStyle(
-                      color: AppTheme.primaryColor,
+                    style:  const TextStyle(
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

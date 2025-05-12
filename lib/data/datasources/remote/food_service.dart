@@ -1,4 +1,5 @@
-import '../models/food_item.dart';
+import 'package:quick_bite/data/models/food_item.dart';
+
 
 class FoodService {
   // Simulated food data - in a real app, this would come from an API
@@ -54,8 +55,8 @@ class FoodService {
     final lowercaseQuery = query.toLowerCase();
     return _items
         .where((item) =>
-            item.name.toLowerCase().contains(lowercaseQuery) ||
-            item.description.toLowerCase().contains(lowercaseQuery))
+    item.name.toLowerCase().contains(lowercaseQuery) ||
+        item.description.toLowerCase().contains(lowercaseQuery))
         .toList();
   }
 
