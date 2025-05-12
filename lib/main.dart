@@ -1,30 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'theme/app_theme.dart';
-import 'screens/home_screen.dart';
-import 'screens/favorites_screen.dart';
-import 'screens/orders_screen.dart';
-import 'screens/settings_screen.dart';
-import 'screens/auth/login_screen.dart';
-import 'providers/auth_provider.dart';
-import 'providers/cart_provider.dart';
-import 'providers/language_provider.dart';
-import 'providers/order_provider.dart';
+import 'package:quick_bite/presentation/view_models/cubit/profile_cubit.dart';
+import 'package:quick_bite/presentation/view_models/stats/auth_stat.dart';
+import 'package:quick_bite/presentation/view_models/stats/language_state.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:quick_bite/theme/app_theme.dart';
+import 'package:quick_bite/presentation/screens/home/home_screen.dart';
+import 'package:quick_bite/presentation/screens/food/favorites_screen.dart';
+import 'package:quick_bite/presentation/screens/orders/orders_screen.dart';
+import 'package:quick_bite/presentation/screens/settings/settings_screen.dart';
+import 'package:quick_bite/presentation/screens/auth/login_screen.dart';
+import 'package:quick_bite/presentation/view_models/cubit/auth_cubit.dart';
+import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
+import 'package:quick_bite/presentation/view_models/cubit/language_cubit.dart';
+import 'package:quick_bite/presentation/view_models/cubit/order_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
 
   runApp(
-    MultiProvider(
+    MultiBlocProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => CartProvider()),
-        ChangeNotifierProvider(create: (_) => LanguageProvider(prefs)),
-        ChangeNotifierProvider(create: (_) => OrderProvider()),
+        BlocProvider(create: (context) => ProfileCubit()),
+        BlocProvider(create: (context) => AuthCubit()),
+        BlocProvider(create: (context) => LanguageCubit(prefs)),
+        BlocProvider(create: (context) => CartCubit()),
+        BlocProvider(create: (context) => OrderCubit()),
       ],
       child: const MyApp(),
     ),
@@ -36,30 +40,32 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final languageProvider = Provider.of<LanguageProvider>(context);
-
-    return MaterialApp(
-      title: 'QuickBite',
-      theme: AppTheme.lightTheme,
-      locale: languageProvider.currentLocale,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('en'),
-        Locale('ar'),
-      ],
-      home: Consumer<AuthProvider>(
-        builder: (context, authProvider, _) {
-          return authProvider.isAuthenticated
-              ? const MainScreen()
-              : const LoginScreen();
-        },
-      ),
-      debugShowCheckedModeBanner: false,
+    return BlocBuilder<LanguageCubit, LanguageState>(
+      builder: (context, languageState) {
+        return MaterialApp(
+          title: 'QuickBite',
+          theme: AppTheme.lightTheme,
+          locale: languageState.locale,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('en'),
+            Locale('ar'),
+          ],
+          home: BlocBuilder<AuthCubit, AuthState>(
+            builder: (context, authState) {
+              return authState.isAuthenticated
+                  ? const MainScreen()
+                  : const LoginScreen();
+            },
+          ),
+          debugShowCheckedModeBanner: false,
+        );
+      },
     );
   }
 }

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../providers/order_provider.dart';
-import '../theme/app_theme.dart';
+import 'package:quick_bite/presentation/view_models/cubit/order_cubit.dart';
+import 'package:quick_bite/presentation/view_models/stats/order_state.dart';
+import 'package:quick_bite/theme/app_theme.dart';
 
 class OrdersScreen extends StatelessWidget {
   const OrdersScreen({super.key});
@@ -17,9 +18,9 @@ class OrdersScreen extends StatelessWidget {
         backgroundColor: const Color(0xFFf8f1df),
         foregroundColor: AppTheme.accentColor,
       ),
-      body: Consumer<OrderProvider>(
-        builder: (context, orderProvider, child) {
-          if (orderProvider.orders.isEmpty) {
+      body: BlocBuilder<OrderCubit, OrderState>(
+        builder: (context, state) {
+          if (state.orders.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -44,9 +45,9 @@ class OrdersScreen extends StatelessWidget {
 
           return ListView.builder(
             padding: const EdgeInsets.all(16),
-            itemCount: orderProvider.orders.length,
+            itemCount: state.orders.length,
             itemBuilder: (context, index) {
-              final order = orderProvider.orders[index];
+              final order = state.orders[index];
               return Card(
                 margin: const EdgeInsets.only(bottom: 16),
                 child: Padding(

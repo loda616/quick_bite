@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../models/food_item.dart';
-import '../providers/cart_provider.dart';
-import '../theme/app_theme.dart';
-import 'cart_screen.dart';
+import 'package:quick_bite/data/models/food_item.dart';
+import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
+import '../../../theme/app_theme.dart';
+import '../cart/cart_screen.dart';
 
 class FoodItemDetailsScreen extends StatefulWidget {
   final FoodItem item;
@@ -139,7 +139,7 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
                       runSpacing: 8,
                       children: widget.item.customizationOptions.map((option) {
                         final isSelected =
-                        _selectedCustomizations.contains(option);
+                            _selectedCustomizations.contains(option);
                         return FilterChip(
                           label: Text(option),
                           selected: isSelected,
@@ -213,39 +213,39 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
               child: ElevatedButton(
                 onPressed: widget.item.isAvailable
                     ? () {
-                  final cart = context.read<CartProvider>();
-                  cart.addItem(
-                    widget.item,
-                    quantity: _quantity,
-                    customizations: _selectedCustomizations.toList(),
-                  );
+                        final cart = context.read<CartCubit>();
+                        cart.addItem(
+                          widget.item,
+                          quantity: _quantity,
+                          customizations: _selectedCustomizations.toList(),
+                        );
 
-                  // Store the current context before popping
-                  final scaffoldMessenger = ScaffoldMessenger.of(context);
-                  final navigator = Navigator.of(context);
+                        // Store the current context before popping
+                        final scaffoldMessenger = ScaffoldMessenger.of(context);
+                        final navigator = Navigator.of(context);
 
-                  // Pop the current screen
-                  navigator.pop(context);
+                        // Pop the current screen
+                        navigator.pop(context);
 
-                  // Show the snackbar with the stored context
-                  scaffoldMessenger.showSnackBar(
-                    SnackBar(
-                      content:
-                      Text('${widget.item.name} ${l10n.addToCart}'),
-                      action: SnackBarAction(
-                        label: l10n.cart,
-                        onPressed: () {
-                          // Use the navigator to push to the cart screen
-                          navigator.push(
-                            MaterialPageRoute(
-                              builder: (context) => const CartScreen(),
+                        // Show the snackbar with the stored context
+                        scaffoldMessenger.showSnackBar(
+                          SnackBar(
+                            content:
+                                Text('${widget.item.name} ${l10n.addToCart}'),
+                            action: SnackBarAction(
+                              label: l10n.cart,
+                              onPressed: () {
+                                // Use the navigator to push to the cart screen
+                                navigator.push(
+                                  MaterialPageRoute(
+                                    builder: (context) => const CartScreen(),
+                                  ),
+                                );
+                              },
                             ),
-                          );
-                        },
-                      ),
-                    ),
-                  );
-                }
+                          ),
+                        );
+                      }
                     : null,
                 child: Text(
                   widget.item.isAvailable ? l10n.addToCart : l10n.notAvailable,
