@@ -9,7 +9,7 @@ import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/auth_stat.dart';
 import 'package:quick_bite/presentation/view_models/stats/cart_state.dart';
 import 'package:quick_bite/presentation/widgets/food_item_card.dart';
-import '../../../data/datasources/remote/food_service.dart';
+import '../../../data/datasources/local/food_service.dart';
 import '../cart/cart_screen.dart';
 import '../food/food_item_details_screen.dart';
 

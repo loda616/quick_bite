@@ -53,14 +53,11 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
+          const SliverAppBar(
             expandedHeight: 200,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
-              background: Image.network(
-                widget.item.imageUrl,
-                fit: BoxFit.cover,
-              ),
+              background: Icon(Icons.fastfood),
             ),
           ),
           SliverToBoxAdapter(

@@ -40,12 +40,7 @@ class CartScreen extends StatelessWidget {
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(8),
-                              child: Image.network(
-                                item.item.imageUrl,
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.cover,
-                              ),
+                              child: Icon(Icons.fastfood),
                             ),
                             const SizedBox(width: 16),
                             Expanded(

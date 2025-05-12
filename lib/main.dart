@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:quick_bite/core/network/dio_client.dart';
+import 'package:quick_bite/data/datasources/remote/api_service.dart';
+import 'package:quick_bite/data/repository/menu_repository.dart';
+import 'package:quick_bite/presentation/view_models/cubit/menu_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/profile_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/auth_stat.dart';
 import 'package:quick_bite/presentation/view_models/stats/language_state.dart';
@@ -29,6 +33,13 @@ void main() async {
         BlocProvider(create: (context) => LanguageCubit(prefs)),
         BlocProvider(create: (context) => CartCubit()),
         BlocProvider(create: (context) => OrderCubit()),
+        BlocProvider(
+          create: (context) => MenuCubit(
+            MenuRepository(
+              ApiService(DioClient().dio),
+            ),
+          )..loadCategoriesAndItems(),
+        ),
       ],
       child: const MyApp(),
     ),
