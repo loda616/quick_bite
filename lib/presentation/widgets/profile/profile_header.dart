@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quick_bite/theme/app_theme.dart';
 
 class ProfileHeader extends StatelessWidget {
@@ -9,8 +8,6 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return Column(
       children: [
         const CircleAvatar(
@@ -32,7 +29,7 @@ class ProfileHeader extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          l10n.memberSince("2023"),
+          "Member since 2023",
           style: TextStyle(
             fontSize: 14,
             color: Colors.grey[600],

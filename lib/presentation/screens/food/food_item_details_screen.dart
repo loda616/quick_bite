@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quick_bite/data/models/food_item.dart';
 import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
 import '../../../theme/app_theme.dart';
@@ -48,8 +47,6 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -123,9 +120,9 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
                   ),
                   if (widget.item.customizationOptions.isNotEmpty) ...[
                     const SizedBox(height: 24),
-                    Text(
-                      l10n.customizations,
-                      style: const TextStyle(
+                    const Text(
+                      'Customizations',
+                      style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -136,7 +133,7 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
                       runSpacing: 8,
                       children: widget.item.customizationOptions.map((option) {
                         final isSelected =
-                            _selectedCustomizations.contains(option);
+                        _selectedCustomizations.contains(option);
                         return FilterChip(
                           label: Text(option),
                           selected: isSelected,
@@ -199,7 +196,7 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
           children: [
             Expanded(
               child: Text(
-                '${l10n.total}: \$${(widget.item.price * _quantity).toStringAsFixed(2)}',
+                'Total: \$${(widget.item.price * _quantity).toStringAsFixed(2)}',
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -210,42 +207,39 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
               child: ElevatedButton(
                 onPressed: widget.item.isAvailable
                     ? () {
-                        final cart = context.read<CartCubit>();
-                        cart.addItem(
-                          widget.item,
-                          quantity: _quantity,
-                          customizations: _selectedCustomizations.toList(),
-                        );
+                  final cart = context.read<CartCubit>();
+                  cart.addItem(
+                    widget.item,
+                    quantity: _quantity,
+                    customizations: _selectedCustomizations.toList(),
+                  );
 
-                        // Store the current context before popping
-                        final scaffoldMessenger = ScaffoldMessenger.of(context);
-                        final navigator = Navigator.of(context);
+                  final scaffoldMessenger =
+                  ScaffoldMessenger.of(context);
+                  final navigator = Navigator.of(context);
 
-                        // Pop the current screen
-                        navigator.pop(context);
+                  navigator.pop(context);
 
-                        // Show the snackbar with the stored context
-                        scaffoldMessenger.showSnackBar(
-                          SnackBar(
-                            content:
-                                Text('${widget.item.name} ${l10n.addToCart}'),
-                            action: SnackBarAction(
-                              label: l10n.cart,
-                              onPressed: () {
-                                // Use the navigator to push to the cart screen
-                                navigator.push(
-                                  MaterialPageRoute(
-                                    builder: (context) => const CartScreen(),
-                                  ),
-                                );
-                              },
+                  scaffoldMessenger.showSnackBar(
+                    SnackBar(
+                      content:
+                      Text('${widget.item.name} added to cart'),
+                      action: SnackBarAction(
+                        label: 'Cart',
+                        onPressed: () {
+                          navigator.push(
+                            MaterialPageRoute(
+                              builder: (context) => const CartScreen(),
                             ),
-                          ),
-                        );
-                      }
+                          );
+                        },
+                      ),
+                    ),
+                  );
+                }
                     : null,
                 child: Text(
-                  widget.item.isAvailable ? l10n.addToCart : l10n.notAvailable,
+                  widget.item.isAvailable ? 'Add to Cart' : 'Not Available',
                 ),
               ),
             ),

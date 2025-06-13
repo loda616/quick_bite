@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quick_bite/presentation/view_models/cubit/profile_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/profile_state.dart';
 import 'package:quick_bite/presentation/widgets/profile/profile_header.dart';
@@ -12,11 +11,9 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.profile),
+        title: const Text("Profile"),
         backgroundColor: const Color(0xFFf8f1df),
         elevation: 0,
         iconTheme: const IconThemeData(color: AppTheme.accentColor),
@@ -40,23 +37,23 @@ class ProfileScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                ProfileHeader(name: state.name ?? l10n.guest),
+                ProfileHeader(name: state.name ?? "Guest"),
                 const SizedBox(height: 24),
                 ProfileInfoCard(
-                  title: l10n.personalInfo,
+                  title: "Personal Info",
                   items: {
-                    l10n.email: state.email ?? 'N/A',
-                    l10n.phone: state.phone ?? 'N/A',
-                    l10n.address: state.address ?? 'N/A',
+                    "Email": state.email ?? 'N/A',
+                    "Phone": state.phone ?? 'N/A',
+                    "Address": state.address ?? 'N/A',
                   },
-                  onEditPressed: () {} //() => _showEditProfileDialog(context),
+                  onEditPressed: () {}, //() => _showEditProfileDialog(context),
                 ),
                 const SizedBox(height: 16),
                 ProfileInfoCard(
-                  title: l10n.preferences,
+                  title: "Preferences",
                   items: {
-                    l10n.language: 'English',
-                    l10n.notifications: 'Enabled',
+                    "Language": 'English',
+                    "Notifications": 'Enabled',
                   },
                 ),
               ],
@@ -67,24 +64,25 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-//  void _showEditProfileDialog(BuildContext context) {
-//     final cubit = context.read<ProfileCubit>();
-//     showDialog(
-//       context: context,
-//       builder: (context) => EditProfileDialog(
-//         initialName: cubit.state.name,
-//         initialEmail: cubit.state.email,
-//         initialPhone: cubit.state.phone,
-//         initialAddress: cubit.state.address,
-//         onSave: (name, email, phone, address) {
-//           cubit.updateProfile(
-//             name: name,
-//             email: email,
-//             phone: phone,
-//             address: address,
-//           );
-//         },
-//       ),
-//     );
-//   }
+// You can re-enable this dialog if needed later
+// void _showEditProfileDialog(BuildContext context) {
+//   final cubit = context.read<ProfileCubit>();
+//   showDialog(
+//     context: context,
+//     builder: (context) => EditProfileDialog(
+//       initialName: cubit.state.name,
+//       initialEmail: cubit.state.email,
+//       initialPhone: cubit.state.phone,
+//       initialAddress: cubit.state.address,
+//       onSave: (name, email, phone, address) {
+//         cubit.updateProfile(
+//           name: name,
+//           email: email,
+//           phone: phone,
+//           address: address,
+//         );
+//       },
+//     ),
+//   );
+// }
 }

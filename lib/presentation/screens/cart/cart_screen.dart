@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/cart_state.dart';
 import 'package:quick_bite/theme/app_theme.dart';
@@ -10,17 +9,15 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.cart),
+        title: const Text('Cart'),
       ),
       body: BlocBuilder<CartCubit, CartState>(
         builder: (context, state) {
           if (state.itemCount == 0) {
-            return Center(
-              child: Text(l10n.yourCartIsEmpty),
+            return const Center(
+              child: Text('Your cart is empty'),
             );
           }
 
@@ -38,10 +35,7 @@ class CartScreen extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Icon(Icons.fastfood),
-                            ),
+                            const Icon(Icons.fastfood),
                             const SizedBox(width: 16),
                             Expanded(
                               child: Column(
@@ -123,9 +117,9 @@ class CartScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          '${l10n.total}:',
-                          style: const TextStyle(
+                        const Text(
+                          'Total:',
+                          style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -147,7 +141,7 @@ class CartScreen extends StatelessWidget {
                         onPressed: () {
                           // TODO: Navigate to checkout
                         },
-                        child: Text(l10n.proceedToCheckout),
+                        child: const Text('Proceed to Checkout'),
                       ),
                     ),
                   ],

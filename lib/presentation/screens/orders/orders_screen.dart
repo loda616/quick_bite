@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quick_bite/presentation/view_models/cubit/order_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/order_state.dart';
 import 'package:quick_bite/theme/app_theme.dart';
@@ -10,11 +9,9 @@ class OrdersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.orders),
+        title: const Text('Orders'),
         backgroundColor: const Color(0xFFf8f1df),
         foregroundColor: AppTheme.accentColor,
       ),
@@ -25,19 +22,9 @@ class OrdersScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.receipt_long,
-                    size: 64,
-                    color: Colors.grey[400],
-                  ),
+                  Icon(Icons.receipt_long, size: 64, color: Colors.grey[400]),
                   const SizedBox(height: 16),
-                  Text(
-                    l10n.noOrdersYet,
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey[600],
-                    ),
-                  ),
+                  Text('No orders yet', style: TextStyle(fontSize: 18, color: Colors.grey[600])),
                 ],
               ),
             );
@@ -59,23 +46,17 @@ class OrdersScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '${l10n.orderNumber} #${order.id}',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            'Order #${order.id}',
+                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                             decoration: BoxDecoration(
                               color: _getStatusColor(order.status),
                               borderRadius: BorderRadius.circular(16),
                             ),
                             child: Text(
-                              _getStatusText(order.status, l10n),
+                              _getStatusText(order.status),
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -85,33 +66,16 @@ class OrdersScreen extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 8),
-                      Text(
-                        order.date,
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                        ),
-                      ),
+                      Text(order.date, style: TextStyle(color: Colors.grey[600])),
                       const SizedBox(height: 16),
                       ...order.items.map((item) => Padding(
                         padding: const EdgeInsets.only(bottom: 8),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Expanded(
-                              child: Text(
-                                '${item.quantity}x ${item.name}',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              '\$${(item.price * item.quantity).toStringAsFixed(2)}',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            Expanded(child: Text('${item.quantity}x ${item.name}', style: const TextStyle(fontSize: 16))),
+                            Text('\$${(item.price * item.quantity).toStringAsFixed(2)}',
+                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                           ],
                         ),
                       )),
@@ -119,13 +83,7 @@ class OrdersScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            l10n.total,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          const Text('Total', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                           Text(
                             '\$${order.total.toStringAsFixed(2)}',
                             style: const TextStyle(
@@ -164,18 +122,18 @@ class OrdersScreen extends StatelessWidget {
     }
   }
 
-  String _getStatusText(String status, AppLocalizations l10n) {
+  String _getStatusText(String status) {
     switch (status.toLowerCase()) {
       case 'pending':
-        return l10n.pending;
+        return 'Pending';
       case 'preparing':
-        return l10n.preparing;
+        return 'Preparing';
       case 'ready':
-        return l10n.ready;
+        return 'Ready';
       case 'delivered':
-        return l10n.delivered;
+        return 'Delivered';
       case 'cancelled':
-        return l10n.cancelled;
+        return 'Cancelled';
       default:
         return status;
     }
