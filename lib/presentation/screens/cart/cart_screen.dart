@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/cart_state.dart';
 import 'package:quick_bite/theme/app_theme.dart';
@@ -11,13 +12,13 @@ class CartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cart'),
+        title: Text('cart'),
       ),
       body: BlocBuilder<CartCubit, CartState>(
         builder: (context, state) {
           if (state.itemCount == 0) {
-            return const Center(
-              child: Text('Your cart is empty'),
+            return Center(
+              child: Text('cart_empty' ),
             );
           }
 
@@ -117,9 +118,9 @@ class CartScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Total:',
-                          style: TextStyle(
+                        Text(
+                          'total' ,
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -141,7 +142,7 @@ class CartScreen extends StatelessWidget {
                         onPressed: () {
                           // TODO: Navigate to checkout
                         },
-                        child: const Text('Proceed to Checkout'),
+                        child: Text('proceed_checkout' ),
                       ),
                     ),
                   ],

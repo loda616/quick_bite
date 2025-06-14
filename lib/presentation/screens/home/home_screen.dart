@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:quick_bite/core/colors.dart';
 import 'package:quick_bite/data/models/food_item.dart';
 import 'package:quick_bite/presentation/screens/profile_screen.dart';
@@ -78,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "QuickBite",
+                    "QuickBite" ,
                     style: theme.textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: theme.colorScheme.primary,
@@ -154,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    'Welcome back, ${authState.userName ?? "Guest"}',
+                    'welcome'.tr(args: [authState.userName ?? "Guest"]),
                     style: theme.textTheme.titleLarge?.copyWith(
                       color: theme.colorScheme.onSurface,
                     ),
@@ -166,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.all(16.0),
               child: TextField(
                 decoration: InputDecoration(
-                  hintText: "Search for food...",
+                  hintText: "search_hint" ,
                   prefixIcon: Icon(
                     Icons.search,
                     color: theme.colorScheme.primary,
@@ -203,7 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: ChoiceChip(
-                        label: Text(category),
+                        label: Text(category ), // Assuming translated category
                         selected: isSelected,
                         selectedColor: theme.colorScheme.primary,
                         labelStyle: TextStyle(
@@ -232,7 +233,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   : _items == null || _items!.isEmpty
                   ? Center(
                 child: Text(
-                  "No items found.",
+                  "no_items" ,
                   style: theme.textTheme.bodyLarge?.copyWith(
                     color: theme.colorScheme.onSurface,
                   ),

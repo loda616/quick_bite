@@ -5,6 +5,7 @@ import 'package:quick_bite/presentation/view_models/stats/profile_state.dart';
 import 'package:quick_bite/presentation/widgets/profile/profile_header.dart';
 import 'package:quick_bite/presentation/widgets/profile/profile_info_card.dart';
 import 'package:quick_bite/theme/app_theme.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -13,7 +14,7 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Profile"),
+        title: Text("profile.title" ),
         backgroundColor: const Color(0xFFf8f1df),
         elevation: 0,
         iconTheme: const IconThemeData(color: AppTheme.accentColor),
@@ -37,23 +38,23 @@ class ProfileScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                ProfileHeader(name: state.name ?? "Guest"),
+                ProfileHeader(name: state.name ?? "profile.guest" ),
                 const SizedBox(height: 24),
                 ProfileInfoCard(
-                  title: "Personal Info",
+                  title: "profile.personal_info" ,
                   items: {
-                    "Email": state.email ?? 'N/A',
-                    "Phone": state.phone ?? 'N/A',
-                    "Address": state.address ?? 'N/A',
+                    "profile.email" : state.email ?? 'N/A',
+                    "profile.phone" : state.phone ?? 'N/A',
+                    "profile.address" : state.address ?? 'N/A',
                   },
-                  onEditPressed: () {}, //() => _showEditProfileDialog(context),
+                  onEditPressed: () {},
                 ),
                 const SizedBox(height: 16),
                 ProfileInfoCard(
-                  title: "Preferences",
+                  title: "profile.preferences" ,
                   items: {
-                    "Language": 'English',
-                    "Notifications": 'Enabled',
+                    "profile.language" : 'English',
+                    "profile.notifications" : 'Enabled',
                   },
                 ),
               ],
@@ -63,26 +64,4 @@ class ProfileScreen extends StatelessWidget {
       ),
     );
   }
-
-// You can re-enable this dialog if needed later
-// void _showEditProfileDialog(BuildContext context) {
-//   final cubit = context.read<ProfileCubit>();
-//   showDialog(
-//     context: context,
-//     builder: (context) => EditProfileDialog(
-//       initialName: cubit.state.name,
-//       initialEmail: cubit.state.email,
-//       initialPhone: cubit.state.phone,
-//       initialAddress: cubit.state.address,
-//       onSave: (name, email, phone, address) {
-//         cubit.updateProfile(
-//           name: name,
-//           email: email,
-//           phone: phone,
-//           address: address,
-//         );
-//       },
-//     ),
-//   );
-// }
 }

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../theme/app_theme.dart';
-import '../../../main.dart';
 import '../../view_models/cubit/auth_cubit.dart';
 import '../../view_models/stats/auth_stat.dart';
+import '../home/main_screen.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -38,11 +39,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
       try {
         await context.read<AuthCubit>().register(
-              _emailController.text,
-              _passwordController.text,
-              '${_firstNameController.text} ${_lastNameController.text}',
-              context,
-            );
+          _emailController.text,
+          _passwordController.text,
+          '${_firstNameController.text} ${_lastNameController.text}',
+          context,
+        );
 
         if (mounted) {
           final authState = context.read<AuthCubit>().state;
@@ -59,7 +60,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       }
     } else if (!_acceptedTerms) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please accept the terms and conditions')),
+        SnackBar(content: Text('terms_required' )),
       );
     }
   }
@@ -76,7 +77,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Create Account'),
+          title: Text('create_account' ),
         ),
         body: SafeArea(
           child: SingleChildScrollView(
@@ -88,13 +89,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 children: [
                   TextFormField(
                     controller: _firstNameController,
-                    decoration: const InputDecoration(
-                      labelText: 'First Name',
-                      prefixIcon: Icon(Icons.person),
+                    decoration: InputDecoration(
+                      labelText: 'first_name' ,
+                      prefixIcon: const Icon(Icons.person),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your first name';
+                        return 'enter_first_name' ;
                       }
                       return null;
                     },
@@ -102,13 +103,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _lastNameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Last Name',
-                      prefixIcon: Icon(Icons.person),
+                    decoration: InputDecoration(
+                      labelText: 'last_name' ,
+                      prefixIcon: const Icon(Icons.person),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your last name';
+                        return 'enter_last_name' ;
                       }
                       return null;
                     },
@@ -116,17 +117,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _emailController,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      prefixIcon: Icon(Icons.email),
+                    decoration: InputDecoration(
+                      labelText: 'email' ,
+                      prefixIcon: const Icon(Icons.email),
                     ),
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
+                        return 'enter_email' ;
                       }
                       if (!value.contains('@')) {
-                        return 'Please enter a valid email';
+                        return 'invalid_email' ;
                       }
                       return null;
                     },
@@ -134,14 +135,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _phoneController,
-                    decoration: const InputDecoration(
-                      labelText: 'Mobile Number',
-                      prefixIcon: Icon(Icons.phone),
+                    decoration: InputDecoration(
+                      labelText: 'mobile_number' ,
+                      prefixIcon: const Icon(Icons.phone),
                     ),
                     keyboardType: TextInputType.phone,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your mobile number';
+                        return 'enter_mobile_number' ;
                       }
                       return null;
                     },
@@ -149,17 +150,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _passwordController,
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                      prefixIcon: Icon(Icons.lock),
+                    decoration: InputDecoration(
+                      labelText: 'password' ,
+                      prefixIcon: const Icon(Icons.lock),
                     ),
                     obscureText: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter a password';
+                        return 'enter_password' ;
                       }
                       if (value.length < 6) {
-                        return 'Password must be at least 6 characters';
+                        return 'password_too_short' ;
                       }
                       return null;
                     },
@@ -182,9 +183,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               _acceptedTerms = !_acceptedTerms;
                             });
                           },
-                          child: const Text(
-                            'I accept the Terms & Conditions',
-                            style: TextStyle(color: AppTheme.primaryColor),
+                          child: Text(
+                            'accept_terms' ,
+                            style: const TextStyle(color: AppTheme.primaryColor),
                           ),
                         ),
                       ),
@@ -195,7 +196,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     onPressed: _isLoading ? null : _register,
                     child: _isLoading
                         ? const CircularProgressIndicator()
-                        : const Text('Create Account'),
+                        : Text('create_account_button' ),
                   ),
                 ],
               ),

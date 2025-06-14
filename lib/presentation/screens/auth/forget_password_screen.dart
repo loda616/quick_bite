@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ForgetPasswordScreen extends StatelessWidget {
   const ForgetPasswordScreen({Key? key}) : super(key: key);
@@ -15,25 +16,22 @@ class ForgetPasswordScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Logo
               const Image(
                 image: AssetImage('assets/images/QuickBite-logo.png'),
               ),
               const SizedBox(height: 40),
 
-              // Title
               Text(
-                'Forgot Password?',
+                'title' ,
                 style: textTheme.headlineLarge?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.secondary,
+                  color: theme.colorScheme.secondary,
                 ),
               ),
               const SizedBox(height: 12),
 
-              // Description
               Text(
-                'Enter your email address and we’ll\nsend your password.',
+                'forgot_password_description' ,
                 textAlign: TextAlign.center,
                 style: textTheme.bodyMedium?.copyWith(
                   color: Colors.black54,
@@ -41,26 +39,23 @@ class ForgetPasswordScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
 
-              // Email Input
               const TextField(
                 decoration: InputDecoration(
-                  hintText: 'Email Address',
-                  contentPadding:
-                  EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+                  hintText: "email",
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 18),
                 ),
               ),
               const SizedBox(height: 24),
 
-              // Reset Password Button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Add your reset logic here
+                    // Add reset password logic
                   },
-                  child: const Text(
-                    'Reset Password',
-                    style: TextStyle(
+                  child: Text(
+                    'reset_password_button' ,
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
@@ -69,13 +64,12 @@ class ForgetPasswordScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
 
-              // Back to Login
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(
-                  'Back to Login',
+                  'back_to_login' ,
                   style: textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: theme.colorScheme.secondary,
                   ),
                 ),
               ),
@@ -86,4 +80,3 @@ class ForgetPasswordScreen extends StatelessWidget {
     );
   }
 }
-

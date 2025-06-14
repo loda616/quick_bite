@@ -47,6 +47,8 @@ flutter:
 
   assets:
     - assets/images/
+    - lib/l10n/en.json
+    - lib/l10n/ar.json
 
   fonts:
     - family: Poppins

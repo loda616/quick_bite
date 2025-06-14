@@ -7,19 +7,24 @@ class LanguageCubit extends Cubit<LanguageState> {
   static const String _languageKey = 'selected_language';
   final SharedPreferences prefs;
 
-  LanguageCubit(this.prefs) : super(const LanguageState(locale: Locale('en'))) {
-    _loadSavedLanguage();
+  LanguageCubit(this.prefs)
+      : super(LanguageState(locale: _getLocale(prefs.getString(_languageKey)))) {
+    _init();
   }
 
-  void _loadSavedLanguage() {
-    final String? languageCode = prefs.getString(_languageKey);
-    if (languageCode != null) {
-      emit(LanguageState(locale: Locale(languageCode)));
-    }
+  static Locale _getLocale(String? code) {
+    return code != null ? Locale(code) : const Locale('en');
   }
 
-  Future<void> changeLanguage(String languageCode) async {
-    await prefs.setString(_languageKey, languageCode);
-    emit(LanguageState(locale: Locale(languageCode)));
+  Future<void> _init() async {
+    final locale = _getLocale(prefs.getString(_languageKey));
+    emit(LanguageState(locale: locale));
+  }
+
+  Future<void> changeLanguage(String code, BuildContext context) async {
+    final newLocale = Locale(code);
+    await prefs.setString(_languageKey, code);
+
+    emit(LanguageState(locale: newLocale));
   }
 }

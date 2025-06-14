@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quick_bite/presentation/screens/auth/forget_password_screen.dart';
 import 'package:quick_bite/presentation/view_models/cubit/auth_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/auth_stat.dart';
+import 'package:easy_localization/easy_localization.dart';
+
+import '../home/main_screen.dart';
 import 'registration_screen.dart';
-import '../../../main.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -32,10 +34,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
       try {
         await context.read<AuthCubit>().login(
-              _emailController.text,
-              _passwordController.text,
-              context,
-            );
+          _emailController.text,
+          _passwordController.text,
+          context,
+        );
 
         if (mounted) {
           final authState = context.read<AuthCubit>().state;
@@ -80,9 +82,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 150,
                     ),
                     const SizedBox(height: 16),
-                    const Text(
-                      'Welcome to QuickBite',
-                      style: TextStyle(
+                    Text(
+                      'welcome_to_quickbite' ,
+                      style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
@@ -91,17 +93,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 32),
                     TextFormField(
                       controller: _emailController,
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                        prefixIcon: Icon(Icons.email),
+                      decoration: InputDecoration(
+                        labelText: 'email' ,
+                        prefixIcon: const Icon(Icons.email),
                       ),
                       keyboardType: TextInputType.emailAddress,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
+                          return 'enter_email' ;
                         }
                         if (!value.contains('@')) {
-                          return 'Please enter a valid email';
+                          return 'invalid_email' ;
                         }
                         return null;
                       },
@@ -109,17 +111,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _passwordController,
-                      decoration: const InputDecoration(
-                        labelText: 'Password',
-                        prefixIcon: Icon(Icons.lock),
+                      decoration: InputDecoration(
+                        labelText: 'password' ,
+                        prefixIcon: const Icon(Icons.lock),
                       ),
                       obscureText: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
+                          return 'enter_password' ;
                         }
                         if (value.length < 6) {
-                          return 'Password must be at least 6 characters';
+                          return 'password_too_short' ;
                         }
                         return null;
                       },
@@ -132,13 +134,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) =>
-                                  const ForgetPasswordScreen(),
+                              const ForgetPasswordScreen(),
                             ),
                           );
                         },
-                        child: const Text(
-                          'Forgot Password?',
-                          style: TextStyle(
+                        child: Text(
+                          'forgot_password' ,
+                          style: const TextStyle(
                             color: Color(0xFFFF6B00),
                             fontWeight: FontWeight.bold,
                           ),
@@ -150,7 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: _isLoading ? null : _login,
                       child: _isLoading
                           ? const CircularProgressIndicator()
-                          : const Text('Log In'),
+                          : Text('login_button' ),
                     ),
                     const SizedBox(height: 16),
                     TextButton(
@@ -161,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         );
                       },
-                      child: const Text('Don\'t have an account? Sign up'),
+                      child: Text('no_account_signup' ),
                     ),
                     const SizedBox(height: 32),
                   ],

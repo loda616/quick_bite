@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:quick_bite/data/models/food_item.dart';
-import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
-import '../../../theme/app_theme.dart';
+
+import '../../../core/app_theme.dart';
+import '../../../data/models/food_item.dart' show FoodItem;
 import '../cart/cart_screen.dart';
 
 class FoodItemDetailsScreen extends StatefulWidget {
   final FoodItem item;
 
-  const FoodItemDetailsScreen({
-    super.key,
-    required this.item,
-  });
+  const FoodItemDetailsScreen({super.key, required this.item});
 
   @override
   State<FoodItemDetailsScreen> createState() => _FoodItemDetailsScreenState();
@@ -45,16 +41,38 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
     });
   }
 
+  void _addToCart() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${widget.item.name} ${'added_to_cart' }'),
+        action: SnackBarAction(
+          label: 'cart' ,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const CartScreen(),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final imageHeight = MediaQuery.of(context).size.height * 0.4;
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          const SliverAppBar(
-            expandedHeight: 200,
+          SliverAppBar(
+            expandedHeight: imageHeight,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
-              background: Icon(Icons.fastfood),
+              background: const Icon(Icons.fastfood),
+              title: Text(widget.item.name),
             ),
           ),
           SliverToBoxAdapter(
@@ -63,77 +81,65 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Name and Price
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
                         child: Text(
                           widget.item.name,
-                          style: const TextStyle(
-                            fontSize: 24,
+                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
                       Text(
                         '\$${widget.item.price.toStringAsFixed(2)}',
-                        style: const TextStyle(
-                          fontSize: 24,
+                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          color: AppTheme.lightTheme.primaryColor,
                           fontWeight: FontWeight.bold,
-                          color: AppTheme.primaryColor,
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 8),
+
+                  // Rating
                   Row(
                     children: [
-                      Icon(
-                        Icons.star,
-                        size: 20,
-                        color: Colors.amber[700],
-                      ),
+                      Icon(Icons.star, size: 20, color: Colors.amber[700]),
                       const SizedBox(width: 4),
                       Text(
                         widget.item.rating.toStringAsFixed(1),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        ' (${widget.item.reviewCount} reviews)',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey[600],
-                        ),
+                        ' (${widget.item.reviewCount} ${'reviews' })',
+                        style: TextStyle(color: Colors.grey[600]),
                       ),
                     ],
                   ),
                   const SizedBox(height: 16),
+
+                  // Description
                   Text(
                     widget.item.description,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      height: 1.5,
-                    ),
+                    style: const TextStyle(fontSize: 16, height: 1.5),
                   ),
+
+                  // Customizations
                   if (widget.item.customizationOptions.isNotEmpty) ...[
                     const SizedBox(height: 24),
-                    const Text(
-                      'Customizations',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Text(
+                      'customizations' ,
+                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
                     Wrap(
                       spacing: 8,
                       runSpacing: 8,
                       children: widget.item.customizationOptions.map((option) {
-                        final isSelected =
-                        _selectedCustomizations.contains(option);
+                        final isSelected = _selectedCustomizations.contains(option);
                         return FilterChip(
                           label: Text(option),
                           selected: isSelected,
@@ -142,7 +148,10 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
                       }).toList(),
                     ),
                   ],
+
                   const SizedBox(height: 24),
+
+                  // Quantity
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -151,20 +160,14 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
                         onPressed: _decrementQuantity,
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey),
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
                           '$_quantity',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
                       IconButton(
@@ -173,78 +176,34 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
                       ),
                     ],
                   ),
+
+                  const SizedBox(height: 24),
+
+                  // Total Price
+                  Text(
+                    '${'total' }: \$${(widget.item.price * _quantity).toStringAsFixed(2)}',
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Add to Cart Button
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: widget.item.isAvailable ? _addToCart : null,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        backgroundColor:  Colors.grey),
+                      child: Text(
+                        widget.item.isAvailable ? 'add_to_cart'  : 'not_available' ,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
         ],
-      ),
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 1,
-              blurRadius: 5,
-              offset: const Offset(0, -2),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                'Total: \$${(widget.item.price * _quantity).toStringAsFixed(2)}',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Expanded(
-              child: ElevatedButton(
-                onPressed: widget.item.isAvailable
-                    ? () {
-                  final cart = context.read<CartCubit>();
-                  cart.addItem(
-                    widget.item,
-                    quantity: _quantity,
-                    customizations: _selectedCustomizations.toList(),
-                  );
-
-                  final scaffoldMessenger =
-                  ScaffoldMessenger.of(context);
-                  final navigator = Navigator.of(context);
-
-                  navigator.pop(context);
-
-                  scaffoldMessenger.showSnackBar(
-                    SnackBar(
-                      content:
-                      Text('${widget.item.name} added to cart'),
-                      action: SnackBarAction(
-                        label: 'Cart',
-                        onPressed: () {
-                          navigator.push(
-                            MaterialPageRoute(
-                              builder: (context) => const CartScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  );
-                }
-                    : null,
-                child: Text(
-                  widget.item.isAvailable ? 'Add to Cart' : 'Not Available',
-                ),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

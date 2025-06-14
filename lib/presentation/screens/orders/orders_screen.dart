@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:quick_bite/presentation/view_models/cubit/order_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/order_state.dart';
 import 'package:quick_bite/theme/app_theme.dart';
@@ -11,7 +12,7 @@ class OrdersScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Orders'),
+        title: Text('orders' ),
         backgroundColor: const Color(0xFFf8f1df),
         foregroundColor: AppTheme.accentColor,
       ),
@@ -24,7 +25,10 @@ class OrdersScreen extends StatelessWidget {
                 children: [
                   Icon(Icons.receipt_long, size: 64, color: Colors.grey[400]),
                   const SizedBox(height: 16),
-                  Text('No orders yet', style: TextStyle(fontSize: 18, color: Colors.grey[600])),
+                  Text(
+                    'no_orders_yet' ,
+                    style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                  ),
                 ],
               ),
             );
@@ -46,7 +50,7 @@ class OrdersScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Order #${order.id}',
+                            'order_number'.tr(args: ['${order.id}']),
                             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                           Container(
@@ -56,7 +60,7 @@ class OrdersScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(16),
                             ),
                             child: Text(
-                              _getStatusText(order.status),
+                              _getStatusText(order.status) ,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -73,9 +77,16 @@ class OrdersScreen extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Expanded(child: Text('${item.quantity}x ${item.name}', style: const TextStyle(fontSize: 16))),
-                            Text('\$${(item.price * item.quantity).toStringAsFixed(2)}',
-                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                            Expanded(
+                              child: Text(
+                                '${item.quantity}x ${item.name}',
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                            ),
+                            Text(
+                              '\$${(item.price * item.quantity).toStringAsFixed(2)}',
+                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
                           ],
                         ),
                       )),
@@ -83,7 +94,7 @@ class OrdersScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Total', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          Text('total' , style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                           Text(
                             '\$${order.total.toStringAsFixed(2)}',
                             style: const TextStyle(
@@ -125,15 +136,15 @@ class OrdersScreen extends StatelessWidget {
   String _getStatusText(String status) {
     switch (status.toLowerCase()) {
       case 'pending':
-        return 'Pending';
+        return 'pending';
       case 'preparing':
-        return 'Preparing';
+        return 'preparing';
       case 'ready':
-        return 'Ready';
+        return 'ready';
       case 'delivered':
-        return 'Delivered';
+        return 'delivered';
       case 'cancelled':
-        return 'Cancelled';
+        return 'cancelled';
       default:
         return status;
     }
