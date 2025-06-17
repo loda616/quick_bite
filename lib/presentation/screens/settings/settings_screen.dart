@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+ 
 import 'package:quick_bite/presentation/view_models/cubit/auth_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/language_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/language_state.dart';
@@ -13,11 +13,11 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final authCubit = context.read<AuthCubit>();
     final languageCubit = context.read<LanguageCubit>();
-    final l10n = AppLocalizations.of(context)!;
+  
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.settings),
+        title: const Text(    'settings'),
         backgroundColor: const Color(0xFFf8f1df),
         elevation: 0,
         iconTheme: const IconThemeData(color: AppTheme.accentColor),
@@ -31,7 +31,7 @@ class SettingsScreen extends StatelessWidget {
         children: [
           ListTile(
             leading: const Icon(Icons.notifications, color: AppTheme.accentColor),
-            title: Text(l10n.notifications),
+            title: const Text(    'notifications'),
             trailing: Switch(
               value: true, // TODO: Implement notifications state
               onChanged: (value) {
@@ -44,14 +44,14 @@ class SettingsScreen extends StatelessWidget {
             builder: (context, state) {
               return ListTile(
                 leading: const Icon(Icons.language, color: AppTheme.accentColor),
-                title: Text(l10n.language),
+                title: const Text(    'language'),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       state.locale.languageCode == 'en'
-                          ? l10n.english
-                          : l10n.arabic,
+                          ?     'english'
+                          :     'arabic',
                       style: const TextStyle(color: AppTheme.accentColor),
                     ),
                     const Icon(Icons.arrow_forward_ios,
@@ -62,19 +62,19 @@ class SettingsScreen extends StatelessWidget {
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: Text(l10n.selectLanguage),
+                      title: const Text(    'selectLanguage'),
                       content: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           ListTile(
-                            title: Text(l10n.english),
+                            title: const Text(    'english'),
                             onTap: () {
                               languageCubit.changeLanguage('en');
                               Navigator.pop(context);
                             },
                           ),
                           ListTile(
-                            title: Text(l10n.arabic),
+                            title: const Text(    'arabic'),
                             onTap: () {
                               languageCubit.changeLanguage('ar');
                               Navigator.pop(context);
@@ -90,7 +90,7 @@ class SettingsScreen extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.dark_mode, color: AppTheme.accentColor),
-            title: Text(l10n.darkMode),
+            title: const Text(    'darkMode'),
             trailing: Switch(
               value: false, // TODO: Implement theme state
               onChanged: (value) {
@@ -102,9 +102,9 @@ class SettingsScreen extends StatelessWidget {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.logout, color: AppTheme.primaryColor),
-            title: Text(
-              l10n.logout,
-              style: const TextStyle(color: AppTheme.primaryColor),
+            title: const Text(
+                  'logout',
+              style: TextStyle(color: AppTheme.primaryColor),
             ),
             onTap: () {
               authCubit.logout(context);

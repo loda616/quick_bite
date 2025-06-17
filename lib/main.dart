@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quick_bite/presentation/view_models/cubit/profile_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/auth_stat.dart';
 import 'package:quick_bite/presentation/view_models/stats/language_state.dart';
@@ -47,7 +46,6 @@ class MyApp extends StatelessWidget {
           theme: AppTheme.lightTheme,
           locale: languageState.locale,
           localizationsDelegates: const [
-            AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
@@ -95,27 +93,22 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: const Icon(Icons.home),
-            label: l10n.home,
+            icon: Icon(Icons.home),
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.favorite),
-            label: l10n.favorites,
+            icon: Icon(Icons.favorite),
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.history),
-            label: l10n.orders,
+            icon: Icon(Icons.history),
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.settings),
-            label: l10n.settings,
+            icon: Icon(Icons.settings),
           ),
         ],
         currentIndex: _selectedIndex,

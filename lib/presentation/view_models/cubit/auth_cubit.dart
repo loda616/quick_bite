@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quick_bite/presentation/view_models/stats/auth_stat.dart';
 
 class AuthCubit extends Cubit<AuthState> {
@@ -18,11 +17,10 @@ class AuthCubit extends Cubit<AuthState> {
         isAuthenticated: true,
         userId: "user123",
         userEmail: email,
-        userName: AppLocalizations.of(context)!.defaultUserName,
       ));
     } catch (e) {
       emit(state.copyWith(
-        errorMessage: AppLocalizations.of(context)!.loginFailed,
+        errorMessage: ('login failed '),
       ));
     }
   }
@@ -33,7 +31,7 @@ class AuthCubit extends Cubit<AuthState> {
       emit(const AuthState());
     } catch (e) {
       emit(state.copyWith(
-        errorMessage: AppLocalizations.of(context)!.networkError,
+        errorMessage:('Network Error')
       ));
     }
   }
@@ -51,7 +49,7 @@ class AuthCubit extends Cubit<AuthState> {
       ));
     } catch (e) {
       emit(state.copyWith(
-        errorMessage: AppLocalizations.of(context)!.registrationFailed,
+        errorMessage:('Registration Failed')
       ));
     }
   }

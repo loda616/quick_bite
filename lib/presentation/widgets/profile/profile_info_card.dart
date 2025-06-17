@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+ 
 import 'package:quick_bite/theme/app_theme.dart';
 
 class ProfileInfoCard extends StatelessWidget {
@@ -16,7 +16,7 @@ class ProfileInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+  
 
     return Card(
       elevation: 2,

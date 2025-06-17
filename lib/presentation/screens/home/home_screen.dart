@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+ 
 import 'package:quick_bite/core/colors.dart';
 import 'package:quick_bite/data/models/food_item.dart';
 import 'package:quick_bite/presentation/screens/profile_screen.dart';
@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+  
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -80,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    l10n.appTitle,
+                        'appTitle',
                     style: theme.textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: theme.colorScheme.primary,
@@ -156,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    l10n.welcomeBack(authState.userName ?? l10n.guest),
+                        ('welcomeBack ${authState.userName ?? 'guest'}'),
                     style: theme.textTheme.titleLarge?.copyWith(
                       color: theme.colorScheme.onSurface,
                     ),
@@ -168,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.all(16.0),
               child: TextField(
                 decoration: InputDecoration(
-                  hintText: l10n.searchHint,
+                  hintText:     'searchHint',
                   prefixIcon: Icon(
                     Icons.search,
                     color: theme.colorScheme.primary,
@@ -234,7 +234,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   : _items == null || _items!.isEmpty
                   ? Center(
                 child: Text(
-                  l10n.noItemsFound,
+                      'noItemsFound',
                   style: theme.textTheme.bodyLarge?.copyWith(
                     color: theme.colorScheme.onSurface,
                   ),

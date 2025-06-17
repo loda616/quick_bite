@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+ 
 import 'package:quick_bite/presentation/view_models/cubit/profile_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/profile_state.dart';
 import 'package:quick_bite/presentation/widgets/profile/profile_header.dart';
@@ -12,11 +12,11 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+  
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.profile),
+        title: const Text( 'profile'),
         backgroundColor: const Color(0xFFf8f1df),
         elevation: 0,
         iconTheme: const IconThemeData(color: AppTheme.accentColor),
@@ -40,23 +40,23 @@ class ProfileScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                ProfileHeader(name: state.name ?? l10n.guest),
+                ProfileHeader(name: state.name ??     'guest'),
                 const SizedBox(height: 24),
                 ProfileInfoCard(
-                  title: l10n.personalInfo,
+                  title:     'personalInfo',
                   items: {
-                    l10n.email: state.email ?? 'N/A',
-                    l10n.phone: state.phone ?? 'N/A',
-                    l10n.address: state.address ?? 'N/A',
+                        'email': state.email ?? 'N/A',
+                        'phone': state.phone ?? 'N/A',
+                        'address': state.address ?? 'N/A',
                   },
                   onEditPressed: () {} //() => _showEditProfileDialog(context),
                 ),
                 const SizedBox(height: 16),
-                ProfileInfoCard(
-                  title: l10n.preferences,
+                const ProfileInfoCard(
+                  title:     'preferences',
                   items: {
-                    l10n.language: 'English',
-                    l10n.notifications: 'Enabled',
+                        'language': 'English',
+                        'notifications': 'Enabled',
                   },
                 ),
               ],
