@@ -6,18 +6,20 @@ import 'package:quick_bite/presentation/view_models/cubit/language_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/language_state.dart';
 import 'package:quick_bite/theme/app_theme.dart';
 
+import '../../view_models/stats/auth_stat.dart';
+import '../auth/login_screen.dart';
+
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final authCubit = context.read<AuthCubit>();
     final languageCubit = context.read<LanguageCubit>();
   
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(    'settings'),
+        title: const Text('Settings'),
         backgroundColor: const Color(0xFFf8f1df),
         elevation: 0,
         iconTheme: const IconThemeData(color: AppTheme.accentColor),
@@ -27,7 +29,18 @@ class SettingsScreen extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
-      body: ListView(
+      body:
+    BlocListener<AuthCubit, AuthState>(
+    listener: (context, state) {
+    if (!state.isAuthenticated) {
+    Navigator.of(context).pushAndRemoveUntil(
+    MaterialPageRoute(builder: (context) => const LoginScreen()),
+    (route) => false,
+    );
+    }
+    },
+    child:
+       ListView(
         children: [
           ListTile(
             leading: const Icon(Icons.notifications, color: AppTheme.accentColor),
@@ -73,12 +86,15 @@ class SettingsScreen extends StatelessWidget {
                               Navigator.pop(context);
                             },
                           ),
-                          ListTile(
-                            title: const Text(    'arabic'),
-                            onTap: () {
-                              languageCubit.changeLanguage('ar');
-                              Navigator.pop(context);
-                            },
+    ListTile(
+    leading: const Icon(Icons.logout, color: AppTheme.primaryColor),
+    title: const Text(
+    'Logout',
+    style: TextStyle(color: AppTheme.primaryColor),
+    ),
+    onTap: () {
+    context.read<AuthCubit>().logout();
+    },
                           ),
                         ],
                       ),
@@ -107,12 +123,31 @@ class SettingsScreen extends StatelessWidget {
               style: TextStyle(color: AppTheme.primaryColor),
             ),
             onTap: () {
-              authCubit.logout(context);
-              // TODO: Navigate to login screen
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Logout'),
+                  content: const Text('Are you sure you want to logout?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        context.read<AuthCubit>().logout();
+                      },
+                      child: const Text('Logout'),
+                    ),
+                  ],
+                ),
+              );
             },
           ),
         ],
       ),
+    )
     );
   }
 }

@@ -38,11 +38,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
       try {
         await context.read<AuthCubit>().register(
-              _emailController.text,
-              _passwordController.text,
-              '${_firstNameController.text} ${_lastNameController.text}',
-              context,
-            );
+          _emailController.text,
+          _passwordController.text,
+          '${_firstNameController.text} ${_lastNameController.text}',
+        );
 
         if (mounted) {
           final authState = context.read<AuthCubit>().state;
