@@ -100,15 +100,19 @@ class _MainScreenState extends State<MainScreen> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
+            label: 'Favorites',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.history),
+            label: 'Orders',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
+            label: 'Settings',
           ),
         ],
         currentIndex: _selectedIndex,

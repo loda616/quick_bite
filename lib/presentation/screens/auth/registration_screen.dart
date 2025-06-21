@@ -20,7 +20,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _acceptedTerms = false;
-  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -34,26 +33,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   Future<void> _register() async {
     if (_formKey.currentState!.validate() && _acceptedTerms) {
-      setState(() => _isLoading = true);
+      await context.read<AuthCubit>().register(
+        _emailController.text,
+        _passwordController.text,
+        _firstNameController.text,
+        _lastNameController.text,
+        _phoneController.text,
+      );
 
-      try {
-        await context.read<AuthCubit>().register(
-          _emailController.text,
-          _passwordController.text,
-          '${_firstNameController.text} ${_lastNameController.text}',
-        );
-
-        if (mounted) {
-          final authState = context.read<AuthCubit>().state;
-          if (authState.isAuthenticated) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => const MainScreen()),
-            );
-          }
-        }
-      } finally {
-        if (mounted) {
-          setState(() => _isLoading = false);
+      if (mounted) {
+        final authState = context.read<AuthCubit>().state;
+        if (authState.isAuthenticated) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const MainScreen()),
+          );
         }
       }
     } else if (!_acceptedTerms) {
@@ -65,7 +58,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthCubit, AuthState>(
+    return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state.errorMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -73,135 +66,137 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           );
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Create Account'),
-        ),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  TextFormField(
-                    controller: _firstNameController,
-                    decoration: const InputDecoration(
-                      labelText: 'First Name',
-                      prefixIcon: Icon(Icons.person),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your first name';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _lastNameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Last Name',
-                      prefixIcon: Icon(Icons.person),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your last name';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      prefixIcon: Icon(Icons.email),
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
-                      }
-                      if (!value.contains('@')) {
-                        return 'Please enter a valid email';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _phoneController,
-                    decoration: const InputDecoration(
-                      labelText: 'Mobile Number',
-                      prefixIcon: Icon(Icons.phone),
-                    ),
-                    keyboardType: TextInputType.phone,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your mobile number';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                      prefixIcon: Icon(Icons.lock),
-                    ),
-                    obscureText: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a password';
-                      }
-                      if (value.length < 6) {
-                        return 'Password must be at least 6 characters';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: _acceptedTerms,
-                        onChanged: (value) {
-                          setState(() {
-                            _acceptedTerms = value ?? false;
-                          });
-                        },
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Create Account'),
+          ),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    TextFormField(
+                      controller: _firstNameController,
+                      decoration: const InputDecoration(
+                        labelText: 'First Name',
+                        prefixIcon: Icon(Icons.person),
                       ),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your first name';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _lastNameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Last Name',
+                        prefixIcon: Icon(Icons.person),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your last name';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
+                        prefixIcon: Icon(Icons.email),
+                      ),
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your email';
+                        }
+                        if (!value.contains('@')) {
+                          return 'Please enter a valid email';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _phoneController,
+                      decoration: const InputDecoration(
+                        labelText: 'Mobile Number',
+                        prefixIcon: Icon(Icons.phone),
+                      ),
+                      keyboardType: TextInputType.phone,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your mobile number';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _passwordController,
+                      decoration: const InputDecoration(
+                        labelText: 'Password',
+                        prefixIcon: Icon(Icons.lock),
+                      ),
+                      obscureText: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a password';
+                        }
+                        if (value.length < 6) {
+                          return 'Password must be at least 6 characters';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: _acceptedTerms,
+                          onChanged: (value) {
                             setState(() {
-                              _acceptedTerms = !_acceptedTerms;
+                              _acceptedTerms = value ?? false;
                             });
                           },
-                          child: const Text(
-                            'I accept the Terms & Conditions',
-                            style: TextStyle(color: AppTheme.primaryColor),
+                        ),
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _acceptedTerms = !_acceptedTerms;
+                              });
+                            },
+                            child: const Text(
+                              'I accept the Terms & Conditions',
+                              style: TextStyle(color: AppTheme.primaryColor),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: _isLoading ? null : _register,
-                    child: _isLoading
-                        ? const CircularProgressIndicator()
-                        : const Text('Create Account'),
-                  ),
-                ],
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton(
+                      onPressed: state.isLoading ? null : _register,
+                      child: state.isLoading
+                          ? const CircularProgressIndicator()
+                          : const Text('Create Account'),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

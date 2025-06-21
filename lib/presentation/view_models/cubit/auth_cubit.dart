@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:quick_bite/data/models/user_model.dart';
+import 'package:quick_bite/data/models/register_request_model.dart';
 import 'package:quick_bite/presentation/view_models/stats/auth_stat.dart';
 import '../../../data/network/api_service.dart';
 import '../../../data/network/dio_client.dart';
@@ -20,16 +20,16 @@ class AuthCubit extends Cubit<AuthState> {
       _clearError();
       emit(state.copyWith(isLoading: true));
 
-      // TODO: Implement actual login API call
-      // final user = await _apiService.login(email, password);
-
-      // For now, mock response
-      await Future.delayed(const Duration(seconds: 1));
+      final user = await _apiService.login({
+        "email": email,
+        "password": password,
+      });
 
       emit(state.copyWith(
         isAuthenticated: true,
-        userId: "user123",
-        userEmail: email,
+        userId: user.id.toString(),
+        userEmail: user.email,
+        userName: '${user.fName} ${user.lName}',
         isLoading: false,
       ));
     } catch (e) {
@@ -51,26 +51,28 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> register(String email, String password, String name) async {
+  Future<void> register(String email, String password, String fName, String lName, String phone) async {
     try {
       _clearError();
       emit(state.copyWith(isLoading: true));
 
-      // Create user model
-      final user = UserModel(
-        id: 0, // server will assign ID
-        name: name,
+      // Create register request model
+      final registerRequest = RegisterRequestModel(
+        fName: fName,
+        lName: lName,
+        phone: phone,
         email: email,
+        password: password,
       );
 
       // Call API
-      final registeredUser = await _apiService.register(user);
+      final registeredUser = await _apiService.register(registerRequest);
 
       emit(state.copyWith(
         isAuthenticated: true,
         userId: registeredUser.id.toString(),
         userEmail: registeredUser.email,
-        userName: registeredUser.name,
+        userName: '${registeredUser.fName} ${registeredUser.lName}',
         isLoading: false,
       ));
     } catch (e) {
