@@ -13,7 +13,6 @@ import 'package:quick_bite/presentation/view_models/stats/auth_stat.dart';
 import 'package:quick_bite/presentation/screens/auth/login_screen.dart';
 import 'package:quick_bite/presentation/screens/main_screen.dart';
 import 'package:quick_bite/theme/app_theme.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/network/dio_client.dart';
@@ -97,7 +96,7 @@ class QuickBiteApp extends StatelessWidget {
       );
     }
 
-    // Navigate based on authentication status
+    // Navigate to MainScreen (with bottom nav) when authenticated, LoginScreen when not
     return authState.isAuthenticated ? const MainScreen() : const LoginScreen();
   }
 }

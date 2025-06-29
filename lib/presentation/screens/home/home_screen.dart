@@ -1,15 +1,16 @@
-// Updated home_screen.dart with fixed navigation
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quick_bite/core/utilz/colors.dart';
 import 'package:quick_bite/data/models/food_item.dart';
+import 'package:quick_bite/presentation/screens/profile_screen.dart';
 import 'package:quick_bite/presentation/view_models/cubit/auth_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/auth_stat.dart';
 import 'package:quick_bite/presentation/view_models/stats/cart_state.dart';
 import 'package:quick_bite/presentation/widgets/food_item_card.dart';
-import '../../../core/routs/routes.dart';
 import '../../../data/datasources/remote/food_service.dart';
+import '../cart/cart_screen.dart';
+import '../food/food_item_details_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -74,46 +75,49 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
+            // Header - Fixed overflow
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'QuickBite',
-                        style: theme.textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: theme.colorScheme.primary,
+                  // App title and welcome text - Made flexible
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'QuickBite',
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.primary,
+                          ),
                         ),
-                      ),
-                      BlocBuilder<AuthCubit, AuthState>(
-                        builder: (context, authState) {
-                          return Text(
-                            'Welcome back, ${authState.userName ?? 'Guest'}!',
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              color: theme.colorScheme.onSurface,
-                            ),
-                          );
-                        },
-                      ),
-                    ],
+                        BlocBuilder<AuthCubit, AuthState>(
+                          builder: (context, authState) {
+                            return Text(
+                              'Welcome back, ${authState.userName ?? 'Guest'}!',
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                color: theme.colorScheme.onSurface,
+                              ),
+                              overflow: TextOverflow.ellipsis, // Prevent overflow
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
+                  // Icons - Fixed width
                   Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Cart Icon with Badge
                       BlocBuilder<CartCubit, CartState>(
                         builder: (context, cartState) {
                           return IconButton(
                             icon: Stack(
                               children: [
                                 Icon(
-                                  Icons.shopping_cart_outlined,
+                                  Icons.shopping_cart,
                                   color: theme.colorScheme.primary,
-                                  size: 28,
                                 ),
                                 if (cartState.itemCount > 0)
                                   Positioned(
@@ -121,8 +125,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     top: 0,
                                     child: Container(
                                       padding: const EdgeInsets.all(2),
-                                      decoration: const BoxDecoration(
-                                        color: AppColors.orange,
+                                      decoration: BoxDecoration(
+                                        color: theme.colorScheme.primary,
                                         shape: BoxShape.circle,
                                       ),
                                       constraints: const BoxConstraints(
@@ -132,9 +136,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       child: Text(
                                         '${cartState.itemCount}',
                                         style: const TextStyle(
-                                          color: Colors.white,
+                                          color: AppColors.white,
                                           fontSize: 10,
-                                          fontWeight: FontWeight.bold,
                                         ),
                                         textAlign: TextAlign.center,
                                       ),
@@ -143,23 +146,27 @@ class _HomeScreenState extends State<HomeScreen> {
                               ],
                             ),
                             onPressed: () {
-                              Navigator.pushNamed(context, AppRoutes.cart);
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => const CartScreen(),
+                                ),
+                              );
                             },
-                            tooltip: 'Cart',
                           );
                         },
                       ),
-                      // Profile Icon
                       IconButton(
                         icon: Icon(
-                          Icons.person_outline,
+                          Icons.person,
                           color: theme.colorScheme.primary,
-                          size: 28,
                         ),
                         onPressed: () {
-                          Navigator.pushNamed(context, AppRoutes.profile);
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const ProfileScreen(),
+                            ),
+                          );
                         },
-                        tooltip: 'Profile',
                       ),
                     ],
                   ),
@@ -169,7 +176,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
             // Search Bar
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.all(16.0),
               child: TextField(
                 decoration: InputDecoration(
                   hintText: 'Search for food...',
@@ -178,65 +185,35 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: theme.colorScheme.primary,
                   ),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide(
-                      color: theme.colorScheme.primary.withOpacity(0.3),
+                      color: theme.colorScheme.primary,
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide(
                       color: theme.colorScheme.primary,
                       width: 2,
                     ),
                   ),
-                  filled: true,
-                  fillColor: Colors.white,
                 ),
                 onChanged: (value) {
-                  // TODO: Implement search functionality
+                  // TODO: Implement search
                 },
               ),
             ),
 
-            const SizedBox(height: 16),
-
             // Categories
-            if (_categories != null && _categories!.isNotEmpty)
+            if (_categories != null)
               SizedBox(
                 height: 50,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 8),
-                  itemCount: _categories!.length + 1, // +1 for "All" option
+                  itemCount: _categories!.length,
                   itemBuilder: (context, index) {
-                    if (index == 0) {
-                      // "All" option
-                      final isSelected = _selectedCategory == null;
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: ChoiceChip(
-                          label: const Text('All'),
-                          selected: isSelected,
-                          selectedColor: theme.colorScheme.primary,
-                          backgroundColor: Colors.white,
-                          labelStyle: TextStyle(
-                            color: isSelected
-                                ? Colors.white
-                                : theme.colorScheme.onSurface,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          onSelected: (selected) {
-                            setState(() {
-                              _selectedCategory = null;
-                            });
-                            _loadData();
-                          },
-                        ),
-                      );
-                    }
-
-                    final category = _categories![index - 1];
+                    final category = _categories![index];
                     final isSelected = category == _selectedCategory;
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -244,12 +221,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         label: Text(category),
                         selected: isSelected,
                         selectedColor: theme.colorScheme.primary,
-                        backgroundColor: Colors.white,
                         labelStyle: TextStyle(
                           color: isSelected
-                              ? Colors.white
+                              ? AppColors.white
                               : theme.colorScheme.onSurface,
-                          fontWeight: FontWeight.w600,
                         ),
                         onSelected: (selected) {
                           setState(() {
@@ -263,92 +238,47 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
 
-            const SizedBox(height: 16),
-
             // Food Items Grid
             Expanded(
               child: _isLoading
                   ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(
-                      color: theme.colorScheme.primary,
-                    ),
-                    const SizedBox(height: 16),
-                    const Text('Loading delicious food...'),
-                  ],
+                child: CircularProgressIndicator(
+                  color: theme.colorScheme.primary,
                 ),
               )
                   : _items == null || _items!.isEmpty
                   ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.restaurant_menu,
-                      size: 64,
-                      color: Colors.grey[400],
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'No items found',
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Try selecting a different category',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey[500],
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  'No items found',
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: theme.colorScheme.onSurface,
+                  ),
                 ),
               )
-                  : RefreshIndicator(
-                onRefresh: _loadData,
-                color: theme.colorScheme.primary,
-                child: GridView.builder(
-                  padding: const EdgeInsets.all(16),
-                  gridDelegate:
-                  const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 0.75,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                  ),
-                  itemCount: _items!.length,
-                  itemBuilder: (context, index) {
-                    final item = _items![index];
-                    return FoodItemCard(
-                      item: item,
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          AppRoutes.foodDetails,
-                          arguments: item,
-                        );
-                      },
-                      onAddToCart: () {
-                        context.read<CartCubit>().addItem(item);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('${item.name} added to cart'),
-                            duration: const Duration(seconds: 2),
-                            action: SnackBarAction(
-                              label: 'View Cart',
-                              onPressed: () {
-                                Navigator.pushNamed(context, AppRoutes.cart);
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
+                  : GridView.builder(
+                padding: const EdgeInsets.all(16),
+                gridDelegate:
+                const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.75,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
                 ),
+                itemCount: _items!.length,
+                itemBuilder: (context, index) {
+                  final item = _items![index];
+                  return FoodItemCard(
+                    item: item,
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              FoodItemDetailsScreen(item: item),
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
             ),
           ],

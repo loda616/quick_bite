@@ -298,11 +298,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Email: john.doe@example.com',
+                            'Email: mohamed@gmail.com',
                             style: TextStyle(color: Colors.blue[700]),
                           ),
                           Text(
-                            'Password: @securePassword123',
+                            'Password: Fouad@2463187',
                             style: TextStyle(color: Colors.blue[700]),
                           ),
                         ],

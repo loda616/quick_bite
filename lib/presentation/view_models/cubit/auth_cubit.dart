@@ -20,6 +20,10 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> checkAuthStatus() async {
     try {
       developer.log('Checking auth status...');
+
+      // Set loading state briefly
+      emit(state.copyWith(isLoading: true));
+
       final isLoggedIn = await _authRepository.isLoggedIn();
       developer.log('Is logged in: $isLoggedIn');
 
@@ -40,11 +44,14 @@ class AuthCubit extends Cubit<AuthState> {
           isAuthenticated: true,
           userId: userId,
           userName: userName,
+          isLoading: false,
         ));
+      } else {
+        emit(state.copyWith(isLoading: false));
       }
     } catch (e, stackTrace) {
       developer.log('Error checking auth status: $e', stackTrace: stackTrace);
-      emit(const AuthState());
+      emit(state.copyWith(isLoading: false));
     }
   }
 

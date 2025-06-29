@@ -1,6 +1,6 @@
-// routes.dart
 import 'package:flutter/material.dart';
 import 'package:quick_bite/presentation/screens/home/home_screen.dart';
+import 'package:quick_bite/presentation/screens/main_screen.dart';
 import 'package:quick_bite/presentation/screens/auth/login_screen.dart';
 import 'package:quick_bite/presentation/screens/auth/registration_screen.dart';
 import 'package:quick_bite/presentation/screens/auth/forget_password_screen.dart';
@@ -16,6 +16,7 @@ import '../../presentation/screens/food/favorites_screen.dart';
 
 class AppRoutes {
   static const String initial = '/';
+  static const String main = '/main';
   static const String home = '/home';
   static const String auth = '/auth';
   static const String register = '/register';
@@ -30,52 +31,68 @@ class AppRoutes {
   static const String favorites = '/favorites';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
-    switch (settings.name) {
-      case '/':
-        return MaterialPageRoute(builder: (context) => const HomeScreen());
+    final routeName = settings.name;
 
-      case '/home':
-        return MaterialPageRoute(builder: (context) => const HomeScreen());
-
-      case '/auth':
-        return MaterialPageRoute(builder: (context) => const LoginScreen());
-
-      case '/register':
-        return MaterialPageRoute(builder: (context) => const RegistrationScreen());
-
-      case '/forget-password':
-        return MaterialPageRoute(builder: (context) => const ForgetPasswordScreen());
-
-      case '/reset-link-sent':
-        return MaterialPageRoute(builder: (context) => const ResetLinkSentScreen());
-
-      case '/cart':
-        return MaterialPageRoute(builder: (context) => const CartScreen());
-
-      case '/orders':
-        return MaterialPageRoute(builder: (context) => const OrdersScreen());
-
-      case '/settings':
-        return MaterialPageRoute(builder: (context) => const SettingsScreen());
-
-      case '/profile':
-        return MaterialPageRoute(builder: (context) => const ProfileScreen());
-
-      case '/favorites':
-        return MaterialPageRoute(builder: (context) => const FavoritesScreen());
-
-      case '/food-details':
-        if (settings.arguments is FoodItem) {
-          final foodItem = settings.arguments as FoodItem;
-          return MaterialPageRoute(
-            builder: (context) => FoodItemDetailsScreen(item: foodItem),
-          );
-        }
-        return _errorRoute('Invalid arguments for food details');
-
-      default:
-        return _errorRoute('No route defined for ${settings.name}');
+    if (routeName == initial) {
+      return MaterialPageRoute(builder: (context) => const MainScreen());
     }
+
+    if (routeName == main) {
+      return MaterialPageRoute(builder: (context) => const MainScreen());
+    }
+
+    if (routeName == home) {
+      return MaterialPageRoute(builder: (context) => const HomeScreen());
+    }
+
+    if (routeName == auth) {
+      return MaterialPageRoute(builder: (context) => const LoginScreen());
+    }
+
+    if (routeName == register) {
+      return MaterialPageRoute(builder: (context) => const RegistrationScreen());
+    }
+
+    if (routeName == forgetPassword) {
+      return MaterialPageRoute(builder: (context) => const ForgetPasswordScreen());
+    }
+
+    if (routeName == resetLinkSent) {
+      return MaterialPageRoute(builder: (context) => const ResetLinkSentScreen());
+    }
+
+    if (routeName == cart) {
+      return MaterialPageRoute(builder: (context) => const CartScreen());
+    }
+
+    if (routeName == orders) {
+      return MaterialPageRoute(builder: (context) => const OrdersScreen());
+    }
+
+    if (routeName == settings) {
+      return MaterialPageRoute(builder: (context) => const SettingsScreen());
+    }
+
+    if (routeName == profile) {
+      return MaterialPageRoute(builder: (context) => const ProfileScreen());
+    }
+
+    if (routeName == favorites) {
+      return MaterialPageRoute(builder: (context) => const FavoritesScreen());
+    }
+
+    if (routeName == foodDetails) {
+      if (settings.arguments is FoodItem) {
+        final foodItem = settings.arguments as FoodItem;
+        return MaterialPageRoute(
+          builder: (context) => FoodItemDetailsScreen(item: foodItem),
+        );
+      }
+      return _errorRoute('Invalid arguments for food details');
+    }
+
+    // Default case - route not found
+    return _errorRoute('No route defined for $routeName');
   }
 
   static Route<dynamic> _errorRoute(String message) {
@@ -102,7 +119,7 @@ class AppRoutes {
               ElevatedButton(
                 onPressed: () => Navigator.pushNamedAndRemoveUntil(
                   context,
-                  AppRoutes.home,
+                  AppRoutes.main,
                       (route) => false,
                 ),
                 child: const Text('Go Home'),
