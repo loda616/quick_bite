@@ -1,10 +1,10 @@
+// login_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quick_bite/presentation/screens/auth/forget_password_screen.dart';
 import 'package:quick_bite/presentation/view_models/cubit/auth_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/auth_stat.dart';
-import 'registration_screen.dart';
-import '../../../main.dart';
+
+import '../../../core/routs/routes.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,7 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _isLoading = false;
+  bool _passwordVisible = false;
 
   @override
   void dispose() {
@@ -28,92 +28,150 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
-
-      try {
-        await context.read<AuthCubit>().login(
-              _emailController.text,
-              _passwordController.text,
-              context,
-            );
-
-        if (mounted) {
-          final authState = context.read<AuthCubit>().state;
-          if (authState.isAuthenticated) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => const MainScreen()),
-            );
-          }
-        }
-      } finally {
-        if (mounted) {
-          setState(() => _isLoading = false);
-        }
-      }
+      FocusScope.of(context).unfocus();
+      await context.read<AuthCubit>().login(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthCubit, AuthState>(
+    return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
-        if (state.errorMessage != null) {
+        if (state.errorMessage != null && mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage!)),
+            SnackBar(
+              content: Text(state.errorMessage!),
+              backgroundColor: Colors.red,
+              duration: const Duration(seconds: 4),
+            ),
+          );
+          context.read<AuthCubit>().clearMessages();
+        }
+
+        if (state.successMessage != null && mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.successMessage!),
+              backgroundColor: Colors.green,
+              duration: const Duration(seconds: 3),
+            ),
+          );
+          context.read<AuthCubit>().clearMessages();
+        }
+
+        // Navigate to main screen when authenticated
+        if (state.isAuthenticated && mounted) {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            AppRoutes.home,
+                (route) => false,
           );
         }
       },
-      child: Scaffold(
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
+      builder: (context, state) {
+        return Scaffold(
+          resizeToAvoidBottomInset: true,
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24.0),
               child: Form(
                 key: _formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const SizedBox(height: 32),
-                    const Image(
-                      image: AssetImage('assets/images/QuickBite-logo.png'),
+                    const SizedBox(height: 40),
+
+                    // Logo
+                    Image.asset(
+                      'assets/images/QuickBite-logo.png',
                       height: 150,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          height: 150,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(
+                            Icons.restaurant,
+                            size: 64,
+                            color: Colors.grey,
+                          ),
+                        );
+                      },
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 24),
+
+                    // Welcome Text
                     const Text(
-                      'Welcome to QuickBite',
+                      'Welcome Back!',
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 28,
                         fontWeight: FontWeight.bold,
+                        color: Color(0xFF2E2E2E),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Sign in to continue to QuickBite',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
                       ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 32),
+
+                    // Email Field
                     TextFormField(
                       controller: _emailController,
                       decoration: const InputDecoration(
-                        labelText: 'Email',
-                        prefixIcon: Icon(Icons.email),
+                        labelText: 'Email Address',
+                        prefixIcon: Icon(Icons.email_outlined),
+                        border: OutlineInputBorder(),
                       ),
                       keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your email';
                         }
-                        if (!value.contains('@')) {
+                        if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
                           return 'Please enter a valid email';
                         }
                         return null;
                       },
                     ),
                     const SizedBox(height: 16),
+
+                    // Password Field
                     TextFormField(
                       controller: _passwordController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Password',
-                        prefixIcon: Icon(Icons.lock),
+                        prefixIcon: const Icon(Icons.lock_outlined),
+                        border: const OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _passwordVisible
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _passwordVisible = !_passwordVisible;
+                            });
+                          },
+                        ),
                       ),
-                      obscureText: true,
+                      obscureText: !_passwordVisible,
+                      textInputAction: TextInputAction.done,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your password';
@@ -123,54 +181,140 @@ class _LoginScreenState extends State<LoginScreen> {
                         }
                         return null;
                       },
+                      onFieldSubmitted: (value) => _login(),
                     ),
                     const SizedBox(height: 8),
+
+                    // Forgot Password Link
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const ForgetPasswordScreen(),
-                            ),
-                          );
+                          Navigator.pushNamed(context, AppRoutes.forgetPassword);
                         },
                         child: const Text(
                           'Forgot Password?',
                           style: TextStyle(
                             color: Color(0xFFFF6B00),
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
                     ),
                     const SizedBox(height: 24),
+
+                    // Login Button
                     ElevatedButton(
-                      onPressed: _isLoading ? null : _login,
-                      child: _isLoading
-                          ? const CircularProgressIndicator()
-                          : const Text('Log In'),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: state.isLoading ? null : _login,
+                      child: state.isLoading
+                          ? const SizedBox(
+                        height: 24,
+                        width: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                          : const Text(
+                        'Sign In',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 24),
+
+                    // Divider
+                    Row(
+                      children: [
+                        Expanded(child: Divider(color: Colors.grey[300])),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            'OR',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        Expanded(child: Divider(color: Colors.grey[300])),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Sign Up Link
                     TextButton(
                       onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const RegistrationScreen(),
-                          ),
-                        );
+                        Navigator.pushNamed(context, AppRoutes.register);
                       },
-                      child: const Text('Don\'t have an account? Sign up'),
+                      child: RichText(
+                        textAlign: TextAlign.center,
+                        text: const TextSpan(
+                          text: "Don't have an account? ",
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 16,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: 'Sign Up',
+                              style: TextStyle(
+                                color: Color(0xFFFF6B00),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                    const SizedBox(height: 32),
+
+                    const SizedBox(height: 20),
+
+                    // Demo Credentials (for testing)
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.blue[50],
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.blue.shade200),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Demo Credentials:',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue[800],
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Email: mohamed@gmail.com',
+                            style: TextStyle(color: Colors.blue[700]),
+                          ),
+                          Text(
+                            'Password: Fouad@2463187',
+                            style: TextStyle(color: Colors.blue[700]),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

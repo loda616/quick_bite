@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:quick_bite/core/colors.dart';
+import 'package:quick_bite/core/utilz/colors.dart';
 import 'package:quick_bite/data/models/food_item.dart';
 import 'package:quick_bite/presentation/screens/profile_screen.dart';
 import 'package:quick_bite/presentation/view_models/cubit/auth_cubit.dart';
@@ -59,13 +58,15 @@ class _HomeScreenState extends State<HomeScreen> {
             backgroundColor: AppColors.error,
           ),
         );
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -74,19 +75,40 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Header - Fixed overflow
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    l10n.appTitle,
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.primary,
+                  // App title and welcome text - Made flexible
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'QuickBite',
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
+                        BlocBuilder<AuthCubit, AuthState>(
+                          builder: (context, authState) {
+                            return Text(
+                              'Welcome back, ${authState.userName ?? 'Guest'}!',
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                color: theme.colorScheme.onSurface,
+                              ),
+                              overflow: TextOverflow.ellipsis, // Prevent overflow
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   ),
+                  // Icons - Fixed width
                   Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       BlocBuilder<CartCubit, CartState>(
                         builder: (context, cartState) {
@@ -151,24 +173,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            BlocBuilder<AuthCubit, AuthState>(
-              builder: (context, authState) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text(
-                    l10n.welcomeBack(authState.userName ?? l10n.guest),
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      color: theme.colorScheme.onSurface,
-                    ),
-                  ),
-                );
-              },
-            ),
+
+            // Search Bar
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: TextField(
                 decoration: InputDecoration(
-                  hintText: l10n.searchHint,
+                  hintText: 'Search for food...',
                   prefixIcon: Icon(
                     Icons.search,
                     color: theme.colorScheme.primary,
@@ -192,6 +203,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
             ),
+
+            // Categories
             if (_categories != null)
               SizedBox(
                 height: 50,
@@ -224,6 +237,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
               ),
+
+            // Food Items Grid
             Expanded(
               child: _isLoading
                   ? Center(
@@ -234,7 +249,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   : _items == null || _items!.isEmpty
                   ? Center(
                 child: Text(
-                  l10n.noItemsFound,
+                  'No items found',
                   style: theme.textTheme.bodyLarge?.copyWith(
                     color: theme.colorScheme.onSurface,
                   ),

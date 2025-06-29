@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+ 
 import 'package:quick_bite/presentation/view_models/cubit/order_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/order_state.dart';
 import 'package:quick_bite/theme/app_theme.dart';
@@ -10,11 +10,11 @@ class OrdersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+  
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.orders),
+        title: const Text('orders'),
         backgroundColor: const Color(0xFFf8f1df),
         foregroundColor: AppTheme.accentColor,
       ),
@@ -32,7 +32,7 @@ class OrdersScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    l10n.noOrdersYet,
+                        'noOrdersYet',
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.grey[600],
@@ -59,7 +59,7 @@ class OrdersScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '${l10n.orderNumber} #${order.id}',
+                            'orderNumber #${order.id}',
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -75,7 +75,7 @@ class OrdersScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(16),
                             ),
                             child: Text(
-                              _getStatusText(order.status, l10n),
+                              _getStatusText(order.status),
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -119,9 +119,9 @@ class OrdersScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            l10n.total,
-                            style: const TextStyle(
+                          const Text(
+                                'total',
+                            style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
@@ -164,20 +164,20 @@ class OrdersScreen extends StatelessWidget {
     }
   }
 
-  String _getStatusText(String status, AppLocalizations l10n) {
-    switch (status.toLowerCase()) {
+  String _getStatusText(String statusn) {
+    switch (statusn.toLowerCase()) {
       case 'pending':
-        return l10n.pending;
+        return     'pending';
       case 'preparing':
-        return l10n.preparing;
+        return     'preparing';
       case 'ready':
-        return l10n.ready;
+        return     'ready';
       case 'delivered':
-        return l10n.delivered;
+        return     'delivered';
       case 'cancelled':
-        return l10n.cancelled;
+        return     'cancelled';
       default:
-        return status;
+        return 'status';
     }
   }
 }

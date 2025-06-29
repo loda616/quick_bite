@@ -1,5 +1,5 @@
 //import 'package:flutter/material.dart';
-// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+//  
 //
 // class EditProfileDialog extends StatefulWidget {
 //   final String? initialName;
@@ -47,10 +47,10 @@
 //
 //   @override
 //   Widget build(BuildContext context) {
-//     final l10n = AppLocalizations.of(context)!;
+//   
 //
 //     return AlertDialog(
-//       title: Text(l10n.editProfile),
+//       title: Text(    editProfile),
 //       content: SingleChildScrollView(
 //         child: Column(
 //           mainAxisSize: MainAxisSize.min,
@@ -58,14 +58,14 @@
 //             TextField(
 //               controller: _nameController,
 //               decoration: InputDecoration(
-//                 labelText: l10n.fullName,
+//                 labelText:     fullName,
 //               ),
 //             ),
 //             const SizedBox(height: 16),
 //             TextField(
 //               controller: _emailController,
 //               decoration: InputDecoration(
-//                 labelText: l10n.email,
+//                 labelText:     email,
 //               ),
 //               keyboardType: TextInputType.emailAddress,
 //             ),
@@ -73,7 +73,7 @@
 //             TextField(
 //               controller: _phoneController,
 //               decoration: InputDecoration(
-//                 labelText: l10n.phone,
+//                 labelText:     phone,
 //               ),
 //               keyboardType: TextInputType.phone,
 //             ),
@@ -81,7 +81,7 @@
 //             TextField(
 //               controller: _addressController,
 //               decoration: InputDecoration(
-//                 labelText: l10n.address,
+//                 labelText:     address,
 //               ),
 //               maxLines: 2,
 //             ),
@@ -91,7 +91,7 @@
 //       actions: [
 //         TextButton(
 //           onPressed: () => Navigator.pop(context),
-//           child: Text(l10n.cancel),
+//           child: Text(    cancel),
 //         ),
 //         ElevatedButton(
 //           onPressed: () {
@@ -103,7 +103,7 @@
 //             );
 //             Navigator.pop(context);
 //           },
-//           child: Text(l10n.save),
+//           child: Text(    save),
 //         ),
 //       ],
 //     );
