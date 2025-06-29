@@ -1,127 +1,103 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:quick_bite/presentation/view_models/cubit/profile_cubit.dart';
-import 'package:quick_bite/presentation/view_models/stats/auth_stat.dart';
-import 'package:quick_bite/presentation/view_models/stats/language_state.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:quick_bite/theme/app_theme.dart';
-import 'package:quick_bite/presentation/screens/home/home_screen.dart';
-import 'package:quick_bite/presentation/screens/food/favorites_screen.dart';
-import 'package:quick_bite/presentation/screens/orders/orders_screen.dart';
-import 'package:quick_bite/presentation/screens/settings/settings_screen.dart';
-import 'package:quick_bite/presentation/screens/auth/login_screen.dart';
+import 'package:quick_bite/data/datasources/local/secure_storage_service.dart';
+import 'package:quick_bite/data/datasources/remote/api_service.dart';
+import 'package:quick_bite/data/repository/auth_repository_impl.dart';
+import 'package:quick_bite/domin/repository/auth_repository.dart';
 import 'package:quick_bite/presentation/view_models/cubit/auth_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
-import 'package:quick_bite/presentation/view_models/cubit/language_cubit.dart';
+import 'package:quick_bite/presentation/view_models/cubit/profile_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/order_cubit.dart';
+import 'package:quick_bite/presentation/view_models/cubit/language_cubit.dart';
+import 'package:quick_bite/presentation/view_models/stats/auth_stat.dart';
+import 'package:quick_bite/presentation/screens/auth/login_screen.dart';
+import 'package:quick_bite/presentation/screens/main_screen.dart';
+import 'package:quick_bite/theme/app_theme.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'core/network/dio_client.dart';
+import 'core/routs/routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize SharedPreferences
   final prefs = await SharedPreferences.getInstance();
 
-  runApp(
-    MultiBlocProvider(
+  runApp(QuickBiteApp(prefs: prefs));
+}
+
+class QuickBiteApp extends StatelessWidget {
+  final SharedPreferences prefs;
+
+  const QuickBiteApp({super.key, required this.prefs});
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiRepositoryProvider(
       providers: [
-        BlocProvider(create: (context) => ProfileCubit()),
-        BlocProvider(create: (context) => AuthCubit()),
-        BlocProvider(create: (context) => LanguageCubit(prefs)),
-        BlocProvider(create: (context) => CartCubit()),
-        BlocProvider(create: (context) => OrderCubit()),
+        RepositoryProvider<SecureStorageService>(
+          create: (context) => SecureStorageService(),
+        ),
+        RepositoryProvider<ApiService>(
+          create: (context) => ApiService(DioClient.getDio()),
+        ),
+        RepositoryProvider<AuthRepository>(
+          create: (context) => AuthRepositoryImpl(
+            context.read<ApiService>(),
+            context.read<SecureStorageService>(),
+          ),
+        ),
       ],
-      child: const MyApp(),
-    ),
-  );
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<LanguageCubit, LanguageState>(
-      builder: (context, languageState) {
-        return MaterialApp(
-          title: 'QuickBite',
-          theme: AppTheme.lightTheme,
-          locale: languageState.locale,
-          localizationsDelegates: const [
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: const [
-            Locale('en'),
-            Locale('ar'),
-          ],
-          home: BlocBuilder<AuthCubit, AuthState>(
-            builder: (context, authState) {
-              return authState.isAuthenticated
-                  ? const MainScreen()
-                  : const LoginScreen();
-            },
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<LanguageCubit>(
+            create: (context) => LanguageCubit(prefs),
           ),
-          debugShowCheckedModeBanner: false,
-        );
-      },
-    );
-  }
-}
-
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
-
-  @override
-  State<MainScreen> createState() => _MainScreenState();
-}
-
-class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 0;
-
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    const FavoritesScreen(),
-    const OrdersScreen(),
-    const SettingsScreen(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-
-    return Scaffold(
-      body: _screens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+          BlocProvider<AuthCubit>(
+            create: (context) => AuthCubit(
+              context.read<AuthRepository>(),
+            )..checkAuthStatus(), // Check auth status on app start
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favorites',
+          BlocProvider<ProfileCubit>(
+            create: (context) => ProfileCubit(
+              context.read<AuthRepository>(),
+            ),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'Orders',
+          BlocProvider<CartCubit>(
+            create: (context) => CartCubit(),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
+          BlocProvider<OrderCubit>(
+            create: (context) => OrderCubit(),
           ),
         ],
-        currentIndex: _selectedIndex,
-        backgroundColor: const Color(0xFFf8f1df),
-        selectedItemColor: AppTheme.primaryColor,
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
-        type: BottomNavigationBarType.fixed,
+        child: BlocBuilder<AuthCubit, AuthState>(
+          builder: (context, authState) {
+            return MaterialApp(
+              title: 'QuickBite',
+              theme: AppTheme.lightTheme,
+              onGenerateRoute: AppRoutes.generateRoute,
+              home: _getInitialScreen(authState),
+              debugShowCheckedModeBanner: false,
+            );
+          },
+        ),
       ),
     );
+  }
+
+  Widget _getInitialScreen(AuthState authState) {
+    // Show loading while checking auth status
+    if (authState.isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    // Navigate based on authentication status
+    return authState.isAuthenticated ? const MainScreen() : const LoginScreen();
   }
 }

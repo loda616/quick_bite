@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'colors.dart';
+import '../utilz/colors.dart';
 
 class AppTheme {
   static ThemeData get lightTheme {
