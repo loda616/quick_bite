@@ -9,10 +9,11 @@ import 'package:quick_bite/presentation/screens/cart/cart_screen.dart';
 import 'package:quick_bite/presentation/screens/orders/orders_screen.dart';
 import 'package:quick_bite/presentation/screens/settings/settings_screen.dart';
 import 'package:quick_bite/presentation/screens/profile_screen.dart';
-import 'package:quick_bite/presentation/screens/food/food_item_details_screen.dart';
 import 'package:quick_bite/data/models/food_item.dart';
 
-import '../../presentation/screens/food/favorites_screen.dart';
+import '../../presentation/screens/food_details/favorites_screen.dart';
+import '../../presentation/screens/food_details/food_item_details_screen.dart';
+
 
 class AppRoutes {
   static const String initial = '/';
