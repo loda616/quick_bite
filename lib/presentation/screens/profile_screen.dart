@@ -4,7 +4,8 @@ import 'package:quick_bite/presentation/view_models/cubit/profile_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/profile_state.dart';
 import 'package:quick_bite/presentation/widgets/profile/profile_header.dart';
 import 'package:quick_bite/presentation/widgets/profile/profile_info_card.dart';
-import 'package:quick_bite/theme/app_theme.dart';
+
+import '../../core/theme/app_theme.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -132,7 +133,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 16),
 
                   // Account Status Card
-                  ProfileInfoCard(
+                  const ProfileInfoCard(
                     title: 'Account Status',
                     icon: Icons.info_outline,
                     items: {

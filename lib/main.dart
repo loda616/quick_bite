@@ -12,11 +12,11 @@ import 'package:quick_bite/presentation/view_models/cubit/language_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/auth_stat.dart';
 import 'package:quick_bite/presentation/screens/auth/login_screen.dart';
 import 'package:quick_bite/presentation/screens/main_screen.dart';
-import 'package:quick_bite/theme/app_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/network/dio_client.dart';
 import 'core/routs/routes.dart';
+import 'core/theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
