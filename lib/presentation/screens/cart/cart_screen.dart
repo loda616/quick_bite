@@ -1,11 +1,10 @@
-// Updated cart_screen.dart with fixed navigation
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/cart_state.dart';
-import 'package:quick_bite/theme/app_theme.dart';
 
 import '../../../core/routs/routes.dart';
+import '../../../core/theme/app_theme.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});

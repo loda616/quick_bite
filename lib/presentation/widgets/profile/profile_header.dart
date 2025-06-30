@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:quick_bite/theme/app_theme.dart';
+
+import '../../../core/theme/app_theme.dart';
 
 class ProfileHeader extends StatelessWidget {
   final String name;
@@ -25,7 +26,7 @@ class ProfileHeader extends StatelessWidget {
               backgroundColor: AppTheme.primaryColor.withOpacity(0.1),
               backgroundImage: imageUrl != null ? NetworkImage(imageUrl!) : null,
               child: imageUrl == null
-                  ? Icon(
+                  ? const Icon(
                 Icons.person,
                 size: 60,
                 color: AppTheme.primaryColor,
@@ -83,7 +84,7 @@ class ProfileHeader extends StatelessWidget {
             ),
             child: Text(
               subtitle!,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 14,
                 color: AppTheme.primaryColor,
                 fontWeight: FontWeight.w500,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:quick_bite/theme/app_theme.dart';
+
+import '../../../core/theme/app_theme.dart';
 
 class ProfileInfoCard extends StatelessWidget {
   final String title;
@@ -70,7 +71,7 @@ class ProfileInfoCard extends StatelessWidget {
                   ),
                   if (onEditPressed != null)
                     IconButton(
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.edit_outlined,
                         color: AppTheme.primaryColor,
                         size: 20,

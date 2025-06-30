@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
  
 import 'package:quick_bite/presentation/view_models/cubit/order_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/order_state.dart';
-import 'package:quick_bite/theme/app_theme.dart';
+
+import '../../../core/theme/app_theme.dart';
 
 class OrdersScreen extends StatelessWidget {
   const OrdersScreen({super.key});

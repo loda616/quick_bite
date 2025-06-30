@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
- 
+
 import 'package:quick_bite/presentation/view_models/cubit/auth_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/language_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/language_state.dart';
-import 'package:quick_bite/theme/app_theme.dart';
 
+import '../../../core/theme/app_theme.dart';
 import '../../view_models/stats/auth_stat.dart';
 import '../auth/login_screen.dart';
 

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quick_bite/data/models/food_item.dart';
 import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
 import '../../../core/routs/routes.dart';
-import '../../../theme/app_theme.dart';
+import '../../../core/theme/app_theme.dart';
 
 class FoodItemDetailsScreen extends StatefulWidget {
   final FoodItem item;
@@ -143,7 +143,7 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
                             const SizedBox(height: 4),
                             Text(
                               widget.item.category,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 16,
                                 color: AppTheme.primaryColor,
                                 fontWeight: FontWeight.w600,
@@ -373,10 +373,10 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               // Total Price Display
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Total:',
                     style: TextStyle(
                       fontSize: 18,
@@ -386,7 +386,7 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
                   ),
                   Text(
                     '\${(widget.item.price * _quantity).toStringAsFixed(2)}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: AppTheme.primaryColor,
