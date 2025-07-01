@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quick_bite/presentation/view_models/cubit/auth_cubit.dart';
@@ -8,7 +9,6 @@ import 'package:quick_bite/presentation/screens/cart/cart_screen.dart';
 import 'package:quick_bite/presentation/screens/orders/orders_screen.dart';
 import 'package:quick_bite/presentation/screens/profile_screen.dart';
 import 'package:quick_bite/presentation/screens/settings/settings_screen.dart';
-import 'package:quick_bite/core/utilz/colors.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -73,20 +73,31 @@ class _MainScreenState extends State<MainScreen> {
           index: _currentIndex,
           children: _screens,
         ),
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: _currentIndex,
-          onDestinationSelected: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-          destinations: _destinations,
-          backgroundColor: const Color(0xFFf8f1df),
-          indicatorColor: AppColors.orange.withOpacity(0.2),
-          surfaceTintColor: Colors.transparent,
-          elevation: 8,
-          height: 65,
-          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Theme.of(context).shadowColor.withOpacity(0.1),
+                blurRadius: 10,
+                offset: const Offset(0, -5),
+              ),
+            ],
+          ),
+          child: NavigationBar(
+            selectedIndex: _currentIndex,
+            onDestinationSelected: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+            destinations: _destinations,
+            backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+            indicatorColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+            surfaceTintColor: Colors.transparent,
+            elevation: 0,
+            height: 65,
+            labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+          ),
         ),
       ),
     );

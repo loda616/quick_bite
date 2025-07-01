@@ -1,6 +1,6 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quick_bite/core/utilz/colors.dart';
 import 'package:quick_bite/data/models/food_item.dart';
 import 'package:quick_bite/presentation/screens/profile_screen.dart';
 import 'package:quick_bite/presentation/view_models/cubit/auth_cubit.dart';
@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error: $e'),
-            backgroundColor: AppColors.error,
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
         setState(() {
@@ -68,6 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -75,12 +76,22 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header - Fixed overflow
-            Padding(
+            // Header with theme-aware styling
+            Container(
               padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: theme.scaffoldBackgroundColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.shadowColor.withOpacity(0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
               child: Row(
                 children: [
-                  // App title and welcome text - Made flexible
+                  // App title and welcome text
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,68 +108,82 @@ class _HomeScreenState extends State<HomeScreen> {
                             return Text(
                               'Welcome back, ${authState.userName ?? 'Guest'}!',
                               style: theme.textTheme.titleMedium?.copyWith(
-                                color: theme.colorScheme.onSurface,
+                                color: theme.colorScheme.onSurface.withOpacity(0.8),
                               ),
-                              overflow: TextOverflow.ellipsis, // Prevent overflow
+                              overflow: TextOverflow.ellipsis,
                             );
                           },
                         ),
                       ],
                     ),
                   ),
-                  // Icons - Fixed width
+
+                  // Action Icons with theme support
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      // Cart Icon with Badge
                       BlocBuilder<CartCubit, CartState>(
                         builder: (context, cartState) {
-                          return IconButton(
-                            icon: Stack(
-                              children: [
-                                Icon(
-                                  Icons.shopping_cart,
+                          return Stack(
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  Icons.shopping_cart_outlined,
                                   color: theme.colorScheme.primary,
+                                  size: 28,
                                 ),
-                                if (cartState.itemCount > 0)
-                                  Positioned(
-                                    right: 0,
-                                    top: 0,
-                                    child: Container(
-                                      padding: const EdgeInsets.all(2),
-                                      decoration: BoxDecoration(
-                                        color: theme.colorScheme.primary,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      constraints: const BoxConstraints(
-                                        minWidth: 16,
-                                        minHeight: 16,
-                                      ),
-                                      child: Text(
-                                        '${cartState.itemCount}',
-                                        style: const TextStyle(
-                                          color: AppColors.white,
-                                          fontSize: 10,
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => const CartScreen(),
+                                    ),
+                                  );
+                                },
+                              ),
+                              if (cartState.itemCount > 0)
+                                Positioned(
+                                  right: 8,
+                                  top: 8,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
+                                      color: theme.colorScheme.primary,
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: theme.colorScheme.primary.withOpacity(0.3),
+                                          blurRadius: 4,
+                                          offset: const Offset(0, 2),
                                         ),
-                                        textAlign: TextAlign.center,
+                                      ],
+                                    ),
+                                    constraints: const BoxConstraints(
+                                      minWidth: 20,
+                                      minHeight: 20,
+                                    ),
+                                    child: Text(
+                                      '${cartState.itemCount}',
+                                      style: TextStyle(
+                                        color: isDarkMode ? Colors.black : Colors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
                                       ),
+                                      textAlign: TextAlign.center,
                                     ),
                                   ),
-                              ],
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => const CartScreen(),
                                 ),
-                              );
-                            },
+                            ],
                           );
                         },
                       ),
+
+                      // Profile Icon
                       IconButton(
                         icon: Icon(
-                          Icons.person,
+                          Icons.person_outline,
                           color: theme.colorScheme.primary,
+                          size: 28,
                         ),
                         onPressed: () {
                           Navigator.of(context).push(
@@ -174,57 +199,82 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            // Search Bar
+            // Search Bar with theme support
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search for food...',
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: theme.colorScheme.primary,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: theme.colorScheme.primary,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surface,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: theme.shadowColor.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
                     ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: theme.colorScheme.primary,
-                      width: 2,
-                    ),
-                  ),
+                  ],
                 ),
-                onChanged: (value) {
-                  // TODO: Implement search
-                },
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search for food...',
+                    hintStyle: TextStyle(
+                      color: theme.colorScheme.onSurface.withOpacity(0.6),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: theme.colorScheme.primary,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                    fillColor: theme.colorScheme.surface,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 16,
+                    ),
+                  ),
+                  style: TextStyle(color: theme.colorScheme.onSurface),
+                  onChanged: (value) {
+                    // TODO: Implement search
+                  },
+                ),
               ),
             ),
 
-            // Categories
+            // Categories with theme support
             if (_categories != null)
-              SizedBox(
+              Container(
                 height: 50,
+                margin: const EdgeInsets.only(bottom: 16),
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: _categories!.length,
                   itemBuilder: (context, index) {
                     final category = _categories![index];
                     final isSelected = category == _selectedCategory;
                     return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: ChoiceChip(
-                        label: Text(category),
+                      padding: const EdgeInsets.only(right: 12),
+                      child: FilterChip(
+                        label: Text(
+                          category,
+                          style: TextStyle(
+                            color: isSelected
+                                ? (isDarkMode ? Colors.black : Colors.white)
+                                : theme.colorScheme.onSurface,
+                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                          ),
+                        ),
                         selected: isSelected,
                         selectedColor: theme.colorScheme.primary,
-                        labelStyle: TextStyle(
+                        backgroundColor: theme.colorScheme.surface,
+                        checkmarkColor: isDarkMode ? Colors.black : Colors.white,
+                        side: BorderSide(
                           color: isSelected
-                              ? AppColors.white
-                              : theme.colorScheme.onSurface,
+                              ? theme.colorScheme.primary
+                              : theme.colorScheme.outline.withOpacity(0.3),
                         ),
                         onSelected: (selected) {
                           setState(() {
@@ -238,27 +288,56 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
 
-            // Food Items Grid
+            // Food Items Grid with theme support
             Expanded(
               child: _isLoading
                   ? Center(
-                child: CircularProgressIndicator(
-                  color: theme.colorScheme.primary,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(
+                      color: theme.colorScheme.primary,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Loading delicious food...',
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: theme.colorScheme.onSurface.withOpacity(0.7),
+                      ),
+                    ),
+                  ],
                 ),
               )
                   : _items == null || _items!.isEmpty
                   ? Center(
-                child: Text(
-                  'No items found',
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: theme.colorScheme.onSurface,
-                  ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.restaurant_outlined,
+                      size: 64,
+                      color: theme.colorScheme.onSurface.withOpacity(0.5),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'No items found',
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        color: theme.colorScheme.onSurface.withOpacity(0.7),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Try selecting a different category',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurface.withOpacity(0.5),
+                      ),
+                    ),
+                  ],
                 ),
               )
                   : GridView.builder(
                 padding: const EdgeInsets.all(16),
-                gridDelegate:
-                const SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   childAspectRatio: 0.75,
                   crossAxisSpacing: 16,
