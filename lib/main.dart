@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quick_bite/data/datasources/local/secure_storage_service.dart';
 import 'package:quick_bite/data/datasources/remote/api_service.dart';
@@ -9,9 +10,12 @@ import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/profile_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/order_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/language_cubit.dart';
+import 'package:quick_bite/presentation/view_models/cubit/notification_cubit.dart';
+import 'package:quick_bite/presentation/view_models/cubit/theme_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/auth_stat.dart';
 import 'package:quick_bite/presentation/screens/auth/login_screen.dart';
 import 'package:quick_bite/presentation/screens/main_screen.dart';
+import 'package:quick_bite/presentation/view_models/stats/theme_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/network/dio_client.dart';
@@ -23,6 +27,12 @@ void main() async {
 
   // Initialize SharedPreferences
   final prefs = await SharedPreferences.getInstance();
+
+  // Set preferred orientations
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   runApp(QuickBiteApp(prefs: prefs));
 }
@@ -51,34 +61,70 @@ class QuickBiteApp extends StatelessWidget {
       ],
       child: MultiBlocProvider(
         providers: [
+          // Theme Cubit - Initialize first for system theme detection
+          BlocProvider<ThemeCubit>(
+            create: (context) => ThemeCubit(prefs),
+          ),
+
+          // Language Cubit
           BlocProvider<LanguageCubit>(
             create: (context) => LanguageCubit(prefs),
           ),
+
+          // Notification Cubit
+          BlocProvider<NotificationCubit>(
+            create: (context) => NotificationCubit(prefs),
+          ),
+
+          // Auth Cubit
           BlocProvider<AuthCubit>(
             create: (context) => AuthCubit(
               context.read<AuthRepository>(),
-            )..quickCheckAuthStatus(), // Fast startup check!
+            )..quickCheckAuthStatus(),
           ),
+
+          // Profile Cubit
           BlocProvider<ProfileCubit>(
             create: (context) => ProfileCubit(
               context.read<AuthRepository>(),
             ),
           ),
+
+          // Cart Cubit
           BlocProvider<CartCubit>(
             create: (context) => CartCubit(),
           ),
+
+          // Order Cubit
           BlocProvider<OrderCubit>(
             create: (context) => OrderCubit(),
           ),
         ],
-        child: BlocBuilder<AuthCubit, AuthState>(
-          builder: (context, authState) {
-            return MaterialApp(
-              title: 'QuickBite',
-              theme: AppTheme.lightTheme,
-              onGenerateRoute: AppRoutes.generateRoute,
-              home: _getInitialScreen(context, authState),
-              debugShowCheckedModeBanner: false,
+        child: BlocBuilder<ThemeCubit, ThemeState>(
+          builder: (context, themeState) {
+            return BlocBuilder<AuthCubit, AuthState>(
+              builder: (context, authState) {
+                return MaterialApp(
+                  title: 'QuickBite',
+                  debugShowCheckedModeBanner: false,
+
+                  // Theme Configuration
+                  theme: AppTheme.lightTheme,
+                  darkTheme: AppTheme.darkTheme,
+                  themeMode: themeState.flutterThemeMode,
+
+                  // Route Configuration
+                  onGenerateRoute: AppRoutes.generateRoute,
+                  home: _getInitialScreen(context, authState),
+
+                  // App Lifecycle Listener for System Theme Changes
+                  builder: (context, child) {
+                    return SystemThemeListener(
+                      child: child!,
+                    );
+                  },
+                );
+              },
             );
           },
         ),
@@ -89,44 +135,49 @@ class QuickBiteApp extends StatelessWidget {
   Widget _getInitialScreen(BuildContext context, AuthState authState) {
     // Show loading only for comprehensive checks, not quick checks
     if (authState.isLoading && authState.userName == null) {
-      return Scaffold(
-        backgroundColor: const Color(0xFFf8f1df),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Fixed Image widget - using Image.asset with proper errorBuilder
-              Image.asset(
-                'assets/images/QuickBite-logo.png',
-                height: 120,
-                errorBuilder: (context, error, stackTrace) {
-                  return const Icon(
-                    Icons.restaurant,
-                    size: 64,
-                    color: Color(0xFF2E2E2E),
-                  );
-                },
-              ),
-              const SizedBox(height: 24),
-              const CircularProgressIndicator(
-                color: Color(0xFFFF6B00),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Loading QuickBite...',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Color(0xFF2E2E2E),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
+      return const SplashScreen();
     }
 
     // Navigate to MainScreen when authenticated, LoginScreen when not
     return authState.isAuthenticated ? const MainScreen() : const LoginScreen();
+  }
+}
+
+/// Widget to listen for system theme changes
+class SystemThemeListener extends StatefulWidget {
+  final Widget child;
+
+  const SystemThemeListener({super.key, required this.child});
+
+  @override
+  State<SystemThemeListener> createState() => _SystemThemeListenerState();
+}
+
+class _SystemThemeListenerState extends State<SystemThemeListener> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    super.didChangePlatformBrightness();
+    // Notify ThemeCubit of system brightness change
+    if (mounted) {
+      context.read<ThemeCubit>().onSystemBrightnessChanged();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
   }
 }
 
@@ -142,21 +193,32 @@ class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
 
   @override
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
+      duration: const Duration(milliseconds: 2000),
       vsync: this,
     );
+
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
     ).animate(CurvedAnimation(
       parent: _animationController,
-      curve: Curves.easeIn,
+      curve: const Interval(0.0, 0.6, curve: Curves.easeIn),
     ));
+
+    _scaleAnimation = Tween<double>(
+      begin: 0.8,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: const Interval(0.2, 0.8, curve: Curves.elasticOut),
+    ));
+
     _animationController.forward();
   }
 
@@ -168,50 +230,79 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFf8f1df),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Center(
-        child: FadeTransition(
-          opacity: _fadeAnimation,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Fixed Image widget - using Image.asset with proper errorBuilder
-              Image.asset(
-                'assets/images/QuickBite-logo.png',
-                height: 150,
-                errorBuilder: (context, error, stackTrace) {
-                  return const Icon(
-                    Icons.restaurant,
-                    size: 100,
-                    color: Color(0xFFFF6B00),
-                  );
-                },
-              ),
-              const SizedBox(height: 32),
-              const CircularProgressIndicator(
-                color: Color(0xFFFF6B00),
-                strokeWidth: 3,
-              ),
-              const SizedBox(height: 24),
-              const Text(
-                'Welcome to QuickBite',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF2E2E2E),
+        child: AnimatedBuilder(
+          animation: _animationController,
+          builder: (context, child) {
+            return FadeTransition(
+              opacity: _fadeAnimation,
+              child: ScaleTransition(
+                scale: _scaleAnimation,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // App Logo
+                    Container(
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Theme.of(context).colorScheme.primary,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                            blurRadius: 20,
+                            spreadRadius: 5,
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        Icons.restaurant,
+                        size: 60,
+                        color: isDark ? Colors.black : Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+
+                    // App Name
+                    Text(
+                      'QuickBite',
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+
+                    // App Tagline
+                    Text(
+                      'Fast food, faster delivery',
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                      ),
+                    ),
+                    const SizedBox(height: 48),
+
+                    // Loading Indicator
+                    SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 3,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 8),
-              Text(
-                'Fast food, faster delivery',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey[600],
-                ),
-              ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

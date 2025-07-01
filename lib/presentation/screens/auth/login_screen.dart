@@ -66,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (state.isAuthenticated && mounted) {
           Navigator.pushNamedAndRemoveUntil(
             context,
-            AppRoutes.home,
+            AppRoutes.main,
                 (route) => false,
           );
         }
