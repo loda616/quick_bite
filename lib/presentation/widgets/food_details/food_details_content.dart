@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:quick_bite/data/models/food_item.dart';
 
+import '../../../l10n/generated/app_localizations.dart';
 import 'food_customizations.dart';
 import 'food_description.dart';
 import 'food_header_info.dart';
 import 'food_quantity_selector.dart';
+
 
 
 class FoodDetailsContent extends StatelessWidget {
@@ -27,6 +29,8 @@ class FoodDetailsContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Column(
@@ -37,7 +41,10 @@ class FoodDetailsContent extends StatelessWidget {
           const SizedBox(height: 20),
 
           // Description
-          FoodDescription(description: item.description),
+          FoodDescription(
+            description: item.description,
+            l10n: l10n,
+          ),
 
           // Customizations
           if (item.customizationOptions.isNotEmpty) ...[
@@ -46,6 +53,7 @@ class FoodDetailsContent extends StatelessWidget {
               options: item.customizationOptions,
               selectedCustomizations: selectedCustomizations,
               onToggle: onCustomizationToggle,
+              l10n: l10n,
             ),
           ],
 
@@ -56,6 +64,7 @@ class FoodDetailsContent extends StatelessWidget {
             quantity: quantity,
             onIncrement: onQuantityIncrement,
             onDecrement: onQuantityDecrement,
+            l10n: l10n,
           ),
 
           // Add some bottom padding for the floating action button

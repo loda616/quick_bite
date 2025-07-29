@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/generated/app_localizations.dart';
 
 class FoodCustomizations extends StatelessWidget {
   final List<String> options;
   final Set<String> selectedCustomizations;
   final Function(String) onToggle;
+  final AppLocalizations l10n;
 
   const FoodCustomizations({
     super.key,
     required this.options,
     required this.selectedCustomizations,
     required this.onToggle,
+    required this.l10n,
   });
 
   @override
@@ -19,9 +22,9 @@ class FoodCustomizations extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Customizations',
-          style: TextStyle(
+        Text(
+          l10n.customizations,
+          style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
             color: AppTheme.accentColor,

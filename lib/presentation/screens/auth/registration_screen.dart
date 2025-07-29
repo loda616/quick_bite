@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/routs/routes.dart' show AppRoutes;
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../view_models/cubit/auth_cubit.dart';
 import '../../view_models/stats/auth_stat.dart';
 import '../../widgets/registration/registration_header.dart';
@@ -37,10 +38,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   }
 
   Future<void> _register() async {
+    final l10n = AppLocalizations.of(context)!;
+
     if (_formKey.currentState!.validate()) {
       if (!_acceptedTerms) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Please accept the terms and conditions'),
             backgroundColor: Colors.red,
           ),
@@ -50,7 +53,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
       if (_passwordController.text != _confirmPasswordController.text) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Passwords do not match'),
             backgroundColor: Colors.red,
           ),
@@ -77,6 +80,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state.errorMessage != null && mounted) {
@@ -102,14 +107,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           Navigator.pushNamedAndRemoveUntil(
             context,
             AppRoutes.auth,
-            (route) => false,
+                (route) => false,
           );
         }
       },
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Create Account'),
+            title: Text(l10n.createAccount),
             backgroundColor: const Color(0xFFf8f1df),
             foregroundColor: AppTheme.accentColor,
             elevation: 0,
@@ -119,7 +124,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 Navigator.pushNamedAndRemoveUntil(
                   context,
                   AppRoutes.auth,
-                  (route) => false,
+                      (route) => false,
                 );
               },
             ),
@@ -133,11 +138,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     // Header
-                    const RegistrationHeader(),
+                    RegistrationHeader(l10n: l10n),
                     const SizedBox(height: 32),
 
                     // Form Fields
                     RegistrationForm(
+                      l10n: l10n,
                       firstNameController: _firstNameController,
                       lastNameController: _lastNameController,
                       emailController: _emailController,
@@ -150,6 +156,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
                     // Terms and Actions
                     RegistrationActions(
+                      l10n: l10n,
                       acceptedTerms: _acceptedTerms,
                       onTermsToggle: _toggleTermsAcceptance,
                       onRegister: _register,

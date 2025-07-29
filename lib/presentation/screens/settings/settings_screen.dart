@@ -4,21 +4,24 @@ import 'package:quick_bite/presentation/view_models/cubit/language_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/theme_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/language_state.dart';
 import 'package:quick_bite/presentation/view_models/stats/theme_state.dart';
+import '../../../l10n/generated/app_localizations.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: Text(l10n.settings),
         elevation: 0,
       ),
       body: ListView(
         children: [
           // Account Section
-          _buildSectionHeader(context, 'Account'),
+          _buildSectionHeader(context, l10n.account),
 
           // Notifications Toggle
           ListTile(
@@ -26,15 +29,15 @@ class SettingsScreen extends StatelessWidget {
               Icons.notifications_outlined,
               color: Theme.of(context).colorScheme.primary,
             ),
-            title: const Text('Notifications'),
-            subtitle: const Text('Receive push notifications'),
+            title: Text(l10n.notifications),
+            subtitle: Text(l10n.receiveNotifications),
             trailing: Switch(
               value: true, // TODO: Implement notification state management
               onChanged: (value) {
                 // TODO: Implement notifications toggle
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Notification settings coming soon!'),
+                  SnackBar(
+                    content: Text(l10n.helpSupport + ' coming soon!'),
                   ),
                 );
               },
@@ -44,7 +47,7 @@ class SettingsScreen extends StatelessWidget {
           const Divider(),
 
           // Appearance Section
-          _buildSectionHeader(context, 'Appearance'),
+          _buildSectionHeader(context, l10n.appearance),
 
           // Language Selection
           BlocBuilder<LanguageCubit, LanguageState>(
@@ -54,9 +57,9 @@ class SettingsScreen extends StatelessWidget {
                   Icons.language_outlined,
                   color: Theme.of(context).colorScheme.primary,
                 ),
-                title: const Text('Language'),
+                title: Text(l10n.language),
                 subtitle: Text(
-                  languageState.locale.languageCode == 'en' ? 'English' : 'Arabic',
+                  languageState.locale.languageCode == 'en' ? l10n.english : l10n.arabic,
                 ),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: () => _showLanguageDialog(context),
@@ -72,8 +75,8 @@ class SettingsScreen extends StatelessWidget {
                   themeState.themeIcon,
                   color: Theme.of(context).colorScheme.primary,
                 ),
-                title: const Text('Theme'),
-                subtitle: Text('Current: ${themeState.themeDescription}'),
+                title: Text(l10n.theme),
+                subtitle: Text('${l10n.theme}: ${_getThemeDisplayName(context, themeState.themeMode)}'),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: () => _showThemeDialog(context),
               );
@@ -83,14 +86,14 @@ class SettingsScreen extends StatelessWidget {
           const Divider(),
 
           // App Info Section
-          _buildSectionHeader(context, 'About'),
+          _buildSectionHeader(context, l10n.about),
 
           ListTile(
             leading: Icon(
               Icons.info_outline,
               color: Theme.of(context).colorScheme.primary,
             ),
-            title: const Text('App Version'),
+            title: Text(l10n.appVersion),
             subtitle: const Text('1.0.0'),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () {
@@ -103,12 +106,12 @@ class SettingsScreen extends StatelessWidget {
               Icons.help_outline,
               color: Theme.of(context).colorScheme.primary,
             ),
-            title: const Text('Help & Support'),
+            title: Text(l10n.helpSupport),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Help & Support coming soon!'),
+                SnackBar(
+                  content: Text(l10n.helpSupport + ' coming soon!'),
                 ),
               );
             },
@@ -119,12 +122,12 @@ class SettingsScreen extends StatelessWidget {
               Icons.privacy_tip_outlined,
               color: Theme.of(context).colorScheme.primary,
             ),
-            title: const Text('Privacy Policy'),
+            title: Text(l10n.privacyPolicy),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Privacy Policy coming soon!'),
+                SnackBar(
+                  content: Text(l10n.privacyPolicy + ' coming soon!'),
                 ),
               );
             },
@@ -149,19 +152,33 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
+  String _getThemeDisplayName(BuildContext context, AppThemeMode themeMode) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (themeMode) {
+      case AppThemeMode.light:
+        return l10n.light;
+      case AppThemeMode.dark:
+        return l10n.dark;
+      case AppThemeMode.system:
+        return l10n.system;
+    }
+  }
+
   void _showLanguageDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     showDialog(
       context: context,
       builder: (dialogContext) => BlocBuilder<LanguageCubit, LanguageState>(
         builder: (context, languageState) {
           return AlertDialog(
-            title: const Text('Select Language'),
+            title: Text(l10n.selectLanguage),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 _buildLanguageOption(
                   context: context,
-                  title: 'English',
+                  title: l10n.english,
                   value: 'en',
                   currentValue: languageState.locale.languageCode,
                   onTap: () {
@@ -171,7 +188,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 _buildLanguageOption(
                   context: context,
-                  title: 'العربية',
+                  title: l10n.arabic,
                   value: 'ar',
                   currentValue: languageState.locale.languageCode,
                   onTap: () {
@@ -184,7 +201,7 @@ class SettingsScreen extends StatelessWidget {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
+                child: Text(l10n.cancel),
               ),
             ],
           );
@@ -214,19 +231,21 @@ class SettingsScreen extends StatelessWidget {
   }
 
   void _showThemeDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     showDialog(
       context: context,
       builder: (dialogContext) => BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, themeState) {
           return AlertDialog(
-            title: const Text('Select Theme'),
+            title: Text(l10n.selectTheme),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 _buildThemeOption(
                   context: context,
-                  title: 'Light',
-                  subtitle: 'Always use light theme',
+                  title: l10n.light,
+                  subtitle: l10n.alwaysLight,
                   icon: Icons.light_mode,
                   value: AppThemeMode.light,
                   currentValue: themeState.themeMode,
@@ -237,8 +256,8 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 _buildThemeOption(
                   context: context,
-                  title: 'Dark',
-                  subtitle: 'Always use dark theme',
+                  title: l10n.dark,
+                  subtitle: l10n.alwaysDark,
                   icon: Icons.dark_mode,
                   value: AppThemeMode.dark,
                   currentValue: themeState.themeMode,
@@ -249,8 +268,8 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 _buildThemeOption(
                   context: context,
-                  title: 'System',
-                  subtitle: 'Follow system settings',
+                  title: l10n.system,
+                  subtitle: l10n.followSystem,
                   icon: Icons.settings_brightness,
                   value: AppThemeMode.system,
                   currentValue: themeState.themeMode,
@@ -264,7 +283,7 @@ class SettingsScreen extends StatelessWidget {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
+                child: Text(l10n.cancel),
               ),
             ],
           );
@@ -295,9 +314,11 @@ class SettingsScreen extends StatelessWidget {
   }
 
   void _showAboutDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     showAboutDialog(
       context: context,
-      applicationName: 'QuickBite',
+      applicationName: l10n.appTitle,
       applicationVersion: '1.0.0',
       applicationIcon: const Icon(
         Icons.restaurant,
@@ -305,9 +326,9 @@ class SettingsScreen extends StatelessWidget {
         color: Color(0xFFFF6B00),
       ),
       children: [
-        const Text('Fast food, faster delivery'),
+        Text(l10n.appTagline),
         const SizedBox(height: 16),
-        const Text('Built with Flutter and love ❤️'),
+        Text(l10n.builtWithFlutter),
       ],
     );
   }

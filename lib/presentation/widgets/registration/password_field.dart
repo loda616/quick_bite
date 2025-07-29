@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/generated/app_localizations.dart';
+
 class PasswordField extends StatelessWidget {
+  final AppLocalizations l10n;
   final TextEditingController controller;
   final String labelText;
   final bool isVisible;
@@ -11,6 +14,7 @@ class PasswordField extends StatelessWidget {
 
   const PasswordField({
     super.key,
+    required this.l10n,
     required this.controller,
     required this.labelText,
     required this.isVisible,
