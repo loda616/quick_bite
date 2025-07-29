@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/generated/app_localizations.dart';
 
 class TermsCheckbox extends StatelessWidget {
+  final AppLocalizations l10n;
   final bool accepted;
   final VoidCallback onToggle;
 
   const TermsCheckbox({
     super.key,
+    required this.l10n,
     required this.accepted,
     required this.onToggle,
   });
@@ -28,25 +31,25 @@ class TermsCheckbox extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(top: 12),
               child: RichText(
-                text: const TextSpan(
-                  text: 'I agree to the ',
-                  style: TextStyle(
+                text: TextSpan(
+                  text: l10n.iAgreeToThe,
+                  style: const TextStyle(
                     color: Colors.black87,
                     fontSize: 14,
                   ),
                   children: [
                     TextSpan(
-                      text: 'Terms & Conditions',
-                      style: TextStyle(
+                      text: l10n.termsConditions,
+                      style: const TextStyle(
                         color: AppTheme.primaryColor,
                         fontWeight: FontWeight.w600,
                         decoration: TextDecoration.underline,
                       ),
                     ),
-                    TextSpan(text: ' and '),
+                    TextSpan(text: l10n.and),
                     TextSpan(
-                      text: 'Privacy Policy',
-                      style: TextStyle(
+                      text: l10n.privacyPolicy,
+                      style: const TextStyle(
                         color: AppTheme.primaryColor,
                         fontWeight: FontWeight.w600,
                         decoration: TextDecoration.underline,

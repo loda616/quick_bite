@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quick_bite/data/models/food_item.dart';
-
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/generated/app_localizations.dart';
 
 class FoodDetailsAppBar extends StatelessWidget {
   final FoodItem item;
@@ -13,6 +13,8 @@ class FoodDetailsAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return SliverAppBar(
       expandedHeight: 250,
       pinned: true,
@@ -22,20 +24,9 @@ class FoodDetailsAppBar extends StatelessWidget {
         background: Stack(
           fit: StackFit.expand,
           children: [
-            Image.asset(
-              item.imageUrl,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  color: Colors.grey[300],
-                  child: const Icon(
-                    Icons.restaurant,
-                    size: 64,
-                    color: Colors.grey,
-                  ),
-                );
-              },
-            ),
+            // Food Image
+            _buildFoodImage(),
+
             // Gradient overlay
             Container(
               decoration: BoxDecoration(
@@ -79,5 +70,110 @@ class FoodDetailsAppBar extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Widget _buildFoodImage() {
+    // Check if it's a network URL
+    if (item.imageUrl.startsWith('http')) {
+      return Image.network(
+        item.imageUrl,
+        fit: BoxFit.cover,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            color: AppTheme.primaryColor.withOpacity(0.1),
+            child: Center(
+              child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded /
+                    loadingProgress.expectedTotalBytes!
+                    : null,
+                strokeWidth: 3,
+                color: AppTheme.primaryColor,
+              ),
+            ),
+          );
+        },
+        errorBuilder: (context, error, stackTrace) {
+          return _buildPlaceholderImage();
+        },
+      );
+    } else {
+      // Try to load as asset, fallback to placeholder if not found
+      return Image.asset(
+        item.imageUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return _buildPlaceholderImage();
+        },
+      );
+    }
+  }
+
+  Widget _buildPlaceholderImage() {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppTheme.primaryColor.withOpacity(0.3),
+            AppTheme.primaryColor.withOpacity(0.6),
+          ],
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            _getCategoryIcon(item.category),
+            size: 80,
+            color: Colors.white.withOpacity(0.8),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            item.name,
+            style: const TextStyle(
+              fontSize: 24,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            item.category,
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.white.withOpacity(0.9),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  IconData _getCategoryIcon(String category) {
+    switch (category.toLowerCase()) {
+      case 'pizza':
+        return Icons.local_pizza;
+      case 'burgers':
+        return Icons.lunch_dining;
+      case 'salads':
+        return Icons.eco;
+      case 'mexican':
+        return Icons.food_bank;
+      case 'appetizers':
+        return Icons.restaurant;
+      case 'desserts':
+        return Icons.cake;
+      case 'pasta':
+        return Icons.ramen_dining;
+      default:
+        return Icons.restaurant_menu;
+    }
   }
 }

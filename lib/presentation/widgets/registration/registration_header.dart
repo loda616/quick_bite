@@ -1,28 +1,33 @@
 import 'package:flutter/material.dart';
-
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/generated/app_localizations.dart';
 
 class RegistrationHeader extends StatelessWidget {
-  const RegistrationHeader({super.key});
+  final AppLocalizations l10n;
+
+  const RegistrationHeader({
+    super.key,
+    required this.l10n,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          'Join QuickBite',
-          style: TextStyle(
+          l10n.joinQuickBite,
+          style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
             color: AppTheme.accentColor,
           ),
           textAlign: TextAlign.center,
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Text(
-          'Create your account to get started',
-          style: TextStyle(
+          l10n.createAccountToGetStarted,
+          style: const TextStyle(
             fontSize: 16,
             color: Colors.grey,
           ),

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/generated/app_localizations.dart';
 
 class FoodDescription extends StatelessWidget {
   final String description;
+  final AppLocalizations l10n;
 
   const FoodDescription({
     super.key,
     required this.description,
+    required this.l10n,
   });
 
   @override
@@ -15,9 +18,9 @@ class FoodDescription extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Description',
-          style: TextStyle(
+        Text(
+          l10n.description,
+          style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
             color: AppTheme.accentColor,

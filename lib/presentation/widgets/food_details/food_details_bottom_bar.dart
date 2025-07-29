@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quick_bite/data/models/food_item.dart';
 import '../../../../core/routs/routes.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/generated/app_localizations.dart' show AppLocalizations;
 
 class FoodDetailsBottomBar extends StatelessWidget {
   final FoodItem item;
@@ -18,6 +19,7 @@ class FoodDetailsBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final totalPrice = item.price * quantity;
+    final l10n = AppLocalizations.of(context)!;
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -41,8 +43,8 @@ class FoodDetailsBottomBar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Total:',
-                  style: TextStyle(
+                  '${l10n.total}:',
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                     color: AppTheme.accentColor,
@@ -70,7 +72,7 @@ class FoodDetailsBottomBar extends StatelessWidget {
                     onPressed: item.isAvailable ? onAddToCart : null,
                     icon: const Icon(Icons.add_shopping_cart),
                     label: Text(
-                      item.isAvailable ? 'Add to Cart' : 'Not Available',
+                      item.isAvailable ? l10n.addToCart : l10n.notAvailable,
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: item.isAvailable
@@ -93,7 +95,7 @@ class FoodDetailsBottomBar extends StatelessWidget {
                       Navigator.pushNamed(context, AppRoutes.cart);
                     },
                     icon: const Icon(Icons.shopping_cart),
-                    label: const Text('Cart'),
+                    label: Text(l10n.cart),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppTheme.primaryColor,
                       side: const BorderSide(color: AppTheme.primaryColor, width: 2),

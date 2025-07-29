@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../../../core/routs/routes.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import 'terms_checkbox.dart';
 
 class RegistrationActions extends StatelessWidget {
+  final AppLocalizations l10n;
   final bool acceptedTerms;
   final VoidCallback onTermsToggle;
   final VoidCallback onRegister;
@@ -11,6 +13,7 @@ class RegistrationActions extends StatelessWidget {
 
   const RegistrationActions({
     super.key,
+    required this.l10n,
     required this.acceptedTerms,
     required this.onTermsToggle,
     required this.onRegister,
@@ -23,6 +26,7 @@ class RegistrationActions extends StatelessWidget {
       children: [
         // Terms and Conditions
         TermsCheckbox(
+          l10n: l10n,
           accepted: acceptedTerms,
           onToggle: onTermsToggle,
         ),
@@ -41,20 +45,20 @@ class RegistrationActions extends StatelessWidget {
             onPressed: isLoading ? null : onRegister,
             child: isLoading
                 ? const SizedBox(
-                    height: 24,
-                    width: 24,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Colors.white,
-                    ),
-                  )
-                : const Text(
-                    'Create Account',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+              height: 24,
+              width: 24,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.white,
+              ),
+            )
+                : Text(
+              l10n.createAccount,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
         ),
         const SizedBox(height: 24),
@@ -65,21 +69,21 @@ class RegistrationActions extends StatelessWidget {
             Navigator.pushNamedAndRemoveUntil(
               context,
               AppRoutes.auth,
-              (route) => false,
+                  (route) => false,
             );
           },
           child: RichText(
             textAlign: TextAlign.center,
-            text: const TextSpan(
-              text: 'Already have an account? ',
-              style: TextStyle(
+            text: TextSpan(
+              text: l10n.alreadyHaveAccount,
+              style: const TextStyle(
                 color: Colors.black87,
                 fontSize: 16,
               ),
               children: [
                 TextSpan(
-                  text: 'Sign In',
-                  style: TextStyle(
+                  text: l10n.signIn,
+                  style: const TextStyle(
                     color: AppTheme.primaryColor,
                     fontWeight: FontWeight.bold,
                   ),

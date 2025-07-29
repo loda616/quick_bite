@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quick_bite/presentation/view_models/cubit/order_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/order_state.dart';
 
+import '../../../l10n/generated/app_localizations.dart';
+
 class OrdersScreen extends StatelessWidget {
   const OrdersScreen({super.key});
 
@@ -10,10 +12,11 @@ class OrdersScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Orders'),
+        title: Text(l10n.orders),
         backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
@@ -30,7 +33,7 @@ class OrdersScreen extends StatelessWidget {
             onPressed: () {
               _showFilterDialog(context);
             },
-            tooltip: 'Filter Orders',
+            tooltip: l10n.filterOrders,
           ),
         ],
         // Add subtle shadow/border for better separation
@@ -71,7 +74,7 @@ class OrdersScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    'No Orders Yet',
+                    l10n.noOrdersYet,
                     style: theme.textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: theme.colorScheme.onSurface,
@@ -79,7 +82,7 @@ class OrdersScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Your order history will appear here',
+                    l10n.orderHistoryWillAppear,
                     style: theme.textTheme.bodyLarge?.copyWith(
                       color: theme.colorScheme.onSurface.withOpacity(0.6),
                     ),
@@ -91,7 +94,7 @@ class OrdersScreen extends StatelessWidget {
                       Navigator.pushReplacementNamed(context, '/home');
                     },
                     icon: const Icon(Icons.restaurant_menu),
-                    label: const Text('Browse Menu'),
+                    label: Text(l10n.browseMenu),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 32,
@@ -140,7 +143,7 @@ class OrdersScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Order #${order.id}',
+                              l10n.orderNumber(order.id),
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: theme.colorScheme.onSurface,
@@ -156,7 +159,7 @@ class OrdersScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Text(
-                                _getStatusText(order.status),
+                                _getStatusText(l10n, order.status),
                                 style: TextStyle(
                                   color: _getStatusTextColor(order.status, isDarkMode),
                                   fontWeight: FontWeight.bold,
@@ -192,7 +195,7 @@ class OrdersScreen extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                '\$${(item.price * item.quantity).toStringAsFixed(2)}',
+                                '\${(item.price * item.quantity).toStringAsFixed(2)}',
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: theme.colorScheme.onSurface,
@@ -213,14 +216,14 @@ class OrdersScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Total',
+                              l10n.total,
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: theme.colorScheme.onSurface,
                               ),
                             ),
                             Text(
-                              '\$${order.total.toStringAsFixed(2)}',
+                              '\${order.total.toStringAsFixed(2)}',
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: theme.colorScheme.primary,
@@ -274,33 +277,35 @@ class OrdersScreen extends StatelessWidget {
     }
   }
 
-  String _getStatusText(String status) {
+  String _getStatusText(AppLocalizations l10n, String status) {
     switch (status.toLowerCase()) {
       case 'pending':
-        return 'Pending';
+        return l10n.orderStatusPending;
       case 'preparing':
-        return 'Preparing';
+        return l10n.orderStatusPreparing;
       case 'ready':
-        return 'Ready';
+        return l10n.orderStatusReady;
       case 'delivered':
-        return 'Delivered';
+        return l10n.orderStatusDelivered;
       case 'cancelled':
-        return 'Cancelled';
+        return l10n.orderStatusCancelled;
       default:
         return 'Unknown';
     }
   }
 
   void _showFilterDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Filter Orders'),
+        title: Text(l10n.filterOrders),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: const Text('All Orders'),
+              title: Text(l10n.allOrders),
               leading: Radio(
                 value: 'all',
                 groupValue: 'all',
@@ -310,7 +315,7 @@ class OrdersScreen extends StatelessWidget {
               ),
             ),
             ListTile(
-              title: const Text('Recent Orders'),
+              title: Text(l10n.recentOrders),
               leading: Radio(
                 value: 'recent',
                 groupValue: 'all',
@@ -320,7 +325,7 @@ class OrdersScreen extends StatelessWidget {
               ),
             ),
             ListTile(
-              title: const Text('Completed'),
+              title: Text(l10n.completed),
               leading: Radio(
                 value: 'completed',
                 groupValue: 'all',
@@ -334,7 +339,7 @@ class OrdersScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+            child: Text(l10n.close),
           ),
         ],
       ),

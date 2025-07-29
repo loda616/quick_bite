@@ -4,6 +4,8 @@ import 'package:quick_bite/presentation/view_models/cubit/profile_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/profile_state.dart';
 import 'package:quick_bite/presentation/widgets/profile/profile_info_card.dart';
 
+import '../../l10n/generated/app_localizations.dart';
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -23,6 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: BlocConsumer<ProfileCubit, ProfileState>(
@@ -33,7 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 content: Text(state.errorMessage!),
                 backgroundColor: theme.colorScheme.error,
                 action: SnackBarAction(
-                  label: 'Retry',
+                  label: l10n.retry,
                   textColor: Colors.white,
                   onPressed: () {
                     context.read<ProfileCubit>().refreshProfile();
@@ -46,7 +49,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         builder: (context, state) {
           if (state.isLoading && state.name == null) {
             return Scaffold(
-              appBar: _buildAppBar(context, theme),
+              appBar: _buildAppBar(context, theme, l10n),
               body: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -56,7 +59,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Loading profile...',
+                      l10n.loadingProfile,
                       style: theme.textTheme.bodyLarge?.copyWith(
                         color: theme.colorScheme.onSurface.withOpacity(0.7),
                       ),
@@ -163,7 +166,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text(
-                                    state.role ?? 'User',
+                                    state.role ?? l10n.role,
                                     style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
@@ -187,7 +190,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       onPressed: () {
                         context.read<ProfileCubit>().refreshProfile();
                       },
-                      tooltip: 'Refresh Profile',
+                      tooltip: l10n.refreshProfile,
                     ),
                   ],
                 ),
@@ -202,13 +205,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                         // Account Information Card
                         ProfileInfoCard(
-                          title: 'Account Information',
+                          l10n: l10n,
+                          title: l10n.accountInformation,
                           icon: Icons.person,
                           items: {
-                            'User ID': state.userId ?? 'N/A',
-                            'Full Name': state.name ?? 'N/A',
-                            'Email': state.email ?? 'N/A',
-                            'Role': state.role ?? 'User',
+                            l10n.userId: state.userId ?? 'N/A',
+                            l10n.fullName: state.name ?? 'N/A',
+                            l10n.email: state.email ?? 'N/A',
+                            l10n.role: state.role ?? l10n.role,
                           },
                           onEditPressed: () => _showEditProfileDialog(context),
                         ),
@@ -216,11 +220,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                         // Contact Information Card
                         ProfileInfoCard(
-                          title: 'Contact Information',
+                          l10n: l10n,
+                          title: l10n.contactInformation,
                           icon: Icons.contact_phone,
                           items: {
-                            'Phone': state.phone ?? 'Not provided',
-                            'Address': state.address ?? 'Not provided',
+                            l10n.phone: state.phone ?? l10n.notProvided,
+                            l10n.address: state.address ?? l10n.notProvided,
                           },
                           onEditPressed: () => _showEditContactDialog(context),
                         ),
@@ -228,24 +233,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                         // App Preferences Card
                         ProfileInfoCard(
-                          title: 'App Preferences',
+                          l10n: l10n,
+                          title: l10n.appPreferences,
                           icon: Icons.settings,
                           items: {
-                            'Language': 'English',
-                            'Notifications': 'Enabled',
-                            'Theme': isDarkMode ? 'Dark' : 'Light',
+                            l10n.language: l10n.english,
+                            l10n.notifications: l10n.enabled,
+                            l10n.theme: isDarkMode ? l10n.dark : l10n.light,
                           },
                         ),
                         const SizedBox(height: 16),
 
                         // Account Status Card
-                        const ProfileInfoCard(
-                          title: 'Account Status',
+                        ProfileInfoCard(
+                          l10n: l10n,
+                          title: l10n.accountStatus,
                           icon: Icons.info_outline,
                           items: {
-                            'Status': 'Active',
-                            'Member Since': '2023',
-                            'Last Login': 'Today',
+                            l10n.status: l10n.active,
+                            l10n.memberSince: '2023',
+                            l10n.lastLogin: l10n.today,
                           },
                         ),
 
@@ -259,7 +266,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               _showLogoutDialog(context);
                             },
                             icon: const Icon(Icons.logout),
-                            label: const Text('Logout'),
+                            label: Text(l10n.logout),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: theme.colorScheme.error,
                               foregroundColor: Colors.white,
@@ -283,9 +290,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context, ThemeData theme) {
+  PreferredSizeWidget _buildAppBar(BuildContext context, ThemeData theme, AppLocalizations l10n) {
     return AppBar(
-      title: const Text('Profile'),
+      title: Text(l10n.profile),
       backgroundColor: theme.scaffoldBackgroundColor,
       elevation: 0,
       iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
@@ -300,27 +307,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final cubit = context.read<ProfileCubit>();
     final nameController = TextEditingController(text: cubit.state.name);
     final emailController = TextEditingController(text: cubit.state.email);
+    final l10n = AppLocalizations.of(context)!;
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Edit Profile'),
+        title: Text(l10n.editProfile),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: nameController,
-              decoration: const InputDecoration(
-                labelText: 'Full Name',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l10n.fullName,
+                border: const OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l10n.email,
+                border: const OutlineInputBorder(),
               ),
               keyboardType: TextInputType.emailAddress,
             ),
@@ -329,7 +337,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () {
@@ -339,7 +347,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               );
               Navigator.pop(context);
             },
-            child: const Text('Save'),
+            child: Text(l10n.save),
           ),
         ],
       ),
@@ -350,28 +358,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final cubit = context.read<ProfileCubit>();
     final phoneController = TextEditingController(text: cubit.state.phone);
     final addressController = TextEditingController(text: cubit.state.address);
+    final l10n = AppLocalizations.of(context)!;
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Edit Contact Information'),
+        title: Text(l10n.editContactInformation),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: phoneController,
-              decoration: const InputDecoration(
-                labelText: 'Phone Number',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l10n.phoneNumber,
+                border: const OutlineInputBorder(),
               ),
               keyboardType: TextInputType.phone,
             ),
             const SizedBox(height: 16),
             TextField(
               controller: addressController,
-              decoration: const InputDecoration(
-                labelText: 'Address',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l10n.address,
+                border: const OutlineInputBorder(),
               ),
               maxLines: 2,
             ),
@@ -380,7 +389,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () {
@@ -390,7 +399,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               );
               Navigator.pop(context);
             },
-            child: const Text('Save'),
+            child: Text(l10n.save),
           ),
         ],
       ),
@@ -398,15 +407,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showLogoutDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Logout'),
-        content: const Text('Are you sure you want to logout?'),
+        title: Text(l10n.logout),
+        content: Text(l10n.logoutConfirm),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () {
@@ -418,7 +429,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
-            child: const Text('Logout'),
+            child: Text(l10n.logout),
           ),
         ],
       ),

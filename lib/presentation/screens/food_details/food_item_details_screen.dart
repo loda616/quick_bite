@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quick_bite/data/models/food_item.dart';
 import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
 import '../../../core/routs/routes.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../widgets/food_details/food_details_app_bar.dart';
 import '../../widgets/food_details/food_details_bottom_bar.dart';
 import '../../widgets/food_details/food_details_content.dart';
-
 
 class FoodItemDetailsScreen extends StatefulWidget {
   final FoodItem item;
@@ -49,7 +49,9 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
   }
 
   void _addToCart() {
+    final l10n = AppLocalizations.of(context)!;
     final cart = context.read<CartCubit>();
+
     cart.addItem(
       widget.item,
       quantity: _quantity,
@@ -58,11 +60,11 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${widget.item.name} added to cart'),
+        content: Text(l10n.addedToCart(widget.item.name)),
         backgroundColor: Colors.green,
         duration: const Duration(seconds: 2),
         action: SnackBarAction(
-          label: 'View Cart',
+          label: l10n.viewCart,
           textColor: Colors.white,
           onPressed: () {
             Navigator.pushNamed(context, AppRoutes.cart);

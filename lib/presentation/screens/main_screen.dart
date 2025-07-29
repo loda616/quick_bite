@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quick_bite/presentation/view_models/cubit/auth_cubit.dart';
@@ -9,6 +8,8 @@ import 'package:quick_bite/presentation/screens/cart/cart_screen.dart';
 import 'package:quick_bite/presentation/screens/orders/orders_screen.dart';
 import 'package:quick_bite/presentation/screens/profile_screen.dart';
 import 'package:quick_bite/presentation/screens/settings/settings_screen.dart';
+
+import '../../l10n/generated/app_localizations.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -28,36 +29,38 @@ class _MainScreenState extends State<MainScreen> {
     const SettingsScreen(),
   ];
 
-  final List<NavigationDestination> _destinations = [
-    const NavigationDestination(
-      icon: Icon(Icons.home_outlined),
-      selectedIcon: Icon(Icons.home),
-      label: 'Home',
-    ),
-    const NavigationDestination(
-      icon: Icon(Icons.shopping_cart_outlined),
-      selectedIcon: Icon(Icons.shopping_cart),
-      label: 'Cart',
-    ),
-    const NavigationDestination(
-      icon: Icon(Icons.receipt_long_outlined),
-      selectedIcon: Icon(Icons.receipt_long),
-      label: 'Orders',
-    ),
-    const NavigationDestination(
-      icon: Icon(Icons.person_outline),
-      selectedIcon: Icon(Icons.person),
-      label: 'Profile',
-    ),
-    const NavigationDestination(
-      icon: Icon(Icons.settings_outlined),
-      selectedIcon: Icon(Icons.settings),
-      label: 'Settings',
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    final List<NavigationDestination> _destinations = [
+      NavigationDestination(
+        icon: const Icon(Icons.home_outlined),
+        selectedIcon: const Icon(Icons.home),
+        label: l10n.home,
+      ),
+      NavigationDestination(
+        icon: const Icon(Icons.shopping_cart_outlined),
+        selectedIcon: const Icon(Icons.shopping_cart),
+        label: l10n.cart,
+      ),
+      NavigationDestination(
+        icon: const Icon(Icons.receipt_long_outlined),
+        selectedIcon: const Icon(Icons.receipt_long),
+        label: l10n.orders,
+      ),
+      NavigationDestination(
+        icon: const Icon(Icons.person_outline),
+        selectedIcon: const Icon(Icons.person),
+        label: l10n.profile,
+      ),
+      NavigationDestination(
+        icon: const Icon(Icons.settings_outlined),
+        selectedIcon: const Icon(Icons.settings),
+        label: l10n.settings,
+      ),
+    ];
+
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         // Navigate to login if user is not authenticated

@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/cart_state.dart';
-
-import '../../../core/routs/routes.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../widgets/cart/cart_empty_state.dart';
 import '../../widgets/cart/cart_items_list.dart';
 import '../../widgets/cart/cart_dialogs.dart';
@@ -15,10 +14,11 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Shopping Cart'),
+        title: Text(l10n.shoppingCart),
         backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
@@ -42,7 +42,7 @@ class CartScreen extends StatelessWidget {
                       color: theme.colorScheme.error,
                     ),
                     label: Text(
-                      'Clear',
+                      l10n.clear,
                       style: TextStyle(
                         color: theme.colorScheme.error,
                         fontWeight: FontWeight.w600,
@@ -68,22 +68,6 @@ class CartScreen extends StatelessWidget {
             },
           ),
         ],
-        // Add subtle shadow/border for better separation
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(
-            height: 1,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  theme.dividerColor.withOpacity(0.1),
-                  theme.dividerColor.withOpacity(0.3),
-                  theme.dividerColor.withOpacity(0.1),
-                ],
-              ),
-            ),
-          ),
-        ),
       ),
       body: BlocBuilder<CartCubit, CartState>(
         builder: (context, state) {
@@ -92,10 +76,11 @@ class CartScreen extends StatelessWidget {
           }
 
           return Column(
+            mainAxisSize: MainAxisSize.min, // Add this to prevent overflow
             children: [
               // Cart Header with item count
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(12), // Reduced padding
                 decoration: BoxDecoration(
                   color: theme.colorScheme.primary.withOpacity(0.05),
                   border: Border(
@@ -109,24 +94,26 @@ class CartScreen extends StatelessWidget {
                     Icon(
                       Icons.shopping_cart,
                       color: theme.colorScheme.primary,
-                      size: 24,
+                      size: 20, // Reduced size
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 8), // Reduced spacing
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min, // Add this
                         children: [
                           Text(
-                            '${state.itemCount} ${state.itemCount == 1 ? 'Item' : 'Items'} in Cart',
-                            style: theme.textTheme.titleMedium?.copyWith(
+                            l10n.itemsInCart(state.itemCount),
+                            style: theme.textTheme.titleSmall?.copyWith( // Changed from titleMedium
                               fontWeight: FontWeight.bold,
                               color: theme.colorScheme.onSurface,
                             ),
                           ),
                           Text(
-                            'Swipe to remove items',
+                            l10n.swipeToRemove,
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: theme.colorScheme.onSurface.withOpacity(0.6),
+                              fontSize: 11, // Reduced font size
                             ),
                           ),
                         ],
@@ -134,12 +121,12 @@ class CartScreen extends StatelessWidget {
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
+                        horizontal: 10, // Reduced padding
+                        vertical: 4,   // Reduced padding
                       ),
                       decoration: BoxDecoration(
                         color: theme.colorScheme.primary,
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(16), // Reduced radius
                       ),
                       child: Text(
                         '\$${state.total.toStringAsFixed(2)}',
@@ -148,7 +135,7 @@ class CartScreen extends StatelessWidget {
                               ? Colors.black
                               : Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                          fontSize: 14, // Reduced font size
                         ),
                       ),
                     ),
@@ -156,12 +143,12 @@ class CartScreen extends StatelessWidget {
                 ),
               ),
 
-              // Cart Items List
-              Expanded(
+              // Cart Items List - Use Flexible instead of Expanded
+              Flexible(
                 child: CartItemsList(items: state.items.values.toList()),
               ),
 
-              // Cart Summary and Checkout
+              // Cart Summary and Checkout - Keep at bottom
               CartSummary(state: state),
             ],
           );

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import 'name_fields_row.dart';
 import 'form_text_field.dart';
 import 'password_field.dart';
 
 class RegistrationForm extends StatefulWidget {
+  final AppLocalizations l10n;
   final TextEditingController firstNameController;
   final TextEditingController lastNameController;
   final TextEditingController emailController;
@@ -14,6 +16,7 @@ class RegistrationForm extends StatefulWidget {
 
   const RegistrationForm({
     super.key,
+    required this.l10n,
     required this.firstNameController,
     required this.lastNameController,
     required this.emailController,
@@ -37,6 +40,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
       children: [
         // Name Fields Row
         NameFieldsRow(
+          l10n: widget.l10n,
           firstNameController: widget.firstNameController,
           lastNameController: widget.lastNameController,
         ),
@@ -44,18 +48,19 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
         // Email Field
         FormTextField(
+          l10n: widget.l10n,
           controller: widget.emailController,
-          labelText: 'Email Address',
+          labelText: widget.l10n.emailAddress,
           prefixIcon: Icons.email_outlined,
           keyboardType: TextInputType.emailAddress,
           textInputAction: TextInputAction.next,
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return 'Please enter your email';
+              return widget.l10n.pleaseEnterEmail;
             }
             if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
                 .hasMatch(value.trim())) {
-              return 'Please enter a valid email';
+              return widget.l10n.pleaseEnterValidEmail;
             }
             return null;
           },
@@ -64,18 +69,19 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
         // Phone Field
         FormTextField(
+          l10n: widget.l10n,
           controller: widget.phoneController,
-          labelText: 'Phone Number',
+          labelText: widget.l10n.phoneNumber,
           prefixIcon: Icons.phone_outlined,
           hintText: '+1 (555) 123-4567',
           keyboardType: TextInputType.phone,
           textInputAction: TextInputAction.next,
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return 'Please enter your phone number';
+              return widget.l10n.pleaseEnterPhone;
             }
             if (value.trim().length < 10) {
-              return 'Please enter a valid phone number';
+              return widget.l10n.pleaseEnterValidPhone;
             }
             return null;
           },
@@ -84,8 +90,9 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
         // Password Field
         PasswordField(
+          l10n: widget.l10n,
           controller: widget.passwordController,
-          labelText: 'Password',
+          labelText: widget.l10n.password,
           isVisible: _passwordVisible,
           onVisibilityToggle: () {
             setState(() {
@@ -95,10 +102,10 @@ class _RegistrationFormState extends State<RegistrationForm> {
           textInputAction: TextInputAction.next,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter a password';
+              return widget.l10n.pleaseEnterPassword;
             }
             if (value.length < 6) {
-              return 'Password must be at least 6 characters';
+              return widget.l10n.passwordMinLength;
             }
             return null;
           },
@@ -107,8 +114,9 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
         // Confirm Password Field
         PasswordField(
+          l10n: widget.l10n,
           controller: widget.confirmPasswordController,
-          labelText: 'Confirm Password',
+          labelText: widget.l10n.confirmPassword,
           isVisible: _confirmPasswordVisible,
           onVisibilityToggle: () {
             setState(() {
@@ -119,7 +127,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
           onFieldSubmitted: (_) => widget.onSubmit(),
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please confirm your password';
+              return widget.l10n.pleaseConfirmPassword;
             }
             return null;
           },

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quick_bite/data/models/food_item.dart';
@@ -9,6 +8,7 @@ import 'package:quick_bite/presentation/view_models/stats/auth_stat.dart';
 import 'package:quick_bite/presentation/view_models/stats/cart_state.dart';
 import 'package:quick_bite/presentation/widgets/food_item_card.dart';
 import '../../../data/datasources/remote/food_service.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../cart/cart_screen.dart';
 import '../food_details/food_item_details_screen.dart';
 
@@ -54,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: $e'),
+            content: Text('${AppLocalizations.of(context)!.error}: $e'),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -69,6 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -97,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'QuickBite',
+                          l10n.appTitle,
                           style: theme.textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: theme.colorScheme.primary,
@@ -106,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         BlocBuilder<AuthCubit, AuthState>(
                           builder: (context, authState) {
                             return Text(
-                              'Welcome back, ${authState.userName ?? 'Guest'}!',
+                              l10n.welcomeBackUser(authState.userName ?? 'Guest'),
                               style: theme.textTheme.titleMedium?.copyWith(
                                 color: theme.colorScheme.onSurface.withOpacity(0.8),
                               ),
@@ -216,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 child: TextField(
                   decoration: InputDecoration(
-                    hintText: 'Search for food...',
+                    hintText: l10n.searchForFood,
                     hintStyle: TextStyle(
                       color: theme.colorScheme.onSurface.withOpacity(0.6),
                     ),
@@ -300,7 +301,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Loading delicious food...',
+                      l10n.loadingDeliciousFood,
                       style: theme.textTheme.bodyLarge?.copyWith(
                         color: theme.colorScheme.onSurface.withOpacity(0.7),
                       ),
@@ -320,14 +321,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'No items found',
+                      l10n.noItemsFound,
                       style: theme.textTheme.headlineSmall?.copyWith(
                         color: theme.colorScheme.onSurface.withOpacity(0.7),
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Try selecting a different category',
+                      l10n.tryDifferentCategory,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.colorScheme.onSurface.withOpacity(0.5),
                       ),

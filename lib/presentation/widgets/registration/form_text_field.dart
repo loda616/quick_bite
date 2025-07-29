@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/generated/app_localizations.dart';
+
 class FormTextField extends StatelessWidget {
+  final AppLocalizations l10n;
   final TextEditingController controller;
   final String labelText;
   final IconData prefixIcon;
@@ -13,6 +16,7 @@ class FormTextField extends StatelessWidget {
 
   const FormTextField({
     super.key,
+    required this.l10n,
     required this.controller,
     required this.labelText,
     required this.prefixIcon,

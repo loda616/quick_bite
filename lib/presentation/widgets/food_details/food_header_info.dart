@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quick_bite/data/models/food_item.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/generated/app_localizations.dart';
 
 class FoodHeaderInfo extends StatelessWidget {
   final FoodItem item;
@@ -13,6 +14,8 @@ class FoodHeaderInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -108,7 +111,7 @@ class FoodHeaderInfo extends StatelessWidget {
                 ),
               ),
               child: Text(
-                item.isAvailable ? 'Available' : 'Not Available',
+                item.isAvailable ? l10n.available : l10n.notAvailable,
                 style: TextStyle(
                   color: item.isAvailable
                       ? Colors.green

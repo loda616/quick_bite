@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:quick_bite/data/datasources/local/secure_storage_service.dart';
 import 'package:quick_bite/data/datasources/remote/api_service.dart';
 import 'package:quick_bite/data/repository/auth_repository_impl.dart';
@@ -13,6 +14,7 @@ import 'package:quick_bite/presentation/view_models/cubit/language_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/notification_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/theme_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/auth_stat.dart';
+import 'package:quick_bite/presentation/view_models/stats/language_state.dart';
 import 'package:quick_bite/presentation/screens/auth/login_screen.dart';
 import 'package:quick_bite/presentation/screens/main_screen.dart';
 import 'package:quick_bite/presentation/view_models/stats/theme_state.dart';
@@ -21,7 +23,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'core/network/dio_client.dart';
 import 'core/routs/routes.dart';
 import 'core/theme/app_theme.dart';
-
+import 'l10n/generated/app_localizations.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -102,25 +104,42 @@ class QuickBiteApp extends StatelessWidget {
         ],
         child: BlocBuilder<ThemeCubit, ThemeState>(
           builder: (context, themeState) {
-            return BlocBuilder<AuthCubit, AuthState>(
-              builder: (context, authState) {
-                return MaterialApp(
-                  title: 'QuickBite',
-                  debugShowCheckedModeBanner: false,
+            return BlocBuilder<LanguageCubit, LanguageState>(
+              builder: (context, languageState) {
+                return BlocBuilder<AuthCubit, AuthState>(
+                  builder: (context, authState) {
+                    return MaterialApp(
+                      title: 'QuickBite',
+                      debugShowCheckedModeBanner: false,
 
-                  // Theme Configuration
-                  theme: AppTheme.lightTheme,
-                  darkTheme: AppTheme.darkTheme,
-                  themeMode: themeState.flutterThemeMode,
+                      // Localization Configuration
+                      localizationsDelegates: const [
+                        AppLocalizations.delegate,
+                        GlobalMaterialLocalizations.delegate,
+                        GlobalWidgetsLocalizations.delegate,
+                        GlobalCupertinoLocalizations.delegate,
+                      ],
+                      supportedLocales: const [
+                        Locale('en', 'US'),
+                        Locale('ar', 'SA'),
+                      ],
+                      locale: languageState.locale,
 
-                  // Route Configuration
-                  onGenerateRoute: AppRoutes.generateRoute,
-                  home: _getInitialScreen(context, authState),
+                      // Theme Configuration
+                      theme: AppTheme.lightTheme,
+                      darkTheme: AppTheme.darkTheme,
+                      themeMode: themeState.flutterThemeMode,
 
-                  // App Lifecycle Listener for System Theme Changes
-                  builder: (context, child) {
-                    return SystemThemeListener(
-                      child: child!,
+                      // Route Configuration
+                      onGenerateRoute: AppRoutes.generateRoute,
+                      home: _getInitialScreen(context, authState),
+
+                      // App Lifecycle Listener for System Theme Changes
+                      builder: (context, child) {
+                        return SystemThemeListener(
+                          child: child!,
+                        );
+                      },
                     );
                   },
                 );
@@ -231,6 +250,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -270,7 +290,7 @@ class _SplashScreenState extends State<SplashScreen>
 
                     // App Name
                     Text(
-                      'QuickBite',
+                      l10n.appTitle,
                       style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).colorScheme.primary,
@@ -280,7 +300,7 @@ class _SplashScreenState extends State<SplashScreen>
 
                     // App Tagline
                     Text(
-                      'Fast food, faster delivery',
+                      l10n.appTagline,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                       ),

@@ -1,10 +1,9 @@
-// login_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quick_bite/presentation/view_models/cubit/auth_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/auth_stat.dart';
-
 import '../../../core/routs/routes.dart';
+import '../../../l10n/generated/app_localizations.dart' show AppLocalizations;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -38,6 +37,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state.errorMessage != null && mounted) {
@@ -108,9 +109,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 24),
 
                     // Welcome Text
-                    const Text(
-                      'Welcome Back!',
-                      style: TextStyle(
+                    Text(
+                      l10n.welcomeBack,
+                      style: const TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF2E2E2E),
@@ -118,9 +119,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 8),
-                    const Text(
-                      'Sign in to continue to QuickBite',
-                      style: TextStyle(
+                    Text(
+                      l10n.signInToContinue,
+                      style: const TextStyle(
                         fontSize: 16,
                         color: Colors.grey,
                       ),
@@ -131,19 +132,19 @@ class _LoginScreenState extends State<LoginScreen> {
                     // Email Field
                     TextFormField(
                       controller: _emailController,
-                      decoration: const InputDecoration(
-                        labelText: 'Email Address',
-                        prefixIcon: Icon(Icons.email_outlined),
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: l10n.emailAddress,
+                        prefixIcon: const Icon(Icons.email_outlined),
+                        border: const OutlineInputBorder(),
                       ),
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
+                          return l10n.pleaseEnterEmail;
                         }
                         if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                          return 'Please enter a valid email';
+                          return l10n.pleaseEnterValidEmail;
                         }
                         return null;
                       },
@@ -154,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextFormField(
                       controller: _passwordController,
                       decoration: InputDecoration(
-                        labelText: 'Password',
+                        labelText: l10n.password,
                         prefixIcon: const Icon(Icons.lock_outlined),
                         border: const OutlineInputBorder(),
                         suffixIcon: IconButton(
@@ -174,10 +175,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       textInputAction: TextInputAction.done,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
+                          return l10n.pleaseEnterPassword;
                         }
                         if (value.length < 6) {
-                          return 'Password must be at least 6 characters';
+                          return l10n.passwordMinLength;
                         }
                         return null;
                       },
@@ -192,9 +193,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {
                           Navigator.pushNamed(context, AppRoutes.forgetPassword);
                         },
-                        child: const Text(
-                          'Forgot Password?',
-                          style: TextStyle(
+                        child: Text(
+                          l10n.forgotPassword,
+                          style: const TextStyle(
                             color: Color(0xFFFF6B00),
                             fontWeight: FontWeight.w600,
                           ),
@@ -221,9 +222,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: Colors.white,
                         ),
                       )
-                          : const Text(
-                        'Sign In',
-                        style: TextStyle(
+                          : Text(
+                        l10n.signIn,
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
@@ -238,7 +239,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Text(
-                            'OR',
+                            l10n.or,
                             style: TextStyle(
                               color: Colors.grey[600],
                               fontWeight: FontWeight.w500,
@@ -257,16 +258,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                       child: RichText(
                         textAlign: TextAlign.center,
-                        text: const TextSpan(
-                          text: "Don't have an account? ",
-                          style: TextStyle(
+                        text: TextSpan(
+                          text: l10n.dontHaveAccount,
+                          style: const TextStyle(
                             color: Colors.black87,
                             fontSize: 16,
                           ),
                           children: [
                             TextSpan(
-                              text: 'Sign Up',
-                              style: TextStyle(
+                              text: l10n.signUp,
+                              style: const TextStyle(
                                 color: Color(0xFFFF6B00),
                                 fontWeight: FontWeight.bold,
                               ),
@@ -290,7 +291,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Demo Credentials:',
+                            l10n.demoCredentials,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.blue[800],
@@ -298,11 +299,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Email: mohamed@gmail.com',
+                            l10n.demoEmail,
                             style: TextStyle(color: Colors.blue[700]),
                           ),
                           Text(
-                            'Password: Fouad@2463187',
+                            l10n.demoPassword,
                             style: TextStyle(color: Colors.blue[700]),
                           ),
                         ],
