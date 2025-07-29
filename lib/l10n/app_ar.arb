@@ -157,6 +157,14 @@
   "networkError": "خطأ في الشبكة. يرجى التحقق من اتصالك.",
   "serverError": "خطأ في الخادم. يرجى المحاولة لاحقاً.",
 
+  "fillDetailsToContinue": "املأ بياناتك للمتابعة",
+  "acceptTerms": "أوافق على الشروط والأحكام وسياسة الخصوصية",
+  "register": "تسجيل",
+  "pleaseEnterFirstName": "الرجاء إدخال اسمك الأول",
+  "pleaseEnterLastName": "الرجاء إدخال اسم العائلة",
+  "acceptTermsError": "الرجاء قبول الشروط والأحكام",
+  "passwordMismatchError": "كلمات المرور غير متطابقة",
+
   "demoCredentials": "بيانات تجريبية:",
   "demoEmail": "البريد الإلكتروني: mohamed@gmail.com",
   "demoPassword": "كلمة المرور: Fouad@2463187",

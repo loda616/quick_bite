@@ -5,9 +5,11 @@ import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../view_models/cubit/auth_cubit.dart';
 import '../../view_models/stats/auth_stat.dart';
-import '../../widgets/registration/registration_header.dart';
-import '../../widgets/registration/registration_form.dart';
-import '../../widgets/registration/registration_actions.dart';
+import '../../widgets/auth/auth_error_handler.dart';
+import '../../widgets/auth/registration/registration_actions.dart';
+import '../../widgets/auth/registration/registration_form.dart';
+import '../../widgets/auth/registration/registration_header.dart';
+
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -44,7 +46,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       if (!_acceptedTerms) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Please accept the terms and conditions'),
+            content: Text(l10n.acceptTermsError),
             backgroundColor: Colors.red,
           ),
         );
@@ -54,7 +56,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       if (_passwordController.text != _confirmPasswordController.text) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Passwords do not match'),
+            content: Text(l10n.passwordMismatchError),
             backgroundColor: Colors.red,
           ),
         );
@@ -83,40 +85,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     return BlocConsumer<AuthCubit, AuthState>(
-      listener: (context, state) {
-        if (state.errorMessage != null && mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.errorMessage!),
-              backgroundColor: Colors.red,
-              duration: const Duration(seconds: 4),
-            ),
-          );
-          context.read<AuthCubit>().clearMessages();
-        }
-        if (state.successMessage != null && mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.successMessage!),
-              backgroundColor: Colors.green,
-              duration: const Duration(seconds: 3),
-            ),
-          );
-          context.read<AuthCubit>().clearMessages();
-
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            AppRoutes.auth,
-                (route) => false,
-          );
-        }
-      },
+      listener: (context, state) => AuthErrorHandler.handleAuthState(context, state),
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
             title: Text(l10n.createAccount),
-            backgroundColor: const Color(0xFFf8f1df),
-            foregroundColor: AppTheme.accentColor,
+            backgroundColor: AppTheme.getBackgroundColor(context),
+            foregroundColor: AppTheme.getTextColor(context),
             elevation: 0,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
@@ -137,11 +112,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Header
                     RegistrationHeader(l10n: l10n),
                     const SizedBox(height: 32),
-
-                    // Form Fields
                     RegistrationForm(
                       l10n: l10n,
                       firstNameController: _firstNameController,
@@ -153,8 +125,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       onSubmit: _register,
                     ),
                     const SizedBox(height: 20),
-
-                    // Terms and Actions
                     RegistrationActions(
                       l10n: l10n,
                       acceptedTerms: _acceptedTerms,
