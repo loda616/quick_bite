@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
 
+import 'package:flutter/material.dart';
+import '../../../l10n/generated/app_localizations.dart';
+
 class FoodQuantitySelector extends StatelessWidget {
   final int quantity;
   final VoidCallback onIncrement;
@@ -19,15 +22,18 @@ class FoodQuantitySelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           l10n.quantity,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: AppTheme.accentColor,
+            color: theme.colorScheme.onSurface, // Theme-aware color
           ),
         ),
         const SizedBox(height: 12),
@@ -36,11 +42,14 @@ class FoodQuantitySelector extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: AppTheme.primaryColor,
+                color: theme.colorScheme.primary,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: IconButton(
-                icon: const Icon(Icons.remove, color: Colors.white),
+                icon: Icon(
+                  Icons.remove,
+                  color: isDarkMode ? Colors.black : Colors.white, // Theme-aware color
+                ),
                 onPressed: onDecrement,
               ),
             ),
@@ -51,25 +60,32 @@ class FoodQuantitySelector extends StatelessWidget {
                 vertical: 12,
               ),
               decoration: BoxDecoration(
-                border: Border.all(color: AppTheme.primaryColor, width: 2),
+                border: Border.all(
+                  color: theme.colorScheme.primary,
+                  width: 2,
+                ),
                 borderRadius: BorderRadius.circular(12),
+                color: theme.colorScheme.surface, // Theme-aware background
               ),
               child: Text(
                 '$quantity',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: AppTheme.primaryColor,
+                  color: theme.colorScheme.primary,
                 ),
               ),
             ),
             Container(
               decoration: BoxDecoration(
-                color: AppTheme.primaryColor,
+                color: theme.colorScheme.primary,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: IconButton(
-                icon: const Icon(Icons.add, color: Colors.white),
+                icon: Icon(
+                  Icons.add,
+                  color: isDarkMode ? Colors.black : Colors.white, // Theme-aware color
+                ),
                 onPressed: onIncrement,
               ),
             ),

@@ -15,6 +15,8 @@ class FoodHeaderInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,10 +32,10 @@ class FoodHeaderInfo extends StatelessWidget {
                 children: [
                   Text(
                     item.name,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: AppTheme.accentColor,
+                      color: theme.colorScheme.onSurface, // Theme-aware color
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -41,7 +43,7 @@ class FoodHeaderInfo extends StatelessWidget {
                     item.category,
                     style: TextStyle(
                       fontSize: 16,
-                      color: AppTheme.primaryColor,
+                      color: theme.colorScheme.primary,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -54,15 +56,15 @@ class FoodHeaderInfo extends StatelessWidget {
                 vertical: 8,
               ),
               decoration: BoxDecoration(
-                color: AppTheme.primaryColor,
+                color: theme.colorScheme.primary,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
                 '\$${item.price.toStringAsFixed(2)}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: isDarkMode ? Colors.black : Colors.white, // Theme-aware color
                 ),
               ),
             ),
@@ -81,16 +83,17 @@ class FoodHeaderInfo extends StatelessWidget {
             const SizedBox(width: 4),
             Text(
               item.rating.toStringAsFixed(1),
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
+                color: theme.colorScheme.onSurface, // Theme-aware color
               ),
             ),
             Text(
               ' (${item.reviewCount} reviews)',
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey[600],
+                color: theme.colorScheme.onSurface.withOpacity(0.6), // Theme-aware color
               ),
             ),
             const Spacer(),
@@ -126,3 +129,4 @@ class FoodHeaderInfo extends StatelessWidget {
     );
   }
 }
+

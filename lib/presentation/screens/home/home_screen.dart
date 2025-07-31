@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quick_bite/data/models/food_item.dart';
 import 'package:quick_bite/presentation/screens/profile_screen.dart';
 import 'package:quick_bite/presentation/view_models/cubit/auth_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
+import 'package:quick_bite/presentation/view_models/cubit/menu_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/auth_stat.dart';
 import 'package:quick_bite/presentation/view_models/stats/cart_state.dart';
-import 'package:quick_bite/presentation/widgets/food_item_card.dart';
-import '../../../data/datasources/remote/food_service.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../view_models/stats/menu_stat.dart';
+import '../../widgets/minimal_foodItem_card.dart';
 import '../cart/cart_screen.dart';
 import '../food_details/food_item_details_screen.dart';
 
@@ -20,49 +20,19 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final FoodService _foodService = FoodService();
-  String? _selectedCategory;
-  List<FoodItem>? _items;
-  List<String>? _categories;
-  bool _isLoading = true;
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _loadData();
+    // Load initial menu data when screen opens
+    context.read<MenuCubit>().loadInitialData();
   }
 
-  Future<void> _loadData() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final categories = await _foodService.getAllCategories();
-      final items = _selectedCategory != null
-          ? await _foodService.getItemsByCategory(_selectedCategory!)
-          : await _foodService.getPopularItems();
-
-      if (mounted) {
-        setState(() {
-          _categories = categories;
-          _items = items;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${AppLocalizations.of(context)!.error}: $e'),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -216,6 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
                 child: TextField(
+                  controller: _searchController,
                   decoration: InputDecoration(
                     hintText: l10n.searchForFood,
                     hintStyle: TextStyle(
@@ -238,125 +209,233 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   style: TextStyle(color: theme.colorScheme.onSurface),
                   onChanged: (value) {
-                    // TODO: Implement search
+                    context.read<MenuCubit>().searchItems(value);
                   },
                 ),
               ),
             ),
 
             // Categories with theme support
-            if (_categories != null)
-              Container(
-                height: 50,
-                margin: const EdgeInsets.only(bottom: 16),
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: _categories!.length,
-                  itemBuilder: (context, index) {
-                    final category = _categories![index];
-                    final isSelected = category == _selectedCategory;
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 12),
-                      child: FilterChip(
-                        label: Text(
-                          category,
-                          style: TextStyle(
-                            color: isSelected
-                                ? (isDarkMode ? Colors.black : Colors.white)
-                                : theme.colorScheme.onSurface,
-                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            BlocBuilder<MenuCubit, MenuState>(
+              builder: (context, menuState) {
+                if (menuState.hasCategories) {
+                  return Container(
+                    height: 50,
+                    margin: const EdgeInsets.only(bottom: 16),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: menuState.categories.length + 1, // +1 for "All" option
+                      itemBuilder: (context, index) {
+                        if (index == 0) {
+                          // "All" category option
+                          final isSelected = menuState.isShowingAllItems;
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 12),
+                            child: FilterChip(
+                              label: Text(
+                                'All',
+                                style: TextStyle(
+                                  color: isSelected
+                                      ? (isDarkMode ? Colors.black : Colors.white)
+                                      : theme.colorScheme.onSurface,
+                                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                ),
+                              ),
+                              selected: isSelected,
+                              selectedColor: theme.colorScheme.primary,
+                              backgroundColor: theme.colorScheme.surface,
+                              checkmarkColor: isDarkMode ? Colors.black : Colors.white,
+                              side: BorderSide(
+                                color: isSelected
+                                    ? theme.colorScheme.primary
+                                    : theme.colorScheme.outline.withOpacity(0.3),
+                              ),
+                              onSelected: (selected) {
+                                if (selected && !isSelected) {
+                                  // Clear search when selecting "All"
+                                  _searchController.clear();
+                                  context.read<MenuCubit>().selectCategory(null);
+                                }
+                              },
+                            ),
+                          );
+                        }
+
+                        final category = menuState.categories[index - 1];
+                        final isSelected = menuState.selectedCategoryId == category.id;
+
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: FilterChip(
+                            label: Text(
+                              category.name,
+                              style: TextStyle(
+                                color: isSelected
+                                    ? (isDarkMode ? Colors.black : Colors.white)
+                                    : theme.colorScheme.onSurface,
+                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                              ),
+                            ),
+                            selected: isSelected,
+                            selectedColor: theme.colorScheme.primary,
+                            backgroundColor: theme.colorScheme.surface,
+                            checkmarkColor: isDarkMode ? Colors.black : Colors.white,
+                            side: BorderSide(
+                              color: isSelected
+                                  ? theme.colorScheme.primary
+                                  : theme.colorScheme.outline.withOpacity(0.3),
+                            ),
+                            onSelected: (selected) {
+                              if (selected && !isSelected) {
+                                // Clear search when selecting a category
+                                _searchController.clear();
+                                context.read<MenuCubit>().selectCategory(category);
+                              }
+                            },
                           ),
-                        ),
-                        selected: isSelected,
-                        selectedColor: theme.colorScheme.primary,
-                        backgroundColor: theme.colorScheme.surface,
-                        checkmarkColor: isDarkMode ? Colors.black : Colors.white,
-                        side: BorderSide(
-                          color: isSelected
-                              ? theme.colorScheme.primary
-                              : theme.colorScheme.outline.withOpacity(0.3),
-                        ),
-                        onSelected: (selected) {
-                          setState(() {
-                            _selectedCategory = selected ? category : null;
-                          });
-                          _loadData();
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ),
+                        );
+                      },
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
 
             // Food Items Grid with theme support
             Expanded(
-              child: _isLoading
-                  ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(
-                      color: theme.colorScheme.primary,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      l10n.loadingDeliciousFood,
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color: theme.colorScheme.onSurface.withOpacity(0.7),
-                      ),
-                    ),
-                  ],
-                ),
-              )
-                  : _items == null || _items!.isEmpty
-                  ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.restaurant_outlined,
-                      size: 64,
-                      color: theme.colorScheme.onSurface.withOpacity(0.5),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      l10n.noItemsFound,
-                      style: theme.textTheme.headlineSmall?.copyWith(
-                        color: theme.colorScheme.onSurface.withOpacity(0.7),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      l10n.tryDifferentCategory,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onSurface.withOpacity(0.5),
-                      ),
-                    ),
-                  ],
-                ),
-              )
-                  : GridView.builder(
-                padding: const EdgeInsets.all(16),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.75,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                ),
-                itemCount: _items!.length,
-                itemBuilder: (context, index) {
-                  final item = _items![index];
-                  return FoodItemCard(
-                    item: item,
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              FoodItemDetailsScreen(item: item),
+              child: BlocConsumer<MenuCubit, MenuState>(
+                listener: (context, state) {
+                  if (state.hasError) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(state.errorMessage!),
+                        backgroundColor: theme.colorScheme.error,
+                        action: SnackBarAction(
+                          label: l10n.retry,
+                          textColor: Colors.white,
+                          onPressed: () {
+                            context.read<MenuCubit>().refreshData();
+                          },
                         ),
-                      );
-                    },
+                      ),
+                    );
+                    context.read<MenuCubit>().clearError();
+                  }
+                },
+                builder: (context, menuState) {
+                  if (menuState.isLoading) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircularProgressIndicator(
+                            color: theme.colorScheme.primary,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            l10n.loadingDeliciousFood,
+                            style: theme.textTheme.bodyLarge?.copyWith(
+                              color: theme.colorScheme.onSurface.withOpacity(0.7),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  if (!menuState.hasFilteredItems) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.restaurant_outlined,
+                            size: 64,
+                            color: theme.colorScheme.onSurface.withOpacity(0.5),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            l10n.noItemsFound,
+                            style: theme.textTheme.headlineSmall?.copyWith(
+                              color: theme.colorScheme.onSurface.withOpacity(0.7),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            l10n.tryDifferentCategory,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.colorScheme.onSurface.withOpacity(0.5),
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              context.read<MenuCubit>().refreshData();
+                            },
+                            icon: const Icon(Icons.refresh),
+                            label: Text(l10n.retry),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  return RefreshIndicator(
+                    onRefresh: () => context.read<MenuCubit>().refreshData(),
+                    color: theme.colorScheme.primary,
+                    child: Stack(
+                      children: [
+                        GridView.builder(
+                          padding: const EdgeInsets.all(16),
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 0.8, // Adjusted ratio for better fit
+                            crossAxisSpacing: 12, // Reduced spacing
+                            mainAxisSpacing: 12,  // Reduced spacing
+                          ),
+                          itemCount: menuState.filteredItems.length,
+                          itemBuilder: (context, index) {
+                            final item = menuState.filteredItems[index];
+                            return MinimalFoodItemCard( // Using minimal version
+                              item: item,
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        FoodItemDetailsScreen(item: item),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
+
+                        // Loading overlay for category changes
+                        if (menuState.isLoadingCategory)
+                          Container(
+                            color: theme.scaffoldBackgroundColor.withOpacity(0.8),
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CircularProgressIndicator(
+                                    color: theme.colorScheme.primary,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    'Loading ${menuState.selectedCategoryName ?? 'items'}...',
+                                    style: theme.textTheme.bodyLarge?.copyWith(
+                                      color: theme.colorScheme.onSurface.withOpacity(0.7),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
                   );
                 },
               ),

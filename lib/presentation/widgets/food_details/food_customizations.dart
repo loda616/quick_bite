@@ -27,7 +27,7 @@ class FoodCustomizations extends StatelessWidget {
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: AppTheme.accentColor,
+            color: AppTheme.primaryColor ,
           ),
         ),
         const SizedBox(height: 12),
