@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/cart_state.dart';
 
 import 'cart_item_details.dart';
@@ -37,15 +35,7 @@ class CartItemCard extends StatelessWidget {
             ),
 
             // Quantity Controls
-            CartItemQuantityControls(
-              item: item,
-              onIncrement: () {
-                context.read<CartCubit>().addItem(item.item);
-              },
-              onDecrement: () {
-                context.read<CartCubit>().removeItem(item.item.id);
-              },
-            ),
+            CartItemQuantityControls(item: item),
           ],
         ),
       ),
