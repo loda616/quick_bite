@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/cart_state.dart';
 import '../../../../core/routs/routes.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -19,11 +21,12 @@ class CartDialogs {
           ),
           ElevatedButton(
             onPressed: () {
-              // TODO: Implement clear cart functionality
+              context.read<CartCubit>().clearCart();
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('${l10n.clearCart} feature coming soon!'),
+                  content: Text('Cart cleared successfully'),
+                  backgroundColor: Colors.green,
                 ),
               );
             },

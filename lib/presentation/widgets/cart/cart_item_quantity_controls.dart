@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/cart_state.dart';
 
 import '../../../core/theme/app_theme.dart';
 
 class CartItemQuantityControls extends StatelessWidget {
   final CartItem item;
-  final VoidCallback onIncrement;
-  final VoidCallback onDecrement;
 
   const CartItemQuantityControls({
     super.key,
     required this.item,
-    required this.onIncrement,
-    required this.onDecrement,
   });
 
   @override
@@ -26,7 +24,9 @@ class CartItemQuantityControls extends StatelessWidget {
           ),
           child: IconButton(
             icon: const Icon(Icons.add, color: Colors.white, size: 18),
-            onPressed: onIncrement,
+            onPressed: () {
+              context.read<CartCubit>().incrementItem(item.item.id);
+            },
             constraints: const BoxConstraints(
               minWidth: 32,
               minHeight: 32,
@@ -52,7 +52,9 @@ class CartItemQuantityControls extends StatelessWidget {
           ),
           child: IconButton(
             icon: const Icon(Icons.remove, color: Colors.white, size: 18),
-            onPressed: onDecrement,
+            onPressed: () {
+              context.read<CartCubit>().decrementItem(item.item.id);
+            },
             constraints: const BoxConstraints(
               minWidth: 32,
               minHeight: 32,
