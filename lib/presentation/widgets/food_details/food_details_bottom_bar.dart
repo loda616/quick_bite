@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quick_bite/data/models/food_item.dart';
 import '../../../../core/routs/routes.dart';
-import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart' show AppLocalizations;
 
 class FoodDetailsBottomBar extends StatelessWidget {
@@ -20,14 +19,16 @@ class FoodDetailsBottomBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final totalPrice = item.price * quantity;
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
 
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.colorScheme.surface, // Theme-aware background
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
+            color: theme.shadowColor.withOpacity(0.3), // Theme-aware shadow
             spreadRadius: 1,
             blurRadius: 10,
             offset: const Offset(0, -5),
@@ -44,18 +45,18 @@ class FoodDetailsBottomBar extends StatelessWidget {
               children: [
                 Text(
                   '${l10n.total}:',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
-                    color: AppTheme.accentColor,
+                    color: theme.colorScheme.onSurface, // Theme-aware color
                   ),
                 ),
                 Text(
                   '\$${totalPrice.toStringAsFixed(2)}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.primaryColor,
+                    color: theme.colorScheme.primary,
                   ),
                 ),
               ],
@@ -76,9 +77,11 @@ class FoodDetailsBottomBar extends StatelessWidget {
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: item.isAvailable
-                          ? AppTheme.primaryColor
-                          : Colors.grey,
-                      foregroundColor: Colors.white,
+                          ? theme.colorScheme.primary
+                          : theme.colorScheme.onSurface.withOpacity(0.3),
+                      foregroundColor: item.isAvailable
+                          ? (isDarkMode ? Colors.black : Colors.white) // Theme-aware color
+                          : theme.colorScheme.onSurface.withOpacity(0.6),
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -97,8 +100,11 @@ class FoodDetailsBottomBar extends StatelessWidget {
                     icon: const Icon(Icons.shopping_cart),
                     label: Text(l10n.cart),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: AppTheme.primaryColor,
-                      side: const BorderSide(color: AppTheme.primaryColor, width: 2),
+                      foregroundColor: theme.colorScheme.primary,
+                      side: BorderSide(
+                        color: theme.colorScheme.primary,
+                        width: 2,
+                      ),
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),

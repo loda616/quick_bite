@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:quick_bite/data/models/food_item.dart';
 
-class FoodItemCard extends StatelessWidget {
+/// Minimal version of food item card that guarantees no overflow
+class MinimalFoodItemCard extends StatelessWidget {
   final FoodItem item;
   final VoidCallback? onTap;
-  final VoidCallback? onAddToCart;
 
-  const FoodItemCard({
+  const MinimalFoodItemCard({
     super.key,
     required this.item,
     this.onTap,
-    this.onAddToCart,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDarkMode = theme.brightness == Brightness.dark;
 
     return Card(
       clipBehavior: Clip.antiAlias,
@@ -28,11 +26,10 @@ class FoodItemCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image Container with fixed height
+            // Image Container - Fixed height
             Expanded(
-              flex: 3, // Takes 3/5 of the card height
+              flex: 4, // Takes more space for image
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -42,41 +39,46 @@ class FoodItemCard extends StatelessWidget {
               ),
             ),
 
-            // Content Container with flexible height
-            Expanded(
-              flex: 2, // Takes 2/5 of the card height
+            // Content Container - Fixed height
+            SizedBox(
+              height: 60, // Fixed height to prevent overflow
               child: Padding(
-                padding: const EdgeInsets.all(6.0), // Reduced padding
+                padding: const EdgeInsets.all(6.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Item Name - Single line with ellipsis
-                    Flexible(
-                      child: Text(
-                        item.name,
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: theme.colorScheme.onSurface,
-                          fontSize: 13, // Slightly smaller
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-
-                    const SizedBox(height: 2), // Reduced spacing
-
-                    // Price
+                    // Item Name - Single line
                     Text(
-                      '\${item.price.toStringAsFixed(2)}',
-                      style: theme.textTheme.titleSmall?.copyWith( // Changed from titleMedium
-                        color: theme.colorScheme.primary,
+                      item.name,
+                      style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                        fontSize: 14,
+                        color: theme.colorScheme.onSurface,
+                        fontSize: 12,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
 
-                    const SizedBox(height: 2),
+                    // Price and Rating Row
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Price
+                        Text(
+                          '\$${item.price.toStringAsFixed(2)}',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.primary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                          ),
+                        ),
+
+                        // Rating
+                      ],
+                    ),
+
+                    // Category
                   ],
                 ),
               ),
@@ -134,8 +136,8 @@ class FoodItemCard extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
+            Colors.grey[200]!,
             Colors.grey[300]!,
-            Colors.grey[400]!,
           ],
         ),
       ),

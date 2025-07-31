@@ -43,18 +43,18 @@ class CartSummary extends StatelessWidget {
             // Order Summary
             _buildSummaryRow(
               l10n.subtotal(state.itemCount),
-              '\${state.total.toStringAsFixed(2)}',
+              '${state.total.toStringAsFixed(2)}',
             ),
             const SizedBox(height: 6), // Reduced spacing
             _buildSummaryRow(
               l10n.deliveryFee,
-              deliveryFee == 0 ? l10n.free : '\${deliveryFee.toStringAsFixed(2)}',
+              deliveryFee == 0 ? l10n.free : '${deliveryFee.toStringAsFixed(2)}',
               valueColor: deliveryFee == 0 ? Colors.green : AppTheme.accentColor,
             ),
             const Divider(height: 16), // Reduced height
             _buildSummaryRow(
               l10n.total,
-              '\${totalWithDelivery.toStringAsFixed(2)}',
+              '${totalWithDelivery.toStringAsFixed(2)}',
               titleStyle: const TextStyle(
                 fontSize: 18, // Reduced font size
                 fontWeight: FontWeight.bold,
@@ -70,7 +70,7 @@ class CartSummary extends StatelessWidget {
             if (state.total <= 25) ...[
               const SizedBox(height: 6), // Reduced spacing
               Text(
-                l10n.addMoreForFreeDelivery('\${(25 - state.total).toStringAsFixed(2)}'),
+                l10n.addMoreForFreeDelivery('${(25 - state.total).toStringAsFixed(2)}'),
                 style: TextStyle(
                   fontSize: 12, // Reduced font size
                   color: Colors.orange[700],

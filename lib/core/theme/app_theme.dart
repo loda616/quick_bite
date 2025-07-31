@@ -14,7 +14,7 @@ class AppTheme {
   static const Color darkPrimaryColor = Color(0xFFFF6B00);
   static const Color darkAccentColor = Color(0xFFE0E0E0);
   static const Color darkBackgroundColor = Color(0xFF121212);
-  static const Color darkSurfaceColor = Color(0xFF1E1E1E);
+  static const Color darkSurfaceColor = Color(0xFFf8f1df);
   static const Color darkCardColor = Color(0xFF2A2A2A);
 
   // Common Colors
