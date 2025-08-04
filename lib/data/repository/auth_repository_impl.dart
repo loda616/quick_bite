@@ -33,25 +33,49 @@ class AuthRepositoryImpl implements AuthRepository {
       // Check if the response is successful
       if (response.response.statusCode != 200) {
         final errorData = response.response.data;
-        throw Exception('Login failed with status ${response.response.statusCode}: ${errorData.toString()}');
+        print('=== LOGIN FAILED ===');
+        print('Status Code: ${response.response.statusCode}');
+        print('Error Data: $errorData');
+        
+        // Handle different error status codes
+        switch (response.response.statusCode) {
+          case 400:
+            throw Exception('Invalid email or password format');
+          case 401:
+            throw Exception('Invalid email or password');
+          case 404:
+            throw Exception('Login endpoint not found');
+          case 500:
+            throw Exception('Server error occurred');
+          default:
+            throw Exception('Login failed with status ${response.response.statusCode}');
+        }
       }
 
       final responseData = response.response.data;
-      if (responseData == null) {
-        throw Exception('Login failed: No data received from server');
+      if (responseData == null || responseData is! Map<String, dynamic>) {
+        throw Exception('Login failed: Invalid response format from server');
+      }
+
+      // Validate that required fields exist in the response
+      if (!responseData.containsKey('token') || !responseData.containsKey('expiration')) {
+        print('=== INVALID RESPONSE FORMAT ===');
+        print('Response Data: $responseData');
+        throw Exception('Login failed: Server response missing required fields (token, expiration)');
       }
 
       // Parse the login response
       LoginResponseModel loginResponse;
       try {
         print('=== PARSING LOGIN RESPONSE ===');
-        loginResponse = LoginResponseModel.fromJson(responseData as Map<String, dynamic>);
+        loginResponse = LoginResponseModel.fromJson(responseData);
         print('✓ Parsed login response successfully');
         print('Token length: ${loginResponse.token.length}');
         print('Expiration: ${loginResponse.expiration}');
       } catch (parseError) {
         print('=== PARSING ERROR ===');
         print('Parse error: $parseError');
+        print('Response Data: $responseData');
         throw Exception('Failed to parse login response: $parseError');
       }
 
@@ -96,24 +120,39 @@ class AuthRepositoryImpl implements AuthRepository {
       print('=== DIO EXCEPTION ===');
       print('Status Code: ${dioError.response?.statusCode}');
       print('Response Data: ${dioError.response?.data}');
+      print('Error Message: ${dioError.message}');
 
+      // Handle DioException errors (network issues, timeouts, etc.)
       switch (dioError.response?.statusCode) {
         case 400:
-          throw Exception('Invalid email or password format');
+          // Bad request - usually invalid credentials
+          final errorDetail = dioError.response?.data?.toString() ?? 'Invalid request format';
+          throw Exception('Invalid email or password: $errorDetail');
         case 401:
           throw Exception('Invalid email or password');
         case 404:
-          throw Exception('Login endpoint not found');
+          throw Exception('Login service not available');
         case 500:
           final errorDetail = dioError.response?.data?.toString() ?? 'Server error';
-          throw Exception('Server error (500): $errorDetail');
+          throw Exception('Server error: $errorDetail');
+        case null:
+          // Network error (no response received)
+          throw Exception('Network error: Unable to connect to server. Please check your internet connection.');
         default:
-          throw Exception('Network error: ${dioError.message}');
+          final errorDetail = dioError.response?.data?.toString() ?? dioError.message ?? 'Unknown error';
+          throw Exception('Login failed: $errorDetail');
       }
     } catch (e) {
       print('=== GENERAL ERROR ===');
       print('Error: $e');
-      rethrow;
+      
+      // If it's already our custom exception, rethrow it
+      if (e.toString().startsWith('Exception: ')) {
+        rethrow;
+      }
+      
+      // Otherwise, wrap it in a generic error
+      throw Exception('Login failed: ${e.toString()}');
     }
   }
 
