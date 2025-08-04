@@ -90,7 +90,7 @@ class ThemeCubit extends Cubit<ThemeState> {
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: isDarkMode ? Brightness.light : Brightness.dark,
         statusBarBrightness: isDarkMode ? Brightness.dark : Brightness.light,
-        systemNavigationBarColor: isDarkMode ? const Color(0xFF121212) : const Color(0xFFf8f1df),
+        systemNavigationBarColor: isDarkMode ? AppTheme.darkBackgroundColor : AppTheme.backgroundColor,
         systemNavigationBarIconBrightness: isDarkMode ? Brightness.light : Brightness.dark,
       ),
     );

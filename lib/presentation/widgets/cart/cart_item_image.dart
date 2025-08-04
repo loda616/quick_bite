@@ -21,8 +21,8 @@ class CartItemImage extends StatelessWidget {
           return Container(
             width: 80,
             height: 80,
-            color: Colors.grey[300],
-            child: const Icon(Icons.restaurant, color: Colors.grey),
+            color: Theme.of(context).colorScheme.surface,
+            child: Icon(Icons.restaurant, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
           );
         },
       ),

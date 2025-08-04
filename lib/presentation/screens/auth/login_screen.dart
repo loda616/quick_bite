@@ -95,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         return Container(
                           height: 150,
                           decoration: BoxDecoration(
-                            color: Colors.grey[200],
+                            color: Theme.of(context).colorScheme.surface.withOpacity(0.3),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Icon(
@@ -111,10 +111,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     // Welcome Text
                     Text(
                       l10n.welcomeBack,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF2E2E2E),
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -195,8 +195,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                         child: Text(
                           l10n.forgotPassword,
-                          style: const TextStyle(
-                            color: Color(0xFFFF6B00),
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -235,7 +235,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     // Divider
                     Row(
                       children: [
-                        Expanded(child: Divider(color: Colors.grey[300])),
+                        Expanded(child: Divider(color: Theme.of(context).dividerColor)),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Text(
@@ -246,7 +246,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
-                        Expanded(child: Divider(color: Colors.grey[300])),
+                        Expanded(child: Divider(color: Theme.of(context).dividerColor)),
                       ],
                     ),
                     const SizedBox(height: 24),
@@ -267,8 +267,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                             TextSpan(
                               text: l10n.signUp,
-                              style: const TextStyle(
-                                color: Color(0xFFFF6B00),
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

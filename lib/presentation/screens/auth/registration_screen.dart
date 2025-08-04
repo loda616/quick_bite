@@ -115,8 +115,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         return Scaffold(
           appBar: AppBar(
             title: Text(l10n.createAccount),
-            backgroundColor: const Color(0xFFf8f1df),
-            foregroundColor: AppTheme.accentColor,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            foregroundColor: Theme.of(context).colorScheme.onSurface,
             elevation: 0,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),

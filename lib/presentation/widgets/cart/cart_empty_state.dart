@@ -17,7 +17,7 @@ class CartEmptyState extends StatelessWidget {
           Icon(
             Icons.shopping_cart_outlined,
             size: 120,
-            color: Colors.grey[300],
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
           ),
           const SizedBox(height: 24),
           Text(
@@ -33,7 +33,7 @@ class CartEmptyState extends StatelessWidget {
             l10n.addDeliciousItems,
             style: TextStyle(
               fontSize: 16,
-              color: Colors.grey[500],
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
             ),
             textAlign: TextAlign.center,
           ),

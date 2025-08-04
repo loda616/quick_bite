@@ -146,8 +146,8 @@ class MinimalFoodItemCard extends StatelessWidget {
                       theme.colorScheme.surface.withOpacity(0.8),
                     ]
                   : [
-                      Colors.grey[200]!,
-                      Colors.grey[300]!,
+                      theme.colorScheme.onSurface.withOpacity(0.2),
+                      theme.colorScheme.onSurface.withOpacity(0.3),
                     ],
             ),
           ),

@@ -47,7 +47,7 @@ class FoodCustomizations extends StatelessWidget {
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
               side: BorderSide(
-                color: isSelected ? AppTheme.primaryColor : Colors.grey[300]!,
+                color: isSelected ? AppTheme.primaryColor : Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
               ),
             );
           }).toList(),
