@@ -18,10 +18,10 @@ class CartItemDetails extends StatelessWidget {
       children: [
         Text(
           item.item.name,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: AppTheme.accentColor,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
@@ -31,7 +31,7 @@ class CartItemDetails extends StatelessWidget {
           item.item.category,
           style: TextStyle(
             fontSize: 14,
-            color: Colors.grey[600],
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
           ),
         ),
         const SizedBox(height: 8),
@@ -41,7 +41,7 @@ class CartItemDetails extends StatelessWidget {
               '\$${item.item.price.toStringAsFixed(2)}',
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey[600],
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                 decoration: item.quantity > 1 ? TextDecoration.lineThrough : null,
               ),
             ),
@@ -49,10 +49,10 @@ class CartItemDetails extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 '\$${item.total.toStringAsFixed(2)}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: AppTheme.primaryColor,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
             ],
@@ -66,14 +66,14 @@ class CartItemDetails extends StatelessWidget {
                 margin: const EdgeInsets.only(right: 6, top: 2),
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: AppTheme.primaryColor.withOpacity(0.1),
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
                   customization,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 10,
-                    color: AppTheme.primaryColor,
+                    color: Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.w500,
                   ),
                 ),

@@ -61,7 +61,7 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(l10n.addedToCart(widget.item.name)),
-        backgroundColor: Colors.green,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         duration: const Duration(seconds: 2),
         action: SnackBarAction(
           label: l10n.viewCart,

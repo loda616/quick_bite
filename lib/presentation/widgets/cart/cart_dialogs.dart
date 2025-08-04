@@ -26,7 +26,7 @@ class CartDialogs {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Cart cleared successfully'),
-                  backgroundColor: Colors.green,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                 ),
               );
             },
@@ -71,7 +71,7 @@ class CartDialogs {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Order placed successfully! (Demo)'),
-                  backgroundColor: Colors.green,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                 ),
               );
             },

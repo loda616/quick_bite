@@ -56,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.successMessage!),
-              backgroundColor: Colors.green,
+              backgroundColor: Theme.of(context).colorScheme.primary,
               duration: const Duration(seconds: 3),
             ),
           );
@@ -241,7 +241,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: Text(
                             l10n.or,
                             style: TextStyle(
-                              color: Colors.grey[600],
+                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                               fontWeight: FontWeight.w500,
                             ),
                           ),

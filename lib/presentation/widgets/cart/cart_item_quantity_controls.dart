@@ -47,7 +47,7 @@ class CartItemQuantityControls extends StatelessWidget {
         ),
         Container(
           decoration: BoxDecoration(
-            color: Colors.grey[400],
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
             borderRadius: BorderRadius.circular(6),
           ),
           child: IconButton(

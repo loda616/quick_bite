@@ -226,7 +226,7 @@ class SettingsScreen extends StatelessWidget {
         onChanged: (_) => onTap(),
       ),
       onTap: onTap,
-      trailing: isSelected ? const Icon(Icons.check, color: Colors.green) : null,
+      trailing: isSelected ? Icon(Icons.check, color: Theme.of(context).colorScheme.primary) : null,
     );
   }
 

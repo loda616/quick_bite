@@ -10,12 +10,12 @@ class AppTheme {
   static const Color surfaceColor = Color(0xFFFFFFFF);
   static const Color cardColor = Color(0xFFf8f1df);
 
-  // Dark Theme Colors
-  static const Color darkPrimaryColor = Color(0xFFFF6B00);
-  static const Color darkAccentColor = Color(0xFFE0E0E0);
-  static const Color darkBackgroundColor = Color(0xFF121212);
-  static const Color darkSurfaceColor = Color(0xFFf8f1df);
-  static const Color darkCardColor = Color(0xFF2A2A2A);
+  // Dark Theme Colors - Improved for better contrast and accessibility
+  static const Color darkPrimaryColor = Color(0xFFFF8A50);        // Lighter orange for better contrast
+  static const Color darkAccentColor = Color(0xFFE8E8E8);         // Lighter grey for better readability
+  static const Color darkBackgroundColor = Color(0xFF0F0F0F);     // Deeper black for true dark mode
+  static const Color darkSurfaceColor = Color(0xFF1E1E1E);        // Dark grey for surfaces
+  static const Color darkCardColor = Color(0xFF252525);           // Slightly lighter for cards
 
   // Common Colors
   static const Color errorColor = Color(0xFFB00020);
@@ -197,7 +197,7 @@ class AppTheme {
         background: darkBackgroundColor,
         error: errorColor,
         onPrimary: Colors.black,
-        onSecondary: Colors.black,
+        onSecondary: darkBackgroundColor,
         onSurface: darkAccentColor,
         onBackground: darkAccentColor,
         onError: Colors.white,

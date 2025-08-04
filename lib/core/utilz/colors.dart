@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
 
 class AppColors {
-  static const Color primary = Color(0xFFf8f1df);
-  static const Color secondary = Color(0xFFf8f1df);
-  static const Color background = Color(0xFFf8f1df);
-  static const Color darkBackground = Color(0xFF353734);
+  // Use AppTheme colors as single source of truth
+  static const Color primary = AppTheme.primaryColor;
+  static const Color secondary = AppTheme.accentColor;
+  static const Color background = AppTheme.backgroundColor;
+  static const Color darkBackground = AppTheme.darkBackgroundColor;
   static const Color white = Color(0xFFFFFFFF);
-  static const Color text = Color(0xFF353734);
+  static const Color text = AppTheme.accentColor;
   static const Color grey = Color(0xFF9E9E9E);
-  static const Color error = Color(0xFFB00020);
-  static const Color success = Color(0xFF4CAF50);
-  static const Color warning = Color(0xFFFFC107);
-  static const Color orange = Color(0xFFff6802);
+  static const Color error = AppTheme.errorColor;
+  static const Color success = AppTheme.successColor;
+  static const Color warning = AppTheme.warningColor;
+  static const Color orange = AppTheme.primaryColor; // Remove duplicate orange definition
 }
