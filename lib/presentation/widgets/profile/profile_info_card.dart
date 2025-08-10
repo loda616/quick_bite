@@ -28,7 +28,7 @@ class ProfileInfoCard extends StatelessWidget {
     final backgroundColor = AppTheme.getBackgroundColor(context);
     final cardColor = isDarkMode ? AppTheme.darkCardColor : Colors.white;
     final textColor = isDarkMode ? AppTheme.darkAccentColor : AppTheme.accentColor;
-    final secondaryTextColor = isDarkMode ? Colors.grey[400] : Colors.grey[600];
+    final secondaryTextColor = Theme.of(context).colorScheme.onSurface.withOpacity(0.6);
     final borderColor = isDarkMode
         ? primaryColor.withOpacity(0.3)
         : primaryColor.withOpacity(0.1);

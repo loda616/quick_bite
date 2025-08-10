@@ -226,7 +226,7 @@ class SettingsScreen extends StatelessWidget {
         onChanged: (_) => onTap(),
       ),
       onTap: onTap,
-      trailing: isSelected ? const Icon(Icons.check, color: Colors.green) : null,
+      trailing: isSelected ? Icon(Icons.check, color: Theme.of(context).colorScheme.primary) : null,
     );
   }
 
@@ -320,10 +320,10 @@ class SettingsScreen extends StatelessWidget {
       context: context,
       applicationName: l10n.appTitle,
       applicationVersion: '1.0.0',
-      applicationIcon: const Icon(
+      applicationIcon: Icon(
         Icons.restaurant,
         size: 48,
-        color: Color(0xFFFF6B00),
+        color: Theme.of(context).colorScheme.primary,
       ),
       children: [
         Text(l10n.appTagline),

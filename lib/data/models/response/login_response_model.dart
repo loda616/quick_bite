@@ -1,8 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'login_response_model.g.dart';
-
-@JsonSerializable()
 class LoginResponseModel {
   final String token;
   final String expiration;
@@ -12,10 +9,19 @@ class LoginResponseModel {
     required this.expiration,
   });
 
-  factory LoginResponseModel.fromJson(Map<String, dynamic> json) =>
-      _$LoginResponseModelFromJson(json);
+  factory LoginResponseModel.fromJson(Map<String, dynamic> json) {
+    return LoginResponseModel(
+      token: json['token'] as String,
+      expiration: json['expiration'] as String,
+    );
+  }
 
-  Map<String, dynamic> toJson() => _$LoginResponseModelToJson(this);
+  Map<String, dynamic> toJson() {
+    return {
+      'token': token,
+      'expiration': expiration,
+    };
+  }
 
   // Helper getter for expiration as DateTime
   DateTime get expirationDateTime => DateTime.parse(expiration);

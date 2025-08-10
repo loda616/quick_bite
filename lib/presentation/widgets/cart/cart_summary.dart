@@ -49,7 +49,7 @@ class CartSummary extends StatelessWidget {
             _buildSummaryRow(
               l10n.deliveryFee,
               deliveryFee == 0 ? l10n.free : '${deliveryFee.toStringAsFixed(2)}',
-              valueColor: deliveryFee == 0 ? Colors.green : AppTheme.accentColor,
+              valueColor: deliveryFee == 0 ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurface,
             ),
             const Divider(height: 16), // Reduced height
             _buildSummaryRow(

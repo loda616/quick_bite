@@ -12,8 +12,8 @@ class ManualApiTest {
       final response = await dio.post(
         'http://hydra.runasp.net/api/Account/Login',
         data: {
-          "email": "john.doe@example.com",
-          "password": "@securePassword123"
+          "email": "mohamed@gmail.com",
+          "password": "Fouad@2463187"
         },
         options: Options(
           headers: {

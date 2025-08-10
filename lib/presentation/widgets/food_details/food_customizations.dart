@@ -43,11 +43,11 @@ class FoodCustomizations extends StatelessWidget {
               selectedColor: AppTheme.primaryColor.withOpacity(0.2),
               checkmarkColor: AppTheme.primaryColor,
               labelStyle: TextStyle(
-                color: isSelected ? AppTheme.primaryColor : Colors.grey[700],
+                color: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
               side: BorderSide(
-                color: isSelected ? AppTheme.primaryColor : Colors.grey[300]!,
+                color: isSelected ? AppTheme.primaryColor : Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
               ),
             );
           }).toList(),
