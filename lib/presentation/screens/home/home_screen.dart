@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quick_bite/presentation/screens/profile_screen.dart';
 import 'package:quick_bite/presentation/view_models/cubit/auth_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/menu_cubit.dart';
@@ -9,7 +8,7 @@ import 'package:quick_bite/presentation/view_models/stats/cart_state.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../view_models/stats/menu_stat.dart';
 import '../../widgets/minimal_foodItem_card.dart';
-import '../cart/cart_screen.dart';
+import '../../../core/routs/routes.dart';
 import '../food_details/food_item_details_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -105,11 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   size: 28,
                                 ),
                                 onPressed: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => const CartScreen(),
-                                    ),
-                                  );
+                                  Navigator.pushNamed(context, AppRoutes.cart);
                                 },
                               ),
                               if (cartState.itemCount > 0)
@@ -157,11 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           size: 28,
                         ),
                         onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const ProfileScreen(),
-                            ),
-                          );
+                          Navigator.pushNamed(context, AppRoutes.profile);
                         },
                       ),
                     ],
@@ -401,11 +392,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             return MinimalFoodItemCard( // Using minimal version
                               item: item,
                               onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        FoodItemDetailsScreen(item: item),
-                                  ),
+                                Navigator.pushNamed(
+                                  context,
+                                  AppRoutes.foodDetails,
+                                  arguments: item,
                                 );
                               },
                             );

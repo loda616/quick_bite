@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/routs/routes.dart' show AppRoutes;
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../widgets/common/standard_app_bar.dart';
 import '../../view_models/cubit/auth_cubit.dart';
 import '../../view_models/stats/auth_stat.dart';
 import '../../widgets/registration/registration_header.dart';
@@ -113,11 +114,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       },
       builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(
-            title: Text(l10n.createAccount),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            foregroundColor: Theme.of(context).colorScheme.onSurface,
-            elevation: 0,
+          appBar: StandardAppBar(
+            title: l10n.createAccount,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () {

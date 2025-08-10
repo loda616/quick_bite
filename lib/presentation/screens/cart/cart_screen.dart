@@ -7,6 +7,7 @@ import '../../widgets/cart/cart_empty_state.dart';
 import '../../widgets/cart/cart_items_list.dart';
 import '../../widgets/cart/cart_dialogs.dart';
 import '../../widgets/cart/cart_summary.dart';
+import '../../widgets/common/standard_app_bar.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -17,15 +18,8 @@ class CartScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.shoppingCart),
-        backgroundColor: theme.scaffoldBackgroundColor,
-        elevation: 0,
-        iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
-        titleTextStyle: theme.textTheme.titleLarge?.copyWith(
-          color: theme.colorScheme.onSurface,
-          fontWeight: FontWeight.bold,
-        ),
+      appBar: StandardAppBar(
+        title: l10n.shoppingCart,
         actions: [
           BlocBuilder<CartCubit, CartState>(
             builder: (context, state) {

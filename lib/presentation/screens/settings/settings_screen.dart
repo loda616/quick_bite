@@ -5,6 +5,7 @@ import 'package:quick_bite/presentation/view_models/cubit/theme_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/language_state.dart';
 import 'package:quick_bite/presentation/view_models/stats/theme_state.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../widgets/common/standard_app_bar.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -14,9 +15,8 @@ class SettingsScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.settings),
-        elevation: 0,
+      appBar: StandardAppBar(
+        title: l10n.settings,
       ),
       body: ListView(
         children: [

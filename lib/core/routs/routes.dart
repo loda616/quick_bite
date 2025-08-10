@@ -13,6 +13,7 @@ import 'package:quick_bite/data/models/food_item.dart';
 
 import '../../presentation/screens/food_details/favorites_screen.dart';
 import '../../presentation/screens/food_details/food_item_details_screen.dart';
+import '../../presentation/screens/checkout/checkout_screen.dart';
 
 
 class AppRoutes {
@@ -30,6 +31,7 @@ class AppRoutes {
   static const String settings = '/settings';
   static const String profile = '/profile';
   static const String favorites = '/favorites';
+  static const String checkout = '/checkout';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final routeName = settings.name;
@@ -82,6 +84,10 @@ class AppRoutes {
       return MaterialPageRoute(builder: (context) => const FavoritesScreen());
     }
 
+    if (routeName == checkout) {
+      return MaterialPageRoute(builder: (context) => const CheckoutScreen());
+    }
+
     if (routeName == foodDetails) {
       if (settings.arguments is FoodItem) {
         final foodItem = settings.arguments as FoodItem;
@@ -120,7 +126,7 @@ class AppRoutes {
               ElevatedButton(
                 onPressed: () => Navigator.pushNamedAndRemoveUntil(
                   context,
-                  AppRoutes.main,
+                  AppRoutes.home,
                       (route) => false,
                 ),
                 child: const Text('Go Home'),
