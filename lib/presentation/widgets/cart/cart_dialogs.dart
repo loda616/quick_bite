@@ -38,47 +38,4 @@ class CartDialogs {
     );
   }
 
-  static void showCheckoutDialog(BuildContext context, CartState state) {
-    final deliveryFee = state.total > 25 ? 0.0 : 5.0;
-    final totalWithDelivery = state.total + deliveryFee;
-    final l10n = AppLocalizations.of(context)!;
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.checkout),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('${l10n.checkout} ${l10n.total}:'),
-            const SizedBox(height: 8),
-            Text('${l10n.cart}: ${state.itemCount}'),
-            Text('${l10n.total}: \$${totalWithDelivery.toStringAsFixed(2)}'),
-            const SizedBox(height: 16),
-            Text('${l10n.checkout} functionality will be implemented soon!'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, AppRoutes.orders);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Order placed successfully! (Demo)'),
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                ),
-              );
-            },
-            child: Text('Place Order'),
-          ),
-        ],
-      ),
-    );
-  }
 }

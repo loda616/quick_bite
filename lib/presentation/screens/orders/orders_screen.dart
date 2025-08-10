@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quick_bite/presentation/view_models/cubit/order_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/order_state.dart';
-
+import '../../../core/routs/routes.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../widgets/common/standard_app_bar.dart';
 
 class OrdersScreen extends StatelessWidget {
   const OrdersScreen({super.key});
@@ -15,15 +16,8 @@ class OrdersScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.orders),
-        backgroundColor: theme.scaffoldBackgroundColor,
-        elevation: 0,
-        iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
-        titleTextStyle: theme.textTheme.titleLarge?.copyWith(
-          color: theme.colorScheme.onSurface,
-          fontWeight: FontWeight.bold,
-        ),
+      appBar: StandardAppBar(
+        title: l10n.orders,
         actions: [
           IconButton(
             icon: Icon(
@@ -91,7 +85,12 @@ class OrdersScreen extends StatelessWidget {
                   ElevatedButton.icon(
                     onPressed: () {
                       // Navigate to menu/home
-                      Navigator.pushReplacementNamed(context, '/home');
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        AppRoutes.main,
+                        (route) => false,
+                        arguments: {'initialIndex': 0},
+                      );
                     },
                     icon: const Icon(Icons.restaurant_menu),
                     label: Text(l10n.browseMenu),

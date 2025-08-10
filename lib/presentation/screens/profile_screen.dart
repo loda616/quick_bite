@@ -5,6 +5,7 @@ import 'package:quick_bite/presentation/view_models/stats/profile_state.dart';
 import 'package:quick_bite/presentation/widgets/profile/profile_info_card.dart';
 
 import '../../l10n/generated/app_localizations.dart';
+import '../widgets/common/standard_app_bar.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -291,15 +292,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context, ThemeData theme, AppLocalizations l10n) {
-    return AppBar(
-      title: Text(l10n.profile),
-      backgroundColor: theme.scaffoldBackgroundColor,
-      elevation: 0,
-      iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
-      titleTextStyle: theme.textTheme.titleLarge?.copyWith(
-        color: theme.colorScheme.onSurface,
-        fontWeight: FontWeight.bold,
-      ),
+    return StandardAppBar(
+      title: l10n.profile,
     );
   }
 

@@ -114,7 +114,7 @@ class CartSummary extends StatelessWidget {
                   flex: 2,
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      CartDialogs.showCheckoutDialog(context, state);
+                      Navigator.pushNamed(context, AppRoutes.checkout);
                     },
                     icon: const Icon(Icons.payment, size: 18), // Reduced icon size
                     label: Text(

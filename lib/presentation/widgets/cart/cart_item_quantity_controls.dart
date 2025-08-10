@@ -41,7 +41,7 @@ class CartItemQuantityControls extends StatelessWidget {
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: AppTheme.accentColor,
+              color: Colors.white,
             ),
           ),
         ),
