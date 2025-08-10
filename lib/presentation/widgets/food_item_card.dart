@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quick_bite/data/models/food_item.dart';
+import 'package:quick_bite/presentation/view_models/cubit/favorites_cubit.dart';
+import 'package:quick_bite/presentation/view_models/stats/favorites_state.dart';
 
 class FoodItemCard extends StatelessWidget {
   final FoodItem item;
@@ -33,12 +36,43 @@ class FoodItemCard extends StatelessWidget {
             // Image Container with fixed height
             Expanded(
               flex: 3, // Takes 3/5 of the card height
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primary.withOpacity(0.1),
-                ),
-                child: _buildItemImage(),
+              child: Stack(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary.withOpacity(0.1),
+                    ),
+                    child: _buildItemImage(),
+                  ),
+                  // Favorite button overlay
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: BlocBuilder<FavoritesCubit, FavoritesState>(
+                      builder: (context, state) {
+                        final isFavorite = state.isFavorite(item.id);
+                        return GestureDetector(
+                          onTap: () {
+                            context.read<FavoritesCubit>().toggleFavorite(item.id);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.9),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              isFavorite ? Icons.favorite : Icons.favorite_border,
+                              size: 16,
+                              color: isFavorite ? Colors.red : Colors.grey,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
 

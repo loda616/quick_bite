@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quick_bite/data/models/food_item.dart';
+import 'package:quick_bite/presentation/view_models/cubit/favorites_cubit.dart';
+import 'package:quick_bite/presentation/view_models/stats/favorites_state.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
 
@@ -44,17 +47,30 @@ class FoodDetailsAppBar extends StatelessWidget {
         ),
       ),
       actions: [
-        IconButton(
-          icon: const Icon(Icons.favorite_border),
-          onPressed: () {
-            // TODO: Implement favorite functionality
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Favorites feature coming soon!'),
+        BlocBuilder<FavoritesCubit, FavoritesState>(
+          builder: (context, state) {
+            final isFavorite = state.isFavorite(item.id);
+            return IconButton(
+              icon: Icon(
+                isFavorite ? Icons.favorite : Icons.favorite_border,
+                color: isFavorite ? Colors.red : Colors.white,
               ),
+              onPressed: () {
+                context.read<FavoritesCubit>().toggleFavorite(item.id);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      isFavorite 
+                        ? 'Removed from favorites' 
+                        : 'Added to favorites',
+                    ),
+                    duration: const Duration(seconds: 1),
+                  ),
+                );
+              },
+              tooltip: isFavorite ? 'Remove from Favorites' : 'Add to Favorites',
             );
           },
-          tooltip: 'Add to Favorites',
         ),
         IconButton(
           icon: const Icon(Icons.share),

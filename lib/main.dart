@@ -3,12 +3,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:quick_bite/data/datasources/local/secure_storage_service.dart';
+import 'package:quick_bite/data/datasources/local/favorites_database_service.dart';
 import 'package:quick_bite/data/datasources/remote/api_service.dart';
 import 'package:quick_bite/data/datasources/remote/menu_api_service.dart';
 import 'package:quick_bite/data/repository/auth_repository_impl.dart';
 import 'package:quick_bite/data/repository/menu_repository_impl.dart';
+import 'package:quick_bite/data/repository/favorites_repository_impl.dart';
 import 'package:quick_bite/domin/repository/auth_repository.dart';
 import 'package:quick_bite/domin/repository/menu_repository.dart';
+import 'package:quick_bite/domin/repository/favorites_repository.dart';
 import 'package:quick_bite/presentation/view_models/cubit/auth_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/menu_cubit.dart';
@@ -17,6 +20,7 @@ import 'package:quick_bite/presentation/view_models/cubit/order_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/language_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/notification_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/theme_cubit.dart';
+import 'package:quick_bite/presentation/view_models/cubit/favorites_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/auth_stat.dart';
 import 'package:quick_bite/presentation/view_models/stats/language_state.dart';
 import 'package:quick_bite/presentation/screens/auth/login_screen.dart';
@@ -58,6 +62,11 @@ class QuickBiteApp extends StatelessWidget {
           create: (context) => SecureStorageService(prefs),
         ),
 
+        // Favorites Database Service
+        RepositoryProvider<FavoritesDatabaseService>(
+          create: (context) => FavoritesDatabaseService(),
+        ),
+
         // API Services
         RepositoryProvider<ApiService>(
           create: (context) => ApiService(DioClient.getDio()),
@@ -76,6 +85,12 @@ class QuickBiteApp extends StatelessWidget {
         RepositoryProvider<MenuRepository>(
           create: (context) => MenuRepositoryImpl(
             context.read<MenuApiService>(),
+          ),
+        ),
+        RepositoryProvider<FavoritesRepository>(
+          create: (context) => FavoritesRepositoryImpl(
+            context.read<FavoritesDatabaseService>(),
+            context.read<MenuRepository>(),
           ),
         ),
       ],
@@ -125,6 +140,13 @@ class QuickBiteApp extends StatelessWidget {
           // Order Cubit
           BlocProvider<OrderCubit>(
             create: (context) => OrderCubit(),
+          ),
+
+          // Favorites Cubit
+          BlocProvider<FavoritesCubit>(
+            create: (context) => FavoritesCubit(
+              context.read<FavoritesRepository>(),
+            ),
           ),
         ],
         child: BlocBuilder<ThemeCubit, ThemeState>(
