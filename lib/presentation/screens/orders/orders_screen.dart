@@ -87,8 +87,9 @@ class OrdersScreen extends StatelessWidget {
                       // Navigate to menu/home
                       Navigator.pushNamedAndRemoveUntil(
                         context,
-                        AppRoutes.home,
+                        AppRoutes.main,
                         (route) => false,
+                        arguments: {'initialIndex': 0},
                       );
                     },
                     icon: const Icon(Icons.restaurant_menu),

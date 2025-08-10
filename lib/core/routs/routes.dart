@@ -37,11 +37,15 @@ class AppRoutes {
     final routeName = settings.name;
 
     if (routeName == initial) {
-      return MaterialPageRoute(builder: (context) => const MainScreen());
+      final args = settings.arguments as Map<String, dynamic>?;
+      final initialIndex = args?['initialIndex'] as int? ?? 0;
+      return MaterialPageRoute(builder: (context) => MainScreen(initialIndex: initialIndex));
     }
 
     if (routeName == main) {
-      return MaterialPageRoute(builder: (context) => const MainScreen());
+      final args = settings.arguments as Map<String, dynamic>?;
+      final initialIndex = args?['initialIndex'] as int? ?? 0;
+      return MaterialPageRoute(builder: (context) => MainScreen(initialIndex: initialIndex));
     }
 
     if (routeName == home) {

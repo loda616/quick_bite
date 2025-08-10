@@ -294,8 +294,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
     Navigator.pushNamedAndRemoveUntil(
       context,
-      AppRoutes.orders,
+      AppRoutes.main,
       (route) => false,
+      arguments: {'initialIndex': 2},
     );
   }
 }
