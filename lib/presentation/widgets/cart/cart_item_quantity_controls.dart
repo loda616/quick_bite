@@ -19,11 +19,12 @@ class CartItemQuantityControls extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: AppTheme.primaryColor,
+            color: Theme.of(context).colorScheme.primary,
             borderRadius: BorderRadius.circular(6),
           ),
           child: IconButton(
-            icon: const Icon(Icons.add, color: Colors.white, size: 18),
+            icon: Icon(Icons.add,
+                color: Theme.of(context).colorScheme.onPrimary, size: 18),
             onPressed: () {
               context.read<CartCubit>().incrementItem(item.item.id);
             },
@@ -38,10 +39,10 @@ class CartItemQuantityControls extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Text(
             '${item.quantity}',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ),
@@ -51,7 +52,8 @@ class CartItemQuantityControls extends StatelessWidget {
             borderRadius: BorderRadius.circular(6),
           ),
           child: IconButton(
-            icon: const Icon(Icons.remove, color: Colors.white, size: 18),
+            icon: Icon(Icons.remove,
+                color: Theme.of(context).colorScheme.onSurface, size: 18),
             onPressed: () {
               context.read<CartCubit>().decrementItem(item.item.id);
             },
