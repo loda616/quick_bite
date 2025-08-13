@@ -13,5 +13,4 @@ class AppColors {
   static const Color error = AppTheme.errorColor;
   static const Color success = AppTheme.successColor;
   static const Color warning = AppTheme.warningColor;
-  static const Color orange = AppTheme.primaryColor; // Remove duplicate orange definition
 }
