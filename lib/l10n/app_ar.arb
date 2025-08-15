@@ -163,5 +163,14 @@
 
   "loadingDeliciousFood": "جاري تحميل الطعام اللذيذ...",
   "noItemsFound": "لم يتم العثور على عناصر",
-  "tryDifferentCategory": "جرب اختيار فئة مختلفة"
+  "tryDifferentCategory": "جرب اختيار فئة مختلفة",
+
+  "shareText": "اكتشف هذا الطبق الشهي {itemName} على كويك بايت!",
+  "@shareText": {
+    "placeholders": {
+      "itemName": {
+        "type": "String"
+      }
+    }
+  }
 }
