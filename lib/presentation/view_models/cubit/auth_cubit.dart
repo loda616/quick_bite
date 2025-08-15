@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../core/error/exceptions.dart';
 import '../../../data/models/request/forget_password_request.dart';
 import '../../../data/models/request/register_request_model.dart';
 import '../../../domin/repository/auth_repository.dart';
@@ -17,12 +18,9 @@ class AuthCubit extends Cubit<AuthState> {
   void quickCheckAuthStatus() {
     print('=== QUICK AUTH CHECK ===');
 
-    // Cast to implementation to access quick methods
-    final authRepo = _authRepository as dynamic;
-
-    if (authRepo.isQuickLoggedIn()) {
-      final quickUserName = authRepo.getQuickUserName();
-      final quickUserEmail = authRepo.getQuickUserEmail();
+    if (_authRepository.isQuickLoggedIn()) {
+      final quickUserName = _authRepository.getQuickUserName();
+      final quickUserEmail = _authRepository.getQuickUserEmail();
 
       print('✓ Quick auth check: User is logged in');
       print('Quick user name: $quickUserName');
@@ -50,8 +48,7 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       print('=== BACKGROUND AUTH VALIDATION ===');
 
-      final authRepo = _authRepository as dynamic;
-      final isFullyAuthenticated = await authRepo.isFullyAuthenticated();
+      final isFullyAuthenticated = await _authRepository.isFullyAuthenticated();
 
       if (!isFullyAuthenticated) {
         print('❌ Background validation failed - logging out');
@@ -72,8 +69,7 @@ class AuthCubit extends Cubit<AuthState> {
   /// Load complete user data
   Future<void> _loadUserData() async {
     try {
-      final authRepo = _authRepository as dynamic;
-      final userInfo = await authRepo.getAllUserInfo();
+      final userInfo = await _authRepository.getAllUserInfo();
 
       emit(state.copyWith(
         userName: userInfo['userName'] ?? userInfo['quickUserName'],
@@ -148,12 +144,23 @@ class AuthCubit extends Cubit<AuthState> {
         successMessage: 'Login successful! Welcome back.',
       ));
 
-    } catch (e) {
-      print('❌ Login failed: $e');
+    } on ServerException catch (e) {
+      print('❌ Login failed: ${e.message}');
       emit(state.copyWith(
         isAuthenticated: false,
         isLoading: false,
-        errorMessage: e.toString(),
+        errorMessage: e.message, // Use the message from the custom exception
+        userName: null,
+        userEmail: null,
+        userId: null,
+        userRole: null,
+      ));
+    } catch (e) {
+      print('❌ Login failed with unexpected error: $e');
+      emit(state.copyWith(
+        isAuthenticated: false,
+        isLoading: false,
+        errorMessage: 'An unexpected error occurred. Please try again.',
         userName: null,
         userEmail: null,
         userId: null,
@@ -249,8 +256,7 @@ class AuthCubit extends Cubit<AuthState> {
   /// Refresh user data from token
   Future<void> refreshUserData() async {
     try {
-      final authRepo = _authRepository as dynamic;
-      await authRepo.refreshUserDataFromToken();
+      await _authRepository.refreshUserDataFromToken();
       await _loadUserData();
     } catch (e) {
       print('Error refreshing user data: $e');
@@ -260,8 +266,7 @@ class AuthCubit extends Cubit<AuthState> {
   /// Validate storage consistency
   Future<bool> validateStorageConsistency() async {
     try {
-      final authRepo = _authRepository as dynamic;
-      return await authRepo.validateStorageConsistency();
+      return await _authRepository.validateStorageConsistency();
     } catch (e) {
       print('Error validating storage consistency: $e');
       return false;
@@ -271,8 +276,7 @@ class AuthCubit extends Cubit<AuthState> {
   /// Get authentication summary for debugging
   Future<Map<String, dynamic>> getAuthSummary() async {
     try {
-      final authRepo = _authRepository as dynamic;
-      return await authRepo.getAuthSummary();
+      return await _authRepository.getAuthSummary();
     } catch (e) {
       print('Error getting auth summary: $e');
       return {};
