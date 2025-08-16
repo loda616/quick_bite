@@ -1,39 +1,32 @@
 import 'dart:async';
+import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:quick_bite/core/routs/routes.dart';
 import 'package:quick_bite/domin/repository/menu_repository.dart';
-import 'package:uni_links/uni_links.dart';
 
 class DeepLinkService {
   final MenuRepository menuRepository;
   final GlobalKey<NavigatorState> navigatorKey;
 
-  StreamSubscription? _sub;
+  final _appLinks = AppLinks();
+  StreamSubscription<Uri>? _sub;
 
   DeepLinkService({required this.menuRepository, required this.navigatorKey});
 
   Future<void> init() async {
-    try {
-      // Handle initial link
-      final initialUri = await getInitialUri();
-      if (initialUri != null) {
-        _handleLink(initialUri);
-      }
-
-      // Handle subsequent links
-      _sub = uriLinkStream.listen((Uri? uri) {
-        if (uri != null) {
-          _handleLink(uri);
-        }
-      }, onError: (err) {
-        // Handle errors
-        print('Error listening to uni_links: $err');
-      });
-    } on PlatformException {
-      // Handle exception
-      print('Failed to get initial link.');
+    // Handle initial link
+    final initialUri = await _appLinks.getInitialAppLink();
+    if (initialUri != null) {
+      _handleLink(initialUri);
     }
+
+    // Handle subsequent links
+    _sub = _appLinks.uriLinkStream.listen((Uri uri) {
+      _handleLink(uri);
+    }, onError: (err) {
+      // Handle errors
+      print('Error listening to app_links: $err');
+    });
   }
 
   void _handleLink(Uri uri) {
