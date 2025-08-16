@@ -148,28 +148,39 @@ Provides a server-side search functionality for finding food items.
 
 ## Checkout API
 
-Handles the payment process for an order.
+Handles the creation and payment of an order.
 
-### 1. Process Payment
+### 1. Create Order & Process Payment
 
-- **Endpoint:** `POST /checkout/pay`
-- **Description:** Processes the payment for the user's current order. This endpoint would integrate with a payment gateway (e.g., Stripe, PayPal).
+- **Endpoint:** `POST /checkout`
+- **Description:** Creates a new order and processes the payment. This is a single, atomic operation to ensure data consistency.
 - **Request Body:**
   ```json
   {
-    "orderId": "order_xyz_789",
-    "paymentMethod": "stripe",
+    "cartItems": [
+      {
+        "foodItemId": "food_item_123",
+        "quantity": 2
+      },
+      {
+        "foodItemId": "food_item_456",
+        "quantity": 1
+      }
+    ],
+    "deliveryOption": "express",
+    "paymentMethod": "card",
     "paymentToken": "tok_1J2x3y4z5"
   }
   ```
-- **Successful Response (200 OK):**
+- **Successful Response (201 Created):**
   ```json
   {
     "status": "success",
     "data": {
-      "orderId": "order_xyz_789",
-      "transactionId": "txn_abc_123",
-      "status": "paid"
+      "orderId": "order_new_123",
+      "transactionId": "txn_new_456",
+      "status": "paid",
+      "estimatedDeliveryTime": "15-20 minutes"
     }
   }
   ```
@@ -177,14 +188,14 @@ Handles the payment process for an order.
   ```json
   {
     "status": "error",
-    "message": "Invalid payment token or order ID."
+    "message": "Invalid request body. Please check cart items and payment details."
   }
   ```
 - **Error Response (500 Internal Server Error):**
   ```json
   {
     "status": "error",
-    "message": "Payment processing failed."
+    "message": "Order creation or payment processing failed."
   }
   ```
 
