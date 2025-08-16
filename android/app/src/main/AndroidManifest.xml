@@ -25,13 +25,22 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
             <!-- Deep linking -->
+            <!-- Handles https://quickbite.dev/item/... -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="https"
-                    android:host="quickbite.dev" />
+                    android:host="quickbite.dev"
+                    android:pathPrefix="/item" />
+            </intent-filter>
+            <!-- Handles quickbite://item/... -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="quickbite" android:host="item" />
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
