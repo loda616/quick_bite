@@ -7,7 +7,7 @@ abstract class AuthRepository {
   // =============================================================================
   // CORE AUTHENTICATION METHODS
   // =============================================================================
-  Future<LoginResponseModel> login(String email, String password);
+  Future<LoginResponseModel> login(String email, String password, {bool rememberMe = true});
   Future<void> register(RegisterRequestModel registerRequest);
   Future<void> forgetPassword(ForgetPasswordRequest forgetPasswordRequest);
   Future<void> logout();

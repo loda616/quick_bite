@@ -9,6 +9,7 @@
   "emailAddress": "Email Address",
   "password": "Password",
   "forgotPassword": "Forgot Password?",
+  "rememberMe": "Remember Me",
   "signIn": "Sign In",
   "dontHaveAccount": "Don't have an account? ",
   "signUp": "Sign Up",
@@ -205,5 +206,14 @@
 
   "loadingDeliciousFood": "Loading delicious food...",
   "noItemsFound": "No items found",
-  "tryDifferentCategory": "Try selecting a different category"
+  "tryDifferentCategory": "Try selecting a different category",
+
+  "shareText": "Check out this delicious {itemName} on QuickBite!",
+  "@shareText": {
+    "placeholders": {
+      "itemName": {
+        "type": "String"
+      }
+    }
+  }
 }

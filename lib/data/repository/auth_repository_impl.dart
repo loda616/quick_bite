@@ -15,7 +15,7 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this._apiService, this._secureStorage);
 
   @override
-  Future<LoginResponseModel> login(String email, String password) async {
+  Future<LoginResponseModel> login(String email, String password, {bool rememberMe = true}) async {
     try {
       print('=== STARTING LOGIN REQUEST ===');
       print('Email: $email');
@@ -77,6 +77,7 @@ class AuthRepositoryImpl implements AuthRepository {
           userName: userName,
           userEmail: email, // Save the email used for login
           userRole: userRole,
+          rememberMe: rememberMe,
         );
 
         print('✓ Authentication data saved successfully');
@@ -90,6 +91,7 @@ class AuthRepositoryImpl implements AuthRepository {
           token: loginResponse.token,
           expiration: loginResponse.expirationDateTime,
           userEmail: email,
+          rememberMe: rememberMe,
         );
       }
 

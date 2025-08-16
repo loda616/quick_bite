@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quick_bite/data/models/food_item.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
 
@@ -59,12 +60,11 @@ class FoodDetailsAppBar extends StatelessWidget {
         IconButton(
           icon: const Icon(Icons.share),
           onPressed: () {
-            // TODO: Implement share functionality
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Share feature coming soon!'),
-              ),
-            );
+            final String itemUrl = 'https://quickbite.dev/item/${item.id}';
+            final String shareText =
+                '${l10n.shareText(item.name)}\n\n$itemUrl';
+
+            Share.share(shareText);
           },
           tooltip: 'Share',
         ),

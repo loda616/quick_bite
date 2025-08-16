@@ -77,22 +77,28 @@ class SecureStorageService {
     String? userName,
     String? userEmail,
     String? userRole,
+    bool rememberMe = true,
   }) async {
     // Save to secure storage
     await Future.wait([
       _storage.write(key: _tokenKey, value: token),
-      _storage.write(key: _tokenExpirationKey, value: expiration.toIso8601String()),
+      _storage.write(
+          key: _tokenExpirationKey, value: expiration.toIso8601String()),
       if (userId != null) _storage.write(key: _userIdKey, value: userId),
       if (userName != null) _storage.write(key: _userNameKey, value: userName),
       if (userEmail != null) _storage.write(key: _userEmailKey, value: userEmail),
       if (userRole != null) _storage.write(key: _userRoleKey, value: userRole),
     ]);
 
-    // Save quick access data
-    await Future.wait([
-      saveQuickLoginStatus(true),
-      saveQuickUserInfo(userName: userName, userEmail: userEmail),
-    ]);
+    // Save quick access data if rememberMe is true
+    if (rememberMe) {
+      await Future.wait([
+        saveQuickLoginStatus(true),
+        saveQuickUserInfo(userName: userName, userEmail: userEmail),
+      ]);
+    } else {
+      await clearQuickData();
+    }
   }
 
   // Token management

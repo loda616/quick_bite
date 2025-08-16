@@ -17,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _passwordVisible = false;
+  bool _rememberMe = true;
 
   @override
   void dispose() {
@@ -29,9 +30,10 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_formKey.currentState!.validate()) {
       FocusScope.of(context).unfocus();
       await context.read<AuthCubit>().login(
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
-      );
+            _emailController.text.trim(),
+            _passwordController.text.trim(),
+            rememberMe: _rememberMe,
+          );
     }
   }
 
@@ -183,6 +185,24 @@ class _LoginScreenState extends State<LoginScreen> {
                         return null;
                       },
                       onFieldSubmitted: (value) => _login(),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Remember Me Checkbox
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: _rememberMe,
+                          onChanged: (value) {
+                            if (value != null) {
+                              setState(() {
+                                _rememberMe = value;
+                              });
+                            }
+                          },
+                        ),
+                        Text(l10n.rememberMe),
+                      ],
                     ),
                     const SizedBox(height: 8),
 
