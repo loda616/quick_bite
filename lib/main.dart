@@ -26,8 +26,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/network/dio_client.dart';
 import 'core/routs/routes.dart';
+import 'core/services/deep_link_service.dart';
 import 'core/theme/app_theme.dart';
 import 'l10n/generated/app_localizations.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,10 +47,17 @@ void main() async {
   runApp(QuickBiteApp(prefs: prefs));
 }
 
-class QuickBiteApp extends StatelessWidget {
+class QuickBiteApp extends StatefulWidget {
   final SharedPreferences prefs;
 
   const QuickBiteApp({super.key, required this.prefs});
+
+  @override
+  State<QuickBiteApp> createState() => _QuickBiteAppState();
+}
+
+class _QuickBiteAppState extends State<QuickBiteApp> {
+  late final DeepLinkService _deepLinkService;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +65,7 @@ class QuickBiteApp extends StatelessWidget {
       providers: [
         // Storage Service
         RepositoryProvider<SecureStorageService>(
-          create: (context) => SecureStorageService(prefs),
+          create: (context) => SecureStorageService(widget.prefs),
         ),
 
         // API Services
@@ -83,17 +93,17 @@ class QuickBiteApp extends StatelessWidget {
         providers: [
           // Theme Cubit - Initialize first for system theme detection
           BlocProvider<ThemeCubit>(
-            create: (context) => ThemeCubit(prefs),
+            create: (context) => ThemeCubit(widget.prefs),
           ),
 
           // Language Cubit
           BlocProvider<LanguageCubit>(
-            create: (context) => LanguageCubit(prefs),
+            create: (context) => LanguageCubit(widget.prefs),
           ),
 
           // Notification Cubit
           BlocProvider<NotificationCubit>(
-            create: (context) => NotificationCubit(prefs),
+            create: (context) => NotificationCubit(widget.prefs),
           ),
 
           // Auth Cubit
@@ -127,42 +137,54 @@ class QuickBiteApp extends StatelessWidget {
             create: (context) => OrderCubit(),
           ),
         ],
-        child: BlocBuilder<ThemeCubit, ThemeState>(
-          builder: (context, themeState) {
-            return BlocBuilder<LanguageCubit, LanguageState>(
-              builder: (context, languageState) {
-                return BlocBuilder<AuthCubit, AuthState>(
-                  builder: (context, authState) {
-                    return MaterialApp(
-                      title: 'QuickBite',
-                      debugShowCheckedModeBanner: false,
+        child: Builder(
+          builder: (context) {
+            // Initialize DeepLinkService here where context is available
+            _deepLinkService = DeepLinkService(
+              menuRepository: context.read<MenuRepository>(),
+              navigatorKey: navigatorKey,
+            );
+            _deepLinkService.init();
 
-                      // Localization Configuration
-                      localizationsDelegates: const [
-                        AppLocalizations.delegate,
-                        GlobalMaterialLocalizations.delegate,
-                        GlobalWidgetsLocalizations.delegate,
-                        GlobalCupertinoLocalizations.delegate,
-                      ],
-                      supportedLocales: const [
-                        Locale('en', 'US'),
-                        Locale('ar', 'SA'),
-                      ],
-                      locale: languageState.locale,
+            return BlocBuilder<ThemeCubit, ThemeState>(
+              builder: (context, themeState) {
+                return BlocBuilder<LanguageCubit, LanguageState>(
+                  builder: (context, languageState) {
+                    return BlocBuilder<AuthCubit, AuthState>(
+                      builder: (context, authState) {
+                        return MaterialApp(
+                          title: 'QuickBite',
+                          debugShowCheckedModeBanner: false,
+                          navigatorKey: navigatorKey,
 
-                      // Theme Configuration
-                      theme: AppTheme.lightTheme,
-                      darkTheme: AppTheme.darkTheme,
-                      themeMode: themeState.flutterThemeMode,
+                          // Localization Configuration
+                          localizationsDelegates: const [
+                            AppLocalizations.delegate,
+                            GlobalMaterialLocalizations.delegate,
+                            GlobalWidgetsLocalizations.delegate,
+                            GlobalCupertinoLocalizations.delegate,
+                          ],
+                          supportedLocales: const [
+                            Locale('en', 'US'),
+                            Locale('ar', 'SA'),
+                          ],
+                          locale: languageState.locale,
 
-                      // Route Configuration
-                      onGenerateRoute: AppRoutes.generateRoute,
-                      home: _getInitialScreen(context, authState),
+                          // Theme Configuration
+                          theme: AppTheme.lightTheme,
+                          darkTheme: AppTheme.darkTheme,
+                          themeMode: themeState.flutterThemeMode,
 
-                      // App Lifecycle Listener for System Theme Changes
-                      builder: (context, child) {
-                        return SystemThemeListener(
-                          child: child!,
+                          // Route Configuration
+                          onGenerateRoute: AppRoutes.generateRoute,
+                          home: _getInitialScreen(context, authState),
+
+                          // App Lifecycle Listener for System Theme Changes
+                          builder: (context, child) {
+                            return SystemThemeListener(
+                              child: child!,
+                            );
+                          },
                         );
                       },
                     );
@@ -170,7 +192,7 @@ class QuickBiteApp extends StatelessWidget {
                 );
               },
             );
-          },
+          }
         ),
       ),
     );
@@ -184,6 +206,12 @@ class QuickBiteApp extends StatelessWidget {
 
     // Navigate to MainScreen when authenticated, LoginScreen when not
     return authState.isAuthenticated ? const MainScreen() : const LoginScreen();
+  }
+
+  @override
+  void dispose() {
+    _deepLinkService.dispose();
+    super.dispose();
   }
 }
 

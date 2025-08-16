@@ -17,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _passwordVisible = false;
+  bool _rememberMe = true;
 
   @override
   void dispose() {
@@ -29,9 +30,10 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_formKey.currentState!.validate()) {
       FocusScope.of(context).unfocus();
       await context.read<AuthCubit>().login(
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
-      );
+            _emailController.text.trim(),
+            _passwordController.text.trim(),
+            rememberMe: _rememberMe,
+          );
     }
   }
 
@@ -45,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.errorMessage!),
-              backgroundColor: Colors.red,
+              backgroundColor: Theme.of(context).colorScheme.error,
               duration: const Duration(seconds: 4),
             ),
           );
@@ -184,6 +186,24 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                       onFieldSubmitted: (value) => _login(),
                     ),
+                    const SizedBox(height: 16),
+
+                    // Remember Me Checkbox
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: _rememberMe,
+                          onChanged: (value) {
+                            if (value != null) {
+                              setState(() {
+                                _rememberMe = value;
+                              });
+                            }
+                          },
+                        ),
+                        Text(l10n.rememberMe),
+                      ],
+                    ),
                     const SizedBox(height: 8),
 
                     // Forgot Password Link
@@ -260,8 +280,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         textAlign: TextAlign.center,
                         text: TextSpan(
                           text: l10n.dontHaveAccount,
-                          style: const TextStyle(
-                            color: Colors.black87,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface,
                             fontSize: 16,
                           ),
                           children: [

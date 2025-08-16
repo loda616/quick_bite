@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:quick_bite/data/models/request/forget_password_request.dart';
+import '../../core/error/exceptions.dart';
 import '../../core/utilz/jwt_helper.dart';
 import '../../domin/repository/auth_repository.dart';
 import '../datasources/local/secure_storage_service.dart';
@@ -14,7 +15,7 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this._apiService, this._secureStorage);
 
   @override
-  Future<LoginResponseModel> login(String email, String password) async {
+  Future<LoginResponseModel> login(String email, String password, {bool rememberMe = true}) async {
     try {
       print('=== STARTING LOGIN REQUEST ===');
       print('Email: $email');
@@ -29,28 +30,6 @@ class AuthRepositoryImpl implements AuthRepository {
       print('=== LOGIN RESPONSE RECEIVED ===');
       print('Status Code: ${response.response.statusCode}');
       print('Response Data: ${response.response.data}');
-
-      // Check if the response is successful
-      if (response.response.statusCode != 200) {
-        final errorData = response.response.data;
-        print('=== LOGIN FAILED ===');
-        print('Status Code: ${response.response.statusCode}');
-        print('Error Data: $errorData');
-        
-        // Handle different error status codes
-        switch (response.response.statusCode) {
-          case 400:
-            throw Exception('Invalid email or password format');
-          case 401:
-            throw Exception('Invalid email or password');
-          case 404:
-            throw Exception('Login endpoint not found');
-          case 500:
-            throw Exception('Server error occurred');
-          default:
-            throw Exception('Login failed with status ${response.response.statusCode}');
-        }
-      }
 
       final responseData = response.response.data;
       if (responseData == null || responseData is! Map<String, dynamic>) {
@@ -98,6 +77,7 @@ class AuthRepositoryImpl implements AuthRepository {
           userName: userName,
           userEmail: email, // Save the email used for login
           userRole: userRole,
+          rememberMe: rememberMe,
         );
 
         print('✓ Authentication data saved successfully');
@@ -111,6 +91,7 @@ class AuthRepositoryImpl implements AuthRepository {
           token: loginResponse.token,
           expiration: loginResponse.expirationDateTime,
           userEmail: email,
+          rememberMe: rememberMe,
         );
       }
 
@@ -122,37 +103,32 @@ class AuthRepositoryImpl implements AuthRepository {
       print('Response Data: ${dioError.response?.data}');
       print('Error Message: ${dioError.message}');
 
-      // Handle DioException errors (network issues, timeouts, etc.)
+      // Handle DioException errors by throwing custom server exceptions
       switch (dioError.response?.statusCode) {
         case 400:
-          // Bad request - usually invalid credentials
-          final errorDetail = dioError.response?.data?.toString() ?? 'Invalid request format';
-          throw Exception('Invalid email or password: $errorDetail');
+          throw const BadRequestException('Invalid request format.');
         case 401:
-          throw Exception('Invalid email or password');
+          throw const InvalidCredentialsException('Invalid email or password.');
         case 404:
-          throw Exception('Login service not available');
+          throw const NotFoundException('Login service not found.');
         case 500:
-          final errorDetail = dioError.response?.data?.toString() ?? 'Server error';
-          throw Exception('Server error: $errorDetail');
+          throw const InternalServerErrorException('An unexpected server error occurred.');
         case null:
-          // Network error (no response received)
-          throw Exception('Network error: Unable to connect to server. Please check your internet connection.');
+          throw const NetworkException('Please check your internet connection.');
         default:
-          final errorDetail = dioError.response?.data?.toString() ?? dioError.message ?? 'Unknown error';
-          throw Exception('Login failed: $errorDetail');
+          throw UnknownServerException('An unknown error occurred: ${dioError.message}');
       }
     } catch (e) {
       print('=== GENERAL ERROR ===');
       print('Error: $e');
-      
-      // If it's already our custom exception, rethrow it
-      if (e.toString().startsWith('Exception: ')) {
+
+      // If it's one of our custom exceptions, rethrow it
+      if (e is ServerException) {
         rethrow;
       }
-      
-      // Otherwise, wrap it in a generic error
-      throw Exception('Login failed: ${e.toString()}');
+
+      // Otherwise, wrap it in a generic unknown exception
+      throw UnknownServerException('An unexpected error occurred: ${e.toString()}');
     }
   }
 
