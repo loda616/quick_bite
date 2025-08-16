@@ -93,11 +93,10 @@ class SettingsScreen extends StatelessWidget {
               Icons.info_outline,
               color: Theme.of(context).colorScheme.primary,
             ),
-            title: Text(l10n.appVersion),
-            subtitle: const Text('1.0.0'),
+            title: Text(l10n.about),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () {
-              _showAboutDialog(context);
+              Navigator.pushNamed(context, '/about');
             },
           ),
 
@@ -125,11 +124,7 @@ class SettingsScreen extends StatelessWidget {
             title: Text(l10n.privacyPolicy),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(l10n.privacyPolicy + ' coming soon!'),
-                ),
-              );
+              Navigator.pushNamed(context, '/privacy-policy');
             },
           ),
 
@@ -313,23 +308,4 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  void _showAboutDialog(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    showAboutDialog(
-      context: context,
-      applicationName: l10n.appTitle,
-      applicationVersion: '1.0.0',
-      applicationIcon: Icon(
-        Icons.restaurant,
-        size: 48,
-        color: Theme.of(context).colorScheme.primary,
-      ),
-      children: [
-        Text(l10n.appTagline),
-        const SizedBox(height: 16),
-        Text(l10n.builtWithFlutter),
-      ],
-    );
-  }
 }

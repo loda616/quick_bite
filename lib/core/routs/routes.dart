@@ -14,6 +14,8 @@ import 'package:quick_bite/data/models/food_item.dart';
 import '../../presentation/screens/food_details/favorites_screen.dart';
 import '../../presentation/screens/food_details/food_item_details_screen.dart';
 import '../../presentation/screens/checkout/checkout_screen.dart';
+import '../../presentation/screens/settings/about_screen.dart';
+import '../../presentation/screens/settings/privacy_policy_screen.dart';
 
 
 class AppRoutes {
@@ -32,6 +34,8 @@ class AppRoutes {
   static const String profile = '/profile';
   static const String favorites = '/favorites';
   static const String checkout = '/checkout';
+  static const String about = '/about';
+  static const String privacyPolicy = '/privacy-policy';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final routeName = settings.name;
@@ -90,6 +94,14 @@ class AppRoutes {
 
     if (routeName == checkout) {
       return MaterialPageRoute(builder: (context) => const CheckoutScreen());
+    }
+
+    if (routeName == about) {
+      return MaterialPageRoute(builder: (context) => const AboutScreen());
+    }
+
+    if (routeName == privacyPolicy) {
+      return MaterialPageRoute(builder: (context) => const PrivacyPolicyScreen());
     }
 
     if (routeName == foodDetails) {
