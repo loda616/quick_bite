@@ -143,3 +143,89 @@ Provides a server-side search functionality for finding food items.
     "message": "Search query parameter 'q' is required."
   }
   ```
+
+---
+
+## Checkout API
+
+Handles the payment process for an order.
+
+### 1. Process Payment
+
+- **Endpoint:** `POST /checkout/pay`
+- **Description:** Processes the payment for the user's current order. This endpoint would integrate with a payment gateway (e.g., Stripe, PayPal).
+- **Request Body:**
+  ```json
+  {
+    "orderId": "order_xyz_789",
+    "paymentMethod": "stripe",
+    "paymentToken": "tok_1J2x3y4z5"
+  }
+  ```
+- **Successful Response (200 OK):**
+  ```json
+  {
+    "status": "success",
+    "data": {
+      "orderId": "order_xyz_789",
+      "transactionId": "txn_abc_123",
+      "status": "paid"
+    }
+  }
+  ```
+- **Error Response (400 Bad Request):**
+  ```json
+  {
+    "status": "error",
+    "message": "Invalid payment token or order ID."
+  }
+  ```
+- **Error Response (500 Internal Server Error):**
+  ```json
+  {
+    "status": "error",
+    "message": "Payment processing failed."
+  }
+  ```
+
+---
+
+## App Update API
+
+Provides a way for the mobile client to check for new updates.
+
+### 1. Check for Updates
+
+- **Endpoint:** `GET /updates`
+- **Description:** Checks if a new version of the app is available for a given platform and version.
+- **Query Parameters:**
+  - `platform` (required): The client platform (e.g., `ios`, `android`).
+  - `currentVersion` (required): The current version of the app installed on the client's device (e.g., `1.0.0`).
+- **Successful Response (200 OK - Update Available):**
+  ```json
+  {
+    "status": "success",
+    "data": {
+      "updateAvailable": true,
+      "latestVersion": "1.1.0",
+      "releaseNotes": "- New feature: Dark mode\n- Bug fixes and performance improvements.",
+      "updateUrl": "https://quickbite.com/update/android"
+    }
+  }
+  ```
+- **Successful Response (200 OK - No Update):**
+  ```json
+  {
+    "status": "success",
+    "data": {
+      "updateAvailable": false
+    }
+  }
+  ```
+- **Error Response (400 Bad Request):**
+  ```json
+  {
+    "status": "error",
+    "message": "Platform and currentVersion are required."
+  }
+  ```
