@@ -127,12 +127,13 @@ class AuthCubit extends Cubit<AuthState> {
   // AUTHENTICATION ACTIONS
   // =============================================================================
 
-  Future<void> login(String email, String password) async {
+  Future<void> login(String email, String password, {bool rememberMe = true}) async {
     print('=== STARTING LOGIN ===');
     emit(state.copyWith(isLoading: true, errorMessage: null));
 
     try {
-      final response = await _authRepository.login(email, password);
+      final response =
+          await _authRepository.login(email, password, rememberMe: rememberMe);
 
       // Load user data after successful login
       await _loadUserData();

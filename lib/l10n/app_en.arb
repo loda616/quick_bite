@@ -9,6 +9,7 @@
   "emailAddress": "Email Address",
   "password": "Password",
   "forgotPassword": "Forgot Password?",
+  "rememberMe": "Remember Me",
   "signIn": "Sign In",
   "dontHaveAccount": "Don't have an account? ",
   "signUp": "Sign Up",
