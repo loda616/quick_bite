@@ -201,6 +201,115 @@ Handles the creation and payment of an order.
 
 ---
 
+## About Us API
+
+Provides endpoints for retrieving information about the restaurant.
+
+### 1. Get Restaurant Logo
+
+- **Endpoint:** `GET /about/logo`
+- **Description:** Retrieves the URL for the restaurant's logo.
+- **Successful Response (200 OK):**
+  ```json
+  {
+    "status": "success",
+    "data": {
+      "logoUrl": "https://cdn.example.com/quickbite_logo.png"
+    }
+  }
+  ```
+
+### 2. Get About Screen Text
+
+- **Endpoint:** `GET /about/text`
+- **Description:** Retrieves the text content displayed on the "About Us" screen.
+- **Successful Response (200 OK):**
+  ```json
+  {
+    "status": "success",
+    "data": {
+      "title": "Welcome to QuickBite!",
+      "body": "Serving the community with delicious meals since 2023. Our mission is to provide high-quality food with fast and friendly service."
+    }
+  }
+  ```
+
+### 3. Get Social Media Links
+
+- **Endpoint:** `GET /about/socials`
+- **Description:** Retrieves a list of the restaurant's social media profiles.
+- **Successful Response (200 OK):**
+  ```json
+  {
+    "status": "success",
+    "data": {
+      "socials": [
+        {
+          "platform": "Facebook",
+          "url": "https://facebook.com/quickbite"
+        },
+        {
+          "platform": "Instagram",
+          "url": "https://instagram.com/quickbite"
+        }
+      ]
+    }
+  }
+  ```
+
+---
+
+## Profile Management API
+
+Handles user profile data.
+
+### 1. Get User Profile
+
+- **Endpoint:** `GET /profile`
+- **Description:** Retrieves the profile information for the authenticated user.
+- **Successful Response (200 OK):**
+  ```json
+  {
+    "status": "success",
+    "data": {
+      "user": {
+        "id": "user_123",
+        "name": "Alex Doe",
+        "email": "alex.doe@example.com",
+        "phone": "123-456-7890"
+      }
+    }
+  }
+  ```
+
+### 2. Update User Profile
+
+- **Endpoint:** `PUT /profile`
+- **Description:** Updates the profile information for the authenticated user.
+- **Request Body:**
+  ```json
+  {
+    "name": "Alexandra Doe",
+    "phone": "098-765-4321"
+  }
+  ```
+- **Successful Response (200 OK):**
+  ```json
+  {
+    "status": "success",
+    "message": "Profile updated successfully."
+  }
+  ```
+- **Error Response (400 Bad Request):**
+  ```json
+  {
+    "status": "error",
+    "message": "Invalid data provided for update."
+  }
+  ```
+
+---
+
 ## App Update API
 
 Provides a way for the mobile client to check for new updates.
