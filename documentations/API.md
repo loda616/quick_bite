@@ -310,6 +310,54 @@ Handles user profile data.
 
 ---
 
+## Ratings and Reviews API
+
+Allows users to rate and review food items and the restaurant.
+
+### 1. Add a Rating/Review for a Food Item
+
+- **Endpoint:** `POST /reviews`
+- **Description:** Adds a rating and an optional review for a specific food item.
+- **Request Body:**
+  ```json
+  {
+    "foodItemId": "food_item_123",
+    "rating": 5,
+    "review": "This burger was amazing! Highly recommended."
+  }
+  ```
+- **Successful Response (201 Created):**
+  ```json
+  {
+    "status": "success",
+    "message": "Your review has been submitted."
+  }
+  ```
+
+### 2. Get Reviews for a Food Item
+
+- **Endpoint:** `GET /reviews/{foodItemId}`
+- **Description:** Retrieves all reviews for a specific food item.
+- **Successful Response (200 OK):**
+  ```json
+  {
+    "status": "success",
+    "data": {
+      "reviews": [
+        {
+          "id": "review_1",
+          "author": "John Doe",
+          "rating": 5,
+          "review": "This burger was amazing! Highly recommended.",
+          "createdAt": "2023-10-27T10:00:00Z"
+        }
+      ]
+    }
+  }
+  ```
+
+---
+
 ## App Update API
 
 Provides a way for the mobile client to check for new updates.
