@@ -77,6 +77,23 @@ class FoodItemCard extends StatelessWidget {
                     ),
 
                     const SizedBox(height: 2),
+
+                    // Rating
+                    Row(
+                      children: [
+                        Icon(Icons.star, color: Colors.amber, size: 16),
+                        const SizedBox(width: 4),
+                        Text(
+                          item.rating.toString(),
+                          style: theme.textTheme.bodySmall,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '(${item.reviewCount} reviews)',
+                          style: theme.textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
