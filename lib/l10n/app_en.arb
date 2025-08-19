@@ -1,0 +1,219 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "QuickBite",
+  "appTagline": "Fast food, faster delivery",
+
+  "welcomeBack": "Welcome Back!",
+  "signInToContinue": "Sign in to continue to QuickBite",
+  "emailAddress": "Email Address",
+  "password": "Password",
+  "forgotPassword": "Forgot Password?",
+  "rememberMe": "Remember Me",
+  "signIn": "Sign In",
+  "dontHaveAccount": "Don't have an account? ",
+  "signUp": "Sign Up",
+  "or": "OR",
+
+  "createAccount": "Create Account",
+  "joinQuickBite": "Join QuickBite",
+  "createAccountToGetStarted": "Create your account to get started",
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "phoneNumber": "Phone Number",
+  "confirmPassword": "Confirm Password",
+  "alreadyHaveAccount": "Already have an account? ",
+  "iAgreeToThe": "I agree to the ",
+  "termsConditions": "Terms & Conditions",
+  "and": " and ",
+  "privacyPolicy": "Privacy Policy",
+  "required": "Required",
+  "tooShort": "Too short",
+  "pleaseEnterEmail": "Please enter your email",
+  "pleaseEnterValidEmail": "Please enter a valid email",
+  "pleaseEnterPhone": "Please enter your phone number",
+  "pleaseEnterValidPhone": "Please enter a valid phone number",
+  "pleaseEnterPassword": "Please enter a password",
+  "passwordMinLength": "Password must be at least 6 characters",
+  "pleaseConfirmPassword": "Please confirm your password",
+
+  "forgotPasswordTitle": "Forgot Password?",
+  "forgotPasswordDesc": "Enter your email address and we will send you a password reset link.",
+  "resetPassword": "Reset Password",
+  "backToLogin": "Back to Login",
+
+  "resetLinkSent": "Reset Link Sent!",
+  "resetLinkSentDesc": "We've sent a password reset link to your email address.\\nPlease check your inbox and follow the instructions.",
+
+  "home": "Home",
+  "cart": "Cart",
+  "orders": "Orders",
+  "profile": "Profile",
+  "settings": "Settings",
+
+  "searchForFood": "Search for food...",
+  "welcomeBackUser": "Welcome back, {userName}!",
+  "@welcomeBackUser": {
+    "placeholders": {
+      "userName": {
+        "type": "String"
+      }
+    }
+  },
+
+  "shoppingCart": "Shopping Cart",
+  "clear": "Clear",
+  "itemsInCart": "{count} {count, plural, =1{Item} other{Items}} in Cart",
+  "@itemsInCart": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "swipeToRemove": "Swipe to remove items",
+  "yourCartIsEmpty": "Your cart is empty",
+  "addDeliciousItems": "Add some delicious items to get started",
+  "browseMenu": "Browse Menu",
+  "subtotal": "Subtotal ({count} items)",
+  "@subtotal": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deliveryFee": "Delivery Fee",
+  "total": "Total",
+  "free": "FREE",
+  "addMoreForFreeDelivery": "Add ${amount} more for free delivery!",
+  "@addMoreForFreeDelivery": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "addMore": "Add More",
+  "checkout": "Checkout",
+  "clearCart": "Clear Cart",
+  "clearCartConfirm": "Are you sure you want to remove all items from your cart?",
+  "cancel": "Cancel",
+
+  "addToCart": "Add to Cart",
+  "notAvailable": "Not Available",
+  "available": "Available",
+  "description": "Description",
+  "customizations": "Customizations",
+  "quantity": "Quantity",
+  "addedToCart": "{itemName} added to cart",
+  "@addedToCart": {
+    "placeholders": {
+      "itemName": {
+        "type": "String"
+      }
+    }
+  },
+  "viewCart": "View Cart",
+
+  "noOrdersYet": "No Orders Yet",
+  "orderHistoryWillAppear": "Your order history will appear here",
+  "filterOrders": "Filter Orders",
+  "allOrders": "All Orders",
+  "recentOrders": "Recent Orders",
+  "completed": "Completed",
+  "close": "Close",
+  "orderNumber": "Order #{orderId}",
+  "@orderNumber": {
+    "placeholders": {
+      "orderId": {
+        "type": "String"
+      }
+    }
+  },
+
+  "orderStatusPending": "Pending",
+  "orderStatusPreparing": "Preparing",
+  "orderStatusReady": "Ready",
+  "orderStatusDelivered": "Delivered",
+  "orderStatusCancelled": "Cancelled",
+
+  "accountInformation": "Account Information",
+  "contactInformation": "Contact Information",
+  "appPreferences": "App Preferences",
+  "accountStatus": "Account Status",
+  "userId": "User ID",
+  "fullName": "Full Name",
+  "email": "Email",
+  "role": "Role",
+  "phone": "Phone",
+  "address": "Address",
+  "notProvided": "Not provided",
+  "language": "Language",
+  "notifications": "Notifications",
+  "theme": "Theme",
+  "enabled": "Enabled",
+  "light": "Light",
+  "dark": "Dark",
+  "status": "Status",
+  "active": "Active",
+  "memberSince": "Member Since",
+  "lastLogin": "Last Login",
+  "today": "Today",
+  "logout": "Logout",
+  "loadingProfile": "Loading profile...",
+  "refreshProfile": "Refresh Profile",
+  "editProfile": "Edit Profile",
+  "editContactInformation": "Edit Contact Information",
+  "save": "Save",
+  "logoutConfirm": "Are you sure you want to logout?",
+  "online": "Online",
+
+  "account": "Account",
+  "appearance": "Appearance",
+  "about": "About",
+  "receiveNotifications": "Receive push notifications",
+  "english": "English",
+  "arabic": "العربية",
+  "selectLanguage": "Select Language",
+  "selectTheme": "Select Theme",
+  "alwaysLight": "Always use light theme",
+  "alwaysDark": "Always use dark theme",
+  "followSystem": "Follow system settings",
+  "system": "System",
+  "appVersion": "App Version",
+  "helpSupport": "Help & Support",
+  "builtWithFlutter": "Built with Flutter and love ❤️",
+
+  "error": "Error",
+  "success": "Success",
+  "loading": "Loading...",
+  "retry": "Retry",
+  "ok": "OK",
+  "yes": "Yes",
+  "no": "No",
+
+  "loginSuccessful": "Login successful! Welcome back.",
+  "registrationSuccessful": "Registration successful! Please login to continue.",
+  "passwordResetSent": "Password reset link sent to your email.",
+  "invalidCredentials": "Invalid email or password",
+  "networkError": "Network error. Please check your connection.",
+  "serverError": "Server error. Please try again later.",
+
+  "demoCredentials": "Demo Credentials:",
+  "demoEmail": "Email: mohamed@gmail.com",
+  "demoPassword": "Password: Fouad@2463187",
+
+  "loadingDeliciousFood": "Loading delicious food...",
+  "noItemsFound": "No items found",
+  "tryDifferentCategory": "Try selecting a different category",
+
+  "shareText": "Check out this delicious {itemName} on QuickBite!",
+  "@shareText": {
+    "placeholders": {
+      "itemName": {
+        "type": "String"
+      }
+    }
+  }
+}

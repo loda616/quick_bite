@@ -9,10 +9,14 @@ import 'package:quick_bite/presentation/screens/cart/cart_screen.dart';
 import 'package:quick_bite/presentation/screens/orders/orders_screen.dart';
 import 'package:quick_bite/presentation/screens/settings/settings_screen.dart';
 import 'package:quick_bite/presentation/screens/profile_screen.dart';
-import 'package:quick_bite/presentation/screens/food/food_item_details_screen.dart';
 import 'package:quick_bite/data/models/food_item.dart';
 
-import '../../presentation/screens/food/favorites_screen.dart';
+import '../../presentation/screens/food_details/favorites_screen.dart';
+import '../../presentation/screens/food_details/food_item_details_screen.dart';
+import '../../presentation/screens/checkout/checkout_screen.dart';
+import '../../presentation/screens/settings/about_screen.dart';
+import '../../presentation/screens/settings/privacy_policy_screen.dart';
+
 
 class AppRoutes {
   static const String initial = '/';
@@ -29,16 +33,23 @@ class AppRoutes {
   static const String settings = '/settings';
   static const String profile = '/profile';
   static const String favorites = '/favorites';
+  static const String checkout = '/checkout';
+  static const String about = '/about';
+  static const String privacyPolicy = '/privacy-policy';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final routeName = settings.name;
 
     if (routeName == initial) {
-      return MaterialPageRoute(builder: (context) => const MainScreen());
+      final args = settings.arguments as Map<String, dynamic>?;
+      final initialIndex = args?['initialIndex'] as int? ?? 0;
+      return MaterialPageRoute(builder: (context) => MainScreen(initialIndex: initialIndex));
     }
 
     if (routeName == main) {
-      return MaterialPageRoute(builder: (context) => const MainScreen());
+      final args = settings.arguments as Map<String, dynamic>?;
+      final initialIndex = args?['initialIndex'] as int? ?? 0;
+      return MaterialPageRoute(builder: (context) => MainScreen(initialIndex: initialIndex));
     }
 
     if (routeName == home) {
@@ -81,6 +92,18 @@ class AppRoutes {
       return MaterialPageRoute(builder: (context) => const FavoritesScreen());
     }
 
+    if (routeName == checkout) {
+      return MaterialPageRoute(builder: (context) => const CheckoutScreen());
+    }
+
+    if (routeName == about) {
+      return MaterialPageRoute(builder: (context) => const AboutScreen());
+    }
+
+    if (routeName == privacyPolicy) {
+      return MaterialPageRoute(builder: (context) => const PrivacyPolicyScreen());
+    }
+
     if (routeName == foodDetails) {
       if (settings.arguments is FoodItem) {
         final foodItem = settings.arguments as FoodItem;
@@ -119,7 +142,7 @@ class AppRoutes {
               ElevatedButton(
                 onPressed: () => Navigator.pushNamedAndRemoveUntil(
                   context,
-                  AppRoutes.main,
+                  AppRoutes.home,
                       (route) => false,
                 ),
                 child: const Text('Go Home'),

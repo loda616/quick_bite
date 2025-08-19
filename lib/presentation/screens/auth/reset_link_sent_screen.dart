@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../../../l10n/generated/app_localizations.dart';
 import 'login_screen.dart';
 
 class ResetLinkSentScreen extends StatelessWidget {
@@ -9,6 +9,7 @@ class ResetLinkSentScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -34,7 +35,7 @@ class ResetLinkSentScreen extends StatelessWidget {
 
                 // Title
                 Text(
-                  'Reset Link Sent!',
+                  l10n.resetLinkSent,
                   style: textTheme.headlineLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Theme.of(context).colorScheme.secondary,
@@ -44,8 +45,7 @@ class ResetLinkSentScreen extends StatelessWidget {
 
                 // Description
                 Text(
-                  'We\'ve sent a password reset link to your email address.\n'
-                      'Please check your inbox and follow the instructions.',
+                  l10n.resetLinkSentDesc,
                   textAlign: TextAlign.center,
                   style: textTheme.bodyMedium?.copyWith(
                     color: Colors.black54,
@@ -59,13 +59,14 @@ class ResetLinkSentScreen extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.pushAndRemoveUntil(
-                        context,MaterialPageRoute(builder: (context) => const LoginScreen()),
-                              (route) => false,
+                        context,
+                        MaterialPageRoute(builder: (context) => const LoginScreen()),
+                            (route) => false,
                       );
                     },
-                    child: const Text(
-                      'Back to Login',
-                      style: TextStyle(
+                    child: Text(
+                      l10n.backToLogin,
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),

@@ -1,10 +1,9 @@
-// login_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quick_bite/presentation/view_models/cubit/auth_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/auth_stat.dart';
-
 import '../../../core/routs/routes.dart';
+import '../../../l10n/generated/app_localizations.dart' show AppLocalizations;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -18,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _passwordVisible = false;
+  bool _rememberMe = true;
 
   @override
   void dispose() {
@@ -30,21 +30,24 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_formKey.currentState!.validate()) {
       FocusScope.of(context).unfocus();
       await context.read<AuthCubit>().login(
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
-      );
+            _emailController.text.trim(),
+            _passwordController.text.trim(),
+            rememberMe: _rememberMe,
+          );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state.errorMessage != null && mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.errorMessage!),
-              backgroundColor: Colors.red,
+              backgroundColor: Theme.of(context).colorScheme.error,
               duration: const Duration(seconds: 4),
             ),
           );
@@ -55,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.successMessage!),
-              backgroundColor: Colors.green,
+              backgroundColor: Theme.of(context).colorScheme.primary,
               duration: const Duration(seconds: 3),
             ),
           );
@@ -66,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (state.isAuthenticated && mounted) {
           Navigator.pushNamedAndRemoveUntil(
             context,
-            AppRoutes.home,
+            AppRoutes.main,
                 (route) => false,
           );
         }
@@ -94,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         return Container(
                           height: 150,
                           decoration: BoxDecoration(
-                            color: Colors.grey[200],
+                            color: Theme.of(context).colorScheme.surface.withOpacity(0.3),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Icon(
@@ -108,19 +111,19 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 24),
 
                     // Welcome Text
-                    const Text(
-                      'Welcome Back!',
+                    Text(
+                      l10n.welcomeBack,
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF2E2E2E),
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 8),
-                    const Text(
-                      'Sign in to continue to QuickBite',
-                      style: TextStyle(
+                    Text(
+                      l10n.signInToContinue,
+                      style: const TextStyle(
                         fontSize: 16,
                         color: Colors.grey,
                       ),
@@ -131,19 +134,19 @@ class _LoginScreenState extends State<LoginScreen> {
                     // Email Field
                     TextFormField(
                       controller: _emailController,
-                      decoration: const InputDecoration(
-                        labelText: 'Email Address',
-                        prefixIcon: Icon(Icons.email_outlined),
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: l10n.emailAddress,
+                        prefixIcon: const Icon(Icons.email_outlined),
+                        border: const OutlineInputBorder(),
                       ),
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
+                          return l10n.pleaseEnterEmail;
                         }
                         if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                          return 'Please enter a valid email';
+                          return l10n.pleaseEnterValidEmail;
                         }
                         return null;
                       },
@@ -154,7 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextFormField(
                       controller: _passwordController,
                       decoration: InputDecoration(
-                        labelText: 'Password',
+                        labelText: l10n.password,
                         prefixIcon: const Icon(Icons.lock_outlined),
                         border: const OutlineInputBorder(),
                         suffixIcon: IconButton(
@@ -174,14 +177,32 @@ class _LoginScreenState extends State<LoginScreen> {
                       textInputAction: TextInputAction.done,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
+                          return l10n.pleaseEnterPassword;
                         }
                         if (value.length < 6) {
-                          return 'Password must be at least 6 characters';
+                          return l10n.passwordMinLength;
                         }
                         return null;
                       },
                       onFieldSubmitted: (value) => _login(),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Remember Me Checkbox
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: _rememberMe,
+                          onChanged: (value) {
+                            if (value != null) {
+                              setState(() {
+                                _rememberMe = value;
+                              });
+                            }
+                          },
+                        ),
+                        Text(l10n.rememberMe),
+                      ],
                     ),
                     const SizedBox(height: 8),
 
@@ -192,10 +213,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {
                           Navigator.pushNamed(context, AppRoutes.forgetPassword);
                         },
-                        child: const Text(
-                          'Forgot Password?',
+                        child: Text(
+                          l10n.forgotPassword,
                           style: TextStyle(
-                            color: Color(0xFFFF6B00),
+                            color: Theme.of(context).colorScheme.primary,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -221,9 +242,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: Colors.white,
                         ),
                       )
-                          : const Text(
-                        'Sign In',
-                        style: TextStyle(
+                          : Text(
+                        l10n.signIn,
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
@@ -234,18 +255,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     // Divider
                     Row(
                       children: [
-                        Expanded(child: Divider(color: Colors.grey[300])),
+                        Expanded(child: Divider(color: Theme.of(context).dividerColor)),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Text(
-                            'OR',
+                            l10n.or,
                             style: TextStyle(
-                              color: Colors.grey[600],
+                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
-                        Expanded(child: Divider(color: Colors.grey[300])),
+                        Expanded(child: Divider(color: Theme.of(context).dividerColor)),
                       ],
                     ),
                     const SizedBox(height: 24),
@@ -257,17 +278,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                       child: RichText(
                         textAlign: TextAlign.center,
-                        text: const TextSpan(
-                          text: "Don't have an account? ",
+                        text: TextSpan(
+                          text: l10n.dontHaveAccount,
                           style: TextStyle(
-                            color: Colors.black87,
+                            color: Theme.of(context).colorScheme.onSurface,
                             fontSize: 16,
                           ),
                           children: [
                             TextSpan(
-                              text: 'Sign Up',
+                              text: l10n.signUp,
                               style: TextStyle(
-                                color: Color(0xFFFF6B00),
+                                color: Theme.of(context).colorScheme.primary,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -290,7 +311,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Demo Credentials:',
+                            l10n.demoCredentials,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.blue[800],
@@ -298,11 +319,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Email: mohamed@gmail.com',
+                            l10n.demoEmail,
                             style: TextStyle(color: Colors.blue[700]),
                           ),
                           Text(
-                            'Password: Fouad@2463187',
+                            l10n.demoPassword,
                             style: TextStyle(color: Colors.blue[700]),
                           ),
                         ],

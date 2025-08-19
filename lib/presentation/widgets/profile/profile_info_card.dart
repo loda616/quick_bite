@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:quick_bite/theme/app_theme.dart';
+
+import '../../../core/theme/app_theme.dart';
+import '../../../l10n/generated/app_localizations.dart';
+
 
 class ProfileInfoCard extends StatelessWidget {
+  final AppLocalizations l10n;
   final String title;
   final IconData? icon;
   final Map<String, String> items;
@@ -9,6 +13,7 @@ class ProfileInfoCard extends StatelessWidget {
 
   const ProfileInfoCard({
     super.key,
+    required this.l10n,
     required this.title,
     this.icon,
     required this.items,
@@ -17,9 +22,21 @@ class ProfileInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = AppTheme.isDarkMode(context);
+    final primaryColor = AppTheme.getPrimaryColor(context);
+    final accentColor = AppTheme.getTextColor(context);
+    final backgroundColor = AppTheme.getBackgroundColor(context);
+    final cardColor = isDarkMode ? AppTheme.darkCardColor : Colors.white;
+    final textColor = isDarkMode ? AppTheme.darkAccentColor : AppTheme.accentColor;
+    final secondaryTextColor = Theme.of(context).colorScheme.onSurface.withOpacity(0.6);
+    final borderColor = isDarkMode
+        ? primaryColor.withOpacity(0.3)
+        : primaryColor.withOpacity(0.1);
+
     return Card(
       elevation: 3,
-      shadowColor: AppTheme.primaryColor.withOpacity(0.1),
+      shadowColor: primaryColor.withOpacity(0.1),
+      color: cardColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
@@ -29,9 +46,14 @@ class ProfileInfoCard extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
+            colors: isDarkMode
+                ? [
+              cardColor,
+              primaryColor.withOpacity(0.05),
+            ]
+                : [
               Colors.white,
-              AppTheme.primaryColor.withOpacity(0.02),
+              primaryColor.withOpacity(0.02),
             ],
           ),
         ),
@@ -47,12 +69,12 @@ class ProfileInfoCard extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: AppTheme.primaryColor.withOpacity(0.1),
+                        color: primaryColor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(
                         icon,
-                        color: AppTheme.primaryColor,
+                        color: primaryColor,
                         size: 20,
                       ),
                     ),
@@ -61,10 +83,10 @@ class ProfileInfoCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: AppTheme.accentColor,
+                        color: accentColor,
                       ),
                     ),
                   ),
@@ -72,13 +94,13 @@ class ProfileInfoCard extends StatelessWidget {
                     IconButton(
                       icon: Icon(
                         Icons.edit_outlined,
-                        color: AppTheme.primaryColor,
+                        color: primaryColor,
                         size: 20,
                       ),
                       onPressed: onEditPressed,
                       tooltip: 'Edit',
                       style: IconButton.styleFrom(
-                        backgroundColor: AppTheme.primaryColor.withOpacity(0.1),
+                        backgroundColor: primaryColor.withOpacity(0.1),
                         padding: const EdgeInsets.all(8),
                       ),
                     ),
@@ -97,7 +119,7 @@ class ProfileInfoCard extends StatelessWidget {
                       child: Text(
                         entry.key,
                         style: TextStyle(
-                          color: Colors.grey[600],
+                          color: secondaryTextColor,
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                         ),
@@ -111,17 +133,19 @@ class ProfileInfoCard extends StatelessWidget {
                           vertical: 8,
                         ),
                         decoration: BoxDecoration(
-                          color: AppTheme.primaryColor.withOpacity(0.05),
+                          color: isDarkMode
+                              ? Colors.black.withOpacity(0.2)
+                              : primaryColor.withOpacity(0.05),
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
-                            color: AppTheme.primaryColor.withOpacity(0.1),
+                            color: borderColor,
                           ),
                         ),
                         child: Text(
                           entry.value,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontWeight: FontWeight.w600,
-                            color: AppTheme.accentColor,
+                            color: accentColor,
                             fontSize: 14,
                           ),
                         ),

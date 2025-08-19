@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quick_bite/data/models/food_item.dart';
 
-
 class FoodItemCard extends StatelessWidget {
   final FoodItem item;
   final VoidCallback? onTap;
@@ -16,74 +15,182 @@ class FoodItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+
     return Card(
       clipBehavior: Clip.antiAlias,
+      elevation: 3,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: InkWell(
         onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AspectRatio(
-              aspectRatio: 16 / 9,
-              child: Image.asset(
-                item.imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    color: Colors.grey[300],
-                    child: const Icon(Icons.restaurant),
-                  );
-                },
+            // Image Container with fixed height
+            Expanded(
+              flex: 3, // Takes 3/5 of the card height
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary.withOpacity(0.1),
+                ),
+                child: _buildItemImage(),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.name,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '\$${item.price.toStringAsFixed(2)}',
-                    style:  const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(Icons.star, size: 16, color: Colors.amber[700]),
-                      Text(
-                        ' ${item.rating.toStringAsFixed(1)} (${item.reviewCount})',
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                    ],
-                  ),
-                  if (onAddToCart != null) ...[
-                    const SizedBox(height: 8),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: item.isAvailable ? onAddToCart : null,
-                        child: Text(
-                          item.isAvailable ? 'Add to Cart' : 'Not Available',
+
+            // Content Container with flexible height
+            Expanded(
+              flex: 2, // Takes 2/5 of the card height
+              child: Padding(
+                padding: const EdgeInsets.all(6.0), // Reduced padding
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Item Name - Single line with ellipsis
+                    Flexible(
+                      child: Text(
+                        item.name,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: theme.colorScheme.onSurface,
+                          fontSize: 13, // Slightly smaller
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
+
+                    const SizedBox(height: 2), // Reduced spacing
+
+                    // Price
+                    Text(
+                      '\${item.price.toStringAsFixed(2)}',
+                      style: theme.textTheme.titleSmall?.copyWith( // Changed from titleMedium
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+
+                    const SizedBox(height: 2),
                   ],
-                ],
+                ),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildItemImage() {
+    // Check if it's a network URL
+    if (item.imageUrl.startsWith('http')) {
+      return Image.network(
+        item.imageUrl,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Center(
+            child: CircularProgressIndicator(
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded /
+                  loadingProgress.expectedTotalBytes!
+                  : null,
+              strokeWidth: 2,
+            ),
+          );
+        },
+        errorBuilder: (context, error, stackTrace) {
+          return _buildPlaceholderImage();
+        },
+      );
+    } else {
+      // Try to load as asset, fallback to placeholder if not found
+      return Image.asset(
+        item.imageUrl,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+        errorBuilder: (context, error, stackTrace) {
+          return _buildPlaceholderImage();
+        },
+      );
+    }
+  }
+
+  Widget _buildPlaceholderImage() {
+    return Builder(
+      builder: (context) {
+        final theme = Theme.of(context);
+        final isDarkMode = theme.brightness == Brightness.dark;
+        
+        return Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: isDarkMode
+                  ? [
+                      theme.colorScheme.surface,
+                      theme.colorScheme.surface.withOpacity(0.8),
+                    ]
+                  : [
+                      theme.colorScheme.onSurface.withOpacity(0.3),
+                      theme.colorScheme.onSurface.withOpacity(0.4),
+                    ],
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                _getCategoryIcon(item.category),
+                size: 32,
+                color: theme.colorScheme.onSurface.withOpacity(0.6),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                item.category,
+                style: TextStyle(
+                  fontSize: 10,
+                  color: theme.colorScheme.onSurface.withOpacity(0.6),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  IconData _getCategoryIcon(String category) {
+    switch (category.toLowerCase()) {
+      case 'pizza':
+        return Icons.local_pizza;
+      case 'burger':
+        return Icons.lunch_dining;
+      case 'shawarma':
+        return Icons.food_bank;
+      case 'salads':
+        return Icons.eco;
+      case 'appetizers':
+        return Icons.restaurant;
+      case 'desserts':
+        return Icons.cake;
+      case 'pasta':
+        return Icons.ramen_dining;
+      default:
+        return Icons.restaurant_menu;
+    }
   }
 }

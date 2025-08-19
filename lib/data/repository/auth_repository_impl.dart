@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:quick_bite/data/models/request/forget_password_request.dart';
+import '../../core/error/exceptions.dart';
 import '../../core/utilz/jwt_helper.dart';
 import '../../domin/repository/auth_repository.dart';
 import '../datasources/local/secure_storage_service.dart';
@@ -14,7 +15,7 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this._apiService, this._secureStorage);
 
   @override
-  Future<LoginResponseModel> login(String email, String password) async {
+  Future<LoginResponseModel> login(String email, String password, {bool rememberMe = true}) async {
     try {
       print('=== STARTING LOGIN REQUEST ===');
       print('Email: $email');
@@ -29,37 +30,31 @@ class AuthRepositoryImpl implements AuthRepository {
       print('=== LOGIN RESPONSE RECEIVED ===');
       print('Status Code: ${response.response.statusCode}');
       print('Response Data: ${response.response.data}');
-      print('===============================');
-
-      // Check if the response is successful
-      if (response.response.statusCode != 200) {
-        final errorData = response.response.data;
-        throw Exception('Login failed with status ${response.response.statusCode}: ${errorData.toString()}');
-      }
 
       final responseData = response.response.data;
-      if (responseData == null) {
-        throw Exception('Login failed: No data received from server');
+      if (responseData == null || responseData is! Map<String, dynamic>) {
+        throw Exception('Login failed: Invalid response format from server');
+      }
+
+      // Validate that required fields exist in the response
+      if (!responseData.containsKey('token') || !responseData.containsKey('expiration')) {
+        print('=== INVALID RESPONSE FORMAT ===');
+        print('Response Data: $responseData');
+        throw Exception('Login failed: Server response missing required fields (token, expiration)');
       }
 
       // Parse the login response
       LoginResponseModel loginResponse;
       try {
         print('=== PARSING LOGIN RESPONSE ===');
-        print('Response data: $responseData');
-
-        loginResponse = LoginResponseModel.fromJson(responseData as Map<String, dynamic>);
-
+        loginResponse = LoginResponseModel.fromJson(responseData);
         print('✓ Parsed login response successfully');
         print('Token length: ${loginResponse.token.length}');
         print('Expiration: ${loginResponse.expiration}');
-        print('==============================');
-
       } catch (parseError) {
         print('=== PARSING ERROR ===');
         print('Parse error: $parseError');
-        print('Raw response: $responseData');
-        print('====================');
+        print('Response Data: $responseData');
         throw Exception('Failed to parse login response: $parseError');
       }
 
@@ -68,29 +63,36 @@ class AuthRepositoryImpl implements AuthRepository {
         print('=== EXTRACTING USER INFO FROM JWT ===');
         final userId = JwtHelper.getUserId(loginResponse.token);
         final userName = JwtHelper.getUserName(loginResponse.token);
+        final userRole = JwtHelper.getUserRole(loginResponse.token);
 
         print('User ID: $userId');
         print('User Name: $userName');
-        print('=====================================');
+        print('User Role: $userRole');
 
-        // Save authentication data
-        await _secureStorage.saveToken(loginResponse.token);
-        await _secureStorage.saveTokenExpiration(loginResponse.expirationDateTime);
-
-        if (userId != null) {
-          await _secureStorage.saveUserId(userId);
-        }
+        // Save all authentication data at once (both secure and quick access)
+        await _secureStorage.saveAuthenticationData(
+          token: loginResponse.token,
+          expiration: loginResponse.expirationDateTime,
+          userId: userId,
+          userName: userName,
+          userEmail: email, // Save the email used for login
+          userRole: userRole,
+          rememberMe: rememberMe,
+        );
 
         print('✓ Authentication data saved successfully');
 
       } catch (jwtError) {
         print('=== JWT PARSING ERROR ===');
         print('JWT error: $jwtError');
-        print('Token: ${loginResponse.token}');
-        print('========================');
-        // Still save the token even if JWT parsing fails
-        await _secureStorage.saveToken(loginResponse.token);
-        await _secureStorage.saveTokenExpiration(loginResponse.expirationDateTime);
+
+        // Still save the token even if JWT parsing fails, but with minimal data
+        await _secureStorage.saveAuthenticationData(
+          token: loginResponse.token,
+          expiration: loginResponse.expirationDateTime,
+          userEmail: email,
+          rememberMe: rememberMe,
+        );
       }
 
       return loginResponse;
@@ -99,28 +101,34 @@ class AuthRepositoryImpl implements AuthRepository {
       print('=== DIO EXCEPTION ===');
       print('Status Code: ${dioError.response?.statusCode}');
       print('Response Data: ${dioError.response?.data}');
-      print('Request Data: ${dioError.requestOptions.data}');
-      print('=====================');
+      print('Error Message: ${dioError.message}');
 
+      // Handle DioException errors by throwing custom server exceptions
       switch (dioError.response?.statusCode) {
         case 400:
-          throw Exception('Invalid email or password format');
+          throw const BadRequestException('Invalid request format.');
         case 401:
-          throw Exception('Invalid email or password');
+          throw const InvalidCredentialsException('Invalid email or password.');
         case 404:
-          throw Exception('Login endpoint not found');
+          throw const NotFoundException('Login service not found.');
         case 500:
-          final errorDetail = dioError.response?.data?.toString() ?? 'Server error';
-          throw Exception('Server error (500): $errorDetail');
+          throw const InternalServerErrorException('An unexpected server error occurred.');
+        case null:
+          throw const NetworkException('Please check your internet connection.');
         default:
-          throw Exception('Network error: ${dioError.message}');
+          throw UnknownServerException('An unknown error occurred: ${dioError.message}');
       }
     } catch (e) {
       print('=== GENERAL ERROR ===');
       print('Error: $e');
-      print('Error type: ${e.runtimeType}');
-      print('====================');
-      rethrow;
+
+      // If it's one of our custom exceptions, rethrow it
+      if (e is ServerException) {
+        rethrow;
+      }
+
+      // Otherwise, wrap it in a generic unknown exception
+      throw UnknownServerException('An unexpected error occurred: ${e.toString()}');
     }
   }
 
@@ -178,19 +186,69 @@ class AuthRepositoryImpl implements AuthRepository {
     await _secureStorage.clearAll();
   }
 
+  // =============================================================================
+  // FAST AUTHENTICATION CHECKS
+  // =============================================================================
+
+  /// Quick login check using SharedPreferences (very fast)
+  bool isQuickLoggedIn() {
+    return _secureStorage.isQuickLoggedIn();
+  }
+
+  /// Get quick user info for immediate UI display
+  String? getQuickUserName() {
+    return _secureStorage.getQuickUserName();
+  }
+
+  String? getQuickUserEmail() {
+    return _secureStorage.getQuickUserEmail();
+  }
+
+  /// Comprehensive authentication check (validates token)
   @override
   Future<bool> isLoggedIn() async {
-    final token = await _secureStorage.getToken();
-    if (token == null) return false;
+    return await _secureStorage.hasValidToken();
+  }
 
-    // Check token expiration using JWT helper
-    if (JwtHelper.isTokenExpired(token)) {
+  /// Validate token without JWT parsing (faster)
+  Future<bool> hasValidTokenFast() async {
+    // Quick check first
+    if (!isQuickLoggedIn()) return false;
+
+    // Check if token exists and hasn't expired
+    final token = await _secureStorage.getToken();
+    if (token == null) {
+      await _secureStorage.clearAll();
+      return false;
+    }
+
+    // Quick expiration check from secure storage
+    final expiration = await _secureStorage.getTokenExpiration();
+    if (expiration != null && DateTime.now().isAfter(expiration)) {
       await _secureStorage.clearAll();
       return false;
     }
 
     return true;
   }
+
+  /// Full authentication validation (includes JWT parsing)
+  Future<bool> isFullyAuthenticated() async {
+    if (!await hasValidTokenFast()) return false;
+
+    // Additional JWT validation if needed
+    final token = await _secureStorage.getToken();
+    if (token != null && JwtHelper.isTokenExpired(token)) {
+      await _secureStorage.clearAll();
+      return false;
+    }
+
+    return true;
+  }
+
+  // =============================================================================
+  // DATA ACCESS METHODS
+  // =============================================================================
 
   @override
   Future<String?> getToken() async {
@@ -202,10 +260,67 @@ class AuthRepositoryImpl implements AuthRepository {
     return await _secureStorage.getUserId();
   }
 
-  // Add method to get user name from token
+  /// Get user name from secure storage
   Future<String?> getUserName() async {
-    final token = await _secureStorage.getToken();
-    if (token == null) return null;
-    return JwtHelper.getUserName(token);
+    return await _secureStorage.getUserName();
+  }
+
+  /// Get user email from secure storage
+  Future<String?> getUserEmail() async {
+    return await _secureStorage.getUserEmail();
+  }
+
+  /// Get user role from secure storage
+  Future<String?> getUserRole() async {
+    return await _secureStorage.getUserRole();
+  }
+
+  /// Get all user information at once
+  Future<Map<String, String?>> getAllUserInfo() async {
+    return await _secureStorage.getAllUserInfo();
+  }
+
+  // =============================================================================
+  // UTILITY METHODS
+  // =============================================================================
+
+  /// Refresh user data from token (if token was updated externally)
+  Future<void> refreshUserDataFromToken() async {
+    final token = await getToken();
+    if (token == null) return;
+
+    try {
+      final userId = JwtHelper.getUserId(token);
+      final userName = JwtHelper.getUserName(token);
+      final userRole = JwtHelper.getUserRole(token);
+
+      // Update stored user data
+      if (userId != null) await _secureStorage.saveUserId(userId);
+      if (userName != null) {
+        await _secureStorage.saveUserName(userName);
+        await _secureStorage.saveQuickUserInfo(userName: userName);
+      }
+      if (userRole != null) await _secureStorage.saveUserRole(userRole);
+
+    } catch (e) {
+      print('Error refreshing user data from token: $e');
+    }
+  }
+
+  /// Validate data consistency between SharedPreferences and SecureStorage
+  Future<bool> validateStorageConsistency() async {
+    return await _secureStorage.validateDataConsistency();
+  }
+
+  /// Get authentication summary for debugging
+  Future<Map<String, dynamic>> getAuthSummary() async {
+    return {
+      'isQuickLoggedIn': isQuickLoggedIn(),
+      'hasToken': await getToken() != null,
+      'hasUserId': await getUserId() != null,
+      'quickUserName': getQuickUserName(),
+      'lastLoginTime': _secureStorage.getLastLoginTime()?.toIso8601String(),
+      'isFullyAuthenticated': await isFullyAuthenticated(),
+    };
   }
 }

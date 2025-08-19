@@ -4,6 +4,8 @@ import 'package:quick_bite/presentation/screens/auth/reset_link_sent_screen.dart
 import 'package:quick_bite/presentation/view_models/cubit/auth_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/auth_stat.dart';
 
+import '../../../l10n/generated/app_localizations.dart';
+
 class ForgetPasswordScreen extends StatefulWidget {
   const ForgetPasswordScreen({Key? key}) : super(key: key);
 
@@ -32,6 +34,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
+    final l10n = AppLocalizations.of(context)!;
 
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
@@ -75,7 +78,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
 
                       // Title
                       Text(
-                        'Forgot Password?',
+                        l10n.forgotPasswordTitle,
                         style: textTheme.headlineLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).colorScheme.secondary,
@@ -85,7 +88,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
 
                       // Description
                       Text(
-                        'Enter your email address and we will send you a password reset link.',
+                        l10n.forgotPasswordDesc,
                         textAlign: TextAlign.center,
                         style: textTheme.bodyMedium?.copyWith(
                           color: Colors.black54,
@@ -96,19 +99,19 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                       // Email Input
                       TextFormField(
                         controller: _emailController,
-                        decoration: const InputDecoration(
-                          hintText: 'Email Address',
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 18),
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          hintText: l10n.emailAddress,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+                          border: const OutlineInputBorder(),
                         ),
                         keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.done,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your email';
+                            return l10n.pleaseEnterEmail;
                           }
                           if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                            return 'Please enter a valid email';
+                            return l10n.pleaseEnterValidEmail;
                           }
                           return null;
                         },
@@ -130,9 +133,9 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                               color: Colors.white,
                             ),
                           )
-                              : const Text(
-                            'Reset Password',
-                            style: TextStyle(
+                              : Text(
+                            l10n.resetPassword,
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
@@ -145,7 +148,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                       TextButton(
                         onPressed: () => Navigator.pop(context),
                         child: Text(
-                          'Back to Login',
+                          l10n.backToLogin,
                           style: textTheme.bodyMedium?.copyWith(
                             color: Theme.of(context).colorScheme.secondary,
                           ),
