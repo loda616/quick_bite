@@ -149,7 +149,7 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
   }
 
   @override
-  Widget build(BuildContext.context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -175,7 +175,7 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
                     children: [
                       Text(
                         'Reviews',
-                        style: Theme.of(context).textTheme.headline6,
+                        style: Theme.of(context).textTheme.headlineSmall,
                       ),
                       TextButton(
                         onPressed: _addReview,
