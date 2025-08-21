@@ -288,9 +288,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final checkoutRepository = context.read<CheckoutRepository>();
 
     final items = state.items.entries.map((entry) {
-      return CartItem(
-        menuItemId: int.parse(entry.key.id),
-        quantity: entry.value,
+      return CheckoutItem(
+        menuItemId: int.parse(entry.key),
+        quantity: entry.value.quantity,
       );
     }).toList();
 

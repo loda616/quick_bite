@@ -1,5 +1,5 @@
 class CheckoutRequestModel {
-  final List<CartItem> items;
+  final List<CheckoutItem> items;
   final String deliveryOption;
   final String paymentMethod;
 
@@ -18,11 +18,11 @@ class CheckoutRequestModel {
   }
 }
 
-class CartItem {
+class CheckoutItem {
   final int menuItemId;
   final int quantity;
 
-  CartItem({
+  CheckoutItem({
     required this.menuItemId,
     required this.quantity,
   });
