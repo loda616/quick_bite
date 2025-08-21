@@ -4,10 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:quick_bite/data/datasources/local/secure_storage_service.dart';
 import 'package:quick_bite/data/datasources/remote/api_service.dart';
+import 'package:quick_bite/data/datasources/remote/checkout_api_service.dart';
 import 'package:quick_bite/data/datasources/remote/menu_api_service.dart';
 import 'package:quick_bite/data/repository/auth_repository_impl.dart';
+import 'package:quick_bite/data/repository/checkout_repository_impl.dart';
 import 'package:quick_bite/data/repository/menu_repository_impl.dart';
 import 'package:quick_bite/domin/repository/auth_repository.dart';
+import 'package:quick_bite/domin/repository/checkout_repository.dart';
 import 'package:quick_bite/domin/repository/menu_repository.dart';
 import 'package:quick_bite/presentation/view_models/cubit/auth_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
@@ -75,6 +78,9 @@ class _QuickBiteAppState extends State<QuickBiteApp> {
         RepositoryProvider<MenuApiService>(
           create: (context) => MenuApiService(DioClient.getDio()),
         ),
+        RepositoryProvider<CheckoutApiService>(
+          create: (context) => CheckoutApiService(DioClient.getDio()),
+        ),
 
         // Repositories
         RepositoryProvider<AuthRepository>(
@@ -86,6 +92,11 @@ class _QuickBiteAppState extends State<QuickBiteApp> {
         RepositoryProvider<MenuRepository>(
           create: (context) => MenuRepositoryImpl(
             context.read<MenuApiService>(),
+          ),
+        ),
+        RepositoryProvider<CheckoutRepository>(
+          create: (context) => CheckoutRepositoryImpl(
+            context.read<CheckoutApiService>(),
           ),
         ),
       ],
