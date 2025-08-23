@@ -1,5 +1,5 @@
 class FoodItem {
-  final String id;
+  final int id;
   final String name;
   final String description;
   final double price;
@@ -25,7 +25,7 @@ class FoodItem {
 
   factory FoodItem.fromJson(Map<String, dynamic> json) {
     return FoodItem(
-      id: json['id'] as String,
+      id: json['id'] as int,
       name: json['name'] as String,
       description: json['description'] as String,
       price: (json['price'] as num).toDouble(),
@@ -57,7 +57,7 @@ class FoodItem {
   }
 
   FoodItem copyWith({
-    String? id,
+    int? id,
     String? name,
     String? description,
     double? price,

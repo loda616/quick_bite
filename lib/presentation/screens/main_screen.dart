@@ -7,6 +7,7 @@ import 'package:quick_bite/presentation/screens/home/home_screen.dart';
 import 'package:quick_bite/presentation/screens/cart/cart_screen.dart';
 import 'package:quick_bite/presentation/screens/orders/orders_screen.dart';
 import 'package:quick_bite/presentation/screens/profile_screen.dart';
+import 'package:quick_bite/presentation/screens/food_details/favorites_screen.dart';
 import 'package:quick_bite/presentation/screens/settings/settings_screen.dart';
 
 import '../../l10n/generated/app_localizations.dart';
@@ -25,6 +26,7 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> _screens = [
     const HomeScreen(),
+    const FavoritesScreen(),
     const CartScreen(),
     const OrdersScreen(),
     const ProfileScreen(),
@@ -46,6 +48,11 @@ class _MainScreenState extends State<MainScreen> {
         icon: const Icon(Icons.home_outlined),
         selectedIcon: const Icon(Icons.home),
         label: l10n.home,
+      ),
+      NavigationDestination(
+        icon: const Icon(Icons.favorite_border),
+        selectedIcon: const Icon(Icons.favorite),
+        label: 'Favorites',
       ),
       NavigationDestination(
         icon: const Icon(Icons.shopping_cart_outlined),

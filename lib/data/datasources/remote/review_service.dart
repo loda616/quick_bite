@@ -5,7 +5,7 @@ import 'package:quick_bite/data/models/review.dart';
 class ReviewService {
   final String _baseUrl = 'https://api.quickbite.com/v1';
 
-  Future<List<Review>> getReviews(String foodItemId) async {
+  Future<List<Review>> getReviews(int foodItemId) async {
     final response = await http.get(Uri.parse('$_baseUrl/reviews/$foodItemId'));
 
     if (response.statusCode == 200) {
@@ -18,7 +18,7 @@ class ReviewService {
   }
 
   Future<bool> addReview({
-    required String foodItemId,
+    required int foodItemId,
     required double rating,
     required String review,
   }) async {
