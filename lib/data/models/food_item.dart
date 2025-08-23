@@ -5,8 +5,8 @@ class FoodItem {
   final double price;
   final String imageUrl;
   final String category;
-  final double rating;
-  final int reviewCount;
+  final double? rating;
+  final int? reviewCount;
   final bool isAvailable;
   final List<String> customizationOptions;
 
@@ -17,8 +17,8 @@ class FoodItem {
     required this.price,
     required this.imageUrl,
     required this.category,
-    this.rating = 0.0,
-    this.reviewCount = 0,
+    this.rating,
+    this.reviewCount,
     this.isAvailable = true,
     this.customizationOptions = const [],
   });
@@ -31,8 +31,8 @@ class FoodItem {
       price: (json['price'] as num).toDouble(),
       imageUrl: json['imageUrl'] as String,
       category: json['category'] as String,
-      rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
-      reviewCount: json['reviewCount'] as int? ?? 0,
+      rating: (json['rating'] as num?)?.toDouble(),
+      reviewCount: json['reviewCount'] as int?,
       isAvailable: json['isAvailable'] as bool? ?? true,
       customizationOptions: (json['customizationOptions'] as List<dynamic>?)
               ?.map((e) => e as String)

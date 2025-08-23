@@ -73,32 +73,34 @@ class FoodHeaderInfo extends StatelessWidget {
         const SizedBox(height: 16),
 
         // Rating and Reviews
-        Row(
-          children: [
-            Icon(
-              Icons.star,
-              size: 24,
-              color: Colors.amber[700],
-            ),
-            const SizedBox(width: 4),
-            Text(
-              item.rating.toStringAsFixed(1),
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: theme.colorScheme.onSurface, // Theme-aware color
+        if (item.rating != null)
+          Row(
+            children: [
+              Icon(
+                Icons.star,
+                size: 24,
+                color: Colors.amber[700],
               ),
-            ),
-            Text(
-              ' (${item.reviewCount} reviews)',
-              style: TextStyle(
-                fontSize: 16,
-                color: theme.colorScheme.onSurface.withOpacity(0.6), // Theme-aware color
+              const SizedBox(width: 4),
+              Text(
+                item.rating!.toStringAsFixed(1),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: theme.colorScheme.onSurface, // Theme-aware color
+                ),
               ),
-            ),
-            const Spacer(),
-            Container(
-              padding: const EdgeInsets.symmetric(
+              if (item.reviewCount != null)
+                Text(
+                  ' (${item.reviewCount} reviews)',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: theme.colorScheme.onSurface.withOpacity(0.6), // Theme-aware color
+                  ),
+                ),
+              const Spacer(),
+              Container(
+                padding: const EdgeInsets.symmetric(
                 horizontal: 12,
                 vertical: 6,
               ),

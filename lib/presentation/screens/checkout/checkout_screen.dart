@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quick_bite/data/models/request/checkout_request_model.dart';
+import 'package:quick_bite/domin/repository/checkout_repository.dart';
 import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/cart_state.dart';
 import '../../../core/routs/routes.dart';
@@ -282,21 +284,46 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
-  void _placeOrder(BuildContext context, CartState state) {
-    context.read<CartCubit>().clearCart();
-    
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Order placed successfully! (Demo)'),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-      ),
+  void _placeOrder(BuildContext context, CartState state) async {
+    final checkoutRepository = context.read<CheckoutRepository>();
+
+    final items = state.items.entries.map((entry) {
+      return CheckoutItem(
+        menuItemId: int.parse(entry.key),
+        quantity: entry.value.quantity,
+      );
+    }).toList();
+
+    final checkoutRequest = CheckoutRequestModel(
+      items: items,
+      deliveryOption: _selectedDeliveryOption,
+      paymentMethod: _selectedPaymentMethod,
     );
 
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      AppRoutes.main,
-      (route) => false,
-      arguments: {'initialIndex': 2},
-    );
+    try {
+      await checkoutRepository.checkout(checkoutRequest);
+      context.read<CartCubit>().clearCart();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Order placed successfully!'),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+        ),
+      );
+
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppRoutes.main,
+        (route) => false,
+        arguments: {'initialIndex': 2},
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to place order: $e'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+    }
   }
 }

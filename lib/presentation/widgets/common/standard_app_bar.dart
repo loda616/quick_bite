@@ -8,6 +8,7 @@ class StandardAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Color? backgroundColor;
   final Color? foregroundColor;
   final double elevation;
+  final PreferredSizeWidget? bottom;
 
   const StandardAppBar({
     super.key,
@@ -18,6 +19,7 @@ class StandardAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.backgroundColor,
     this.foregroundColor,
     this.elevation = 0,
+    this.bottom,
   });
 
   @override
@@ -38,9 +40,10 @@ class StandardAppBar extends StatelessWidget implements PreferredSizeWidget {
         color: foregroundColor ?? theme.colorScheme.onSurface,
         fontWeight: FontWeight.bold,
       ),
+      bottom: bottom,
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => Size.fromHeight(kToolbarHeight + (bottom?.preferredSize.height ?? 0.0));
 }

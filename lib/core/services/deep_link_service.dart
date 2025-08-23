@@ -14,13 +14,7 @@ class DeepLinkService {
   DeepLinkService({required this.menuRepository, required this.navigatorKey});
 
   Future<void> init() async {
-    // Handle initial link
-    final initialUri = await _appLinks.getInitialAppLink();
-    if (initialUri != null) {
-      _handleLink(initialUri);
-    }
-
-    // Handle subsequent links
+    // Handle initial and subsequent links
     _sub = _appLinks.uriLinkStream.listen((Uri uri) {
       _handleLink(uri);
     }, onError: (err) {
