@@ -15,7 +15,7 @@ class DeepLinkService {
 
   Future<void> init() async {
     // Handle initial link
-    final initialUri = await _appLinks.getInitialLink();
+    final initialUri = await _appLinks.getInitialAppLink();
     if (initialUri != null) {
       _handleLink(initialUri);
     }

@@ -1,11 +1,13 @@
 import 'package:dio/dio.dart';
+import 'package:quick_bite/data/datasources/local/secure_storage_service.dart';
 import 'package:quick_bite/data/models/request/checkout_request_model.dart';
 
 class CheckoutApiService {
   final Dio _dio;
+  final SecureStorageService _secureStorageService;
   final String _baseUrl;
 
-  CheckoutApiService(this._dio, {String? baseUrl})
+  CheckoutApiService(this._dio, this._secureStorageService, {String? baseUrl})
       : _baseUrl = baseUrl ?? "http://hydra.runasp.net/";
 
   Future<void> checkout(CheckoutRequestModel checkoutRequest) async {
@@ -14,6 +16,11 @@ class CheckoutApiService {
       print('URL: ${_baseUrl}api/Checkout/checkout');
       print('Data: ${checkoutRequest.toJson()}');
 
+      final token = await _secureStorageService.getToken();
+      if (token == null) {
+        throw Exception('Authentication token not found');
+      }
+
       await _dio.post(
         '${_baseUrl}api/Checkout/checkout',
         data: checkoutRequest.toJson(),
@@ -21,6 +28,7 @@ class CheckoutApiService {
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
           },
         ),
       );

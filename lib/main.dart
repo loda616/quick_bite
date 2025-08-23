@@ -79,7 +79,10 @@ class _QuickBiteAppState extends State<QuickBiteApp> {
           create: (context) => MenuApiService(DioClient.getDio()),
         ),
         RepositoryProvider<CheckoutApiService>(
-          create: (context) => CheckoutApiService(DioClient.getDio()),
+          create: (context) => CheckoutApiService(
+            DioClient.getDio(),
+            context.read<SecureStorageService>(),
+          ),
         ),
 
         // Repositories
