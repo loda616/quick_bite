@@ -161,6 +161,25 @@ class MenuRepositoryImpl implements MenuRepository {
     }
   }
 
+  @override
+  Future<List<FoodItem>> searchMenuItems(String query) async {
+    try {
+      print('=== SEARCHING FOR: $query ===');
+      final items = await _menuApiService.search(query);
+      print('✓ Found ${items.length} items from search');
+      return items.map((item) => item.toFoodItem()).toList();
+    } on DioException catch (dioError) {
+      print('=== SEARCH API ERROR ===');
+      print('Status Code: ${dioError.response?.statusCode}');
+      print('Response Data: ${dioError.response?.data}');
+      throw Exception('Failed to search for items: ${dioError.message}');
+    } catch (e) {
+      print('=== GENERAL SEARCH ERROR ===');
+      print('Error: $e');
+      throw Exception('Failed to search for items: ${e.toString()}');
+    }
+  }
+
   /// Clear all caches (useful for refresh)
   void clearCache() {
     print('=== CLEARING MENU CACHE ===');

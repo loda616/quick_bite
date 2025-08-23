@@ -6,4 +6,5 @@ abstract class MenuRepository {
   Future<List<CategoryModel>> getAllCategories();
   Future<List<FoodItem>> getItemsByCategory(int categoryId);
   Future<FoodItem?> getItemById(String id);
+  Future<List<FoodItem>> searchMenuItems(String query);
 }
