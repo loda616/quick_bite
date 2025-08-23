@@ -31,21 +31,6 @@ class OrdersScreen extends StatelessWidget {
           ),
         ],
         // Add subtle shadow/border for better separation
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(
-            height: 1,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  theme.dividerColor.withOpacity(0.1),
-                  theme.dividerColor.withOpacity(0.3),
-                  theme.dividerColor.withOpacity(0.1),
-                ],
-              ),
-            ),
-          ),
-        ),
       ),
       body: BlocBuilder<OrderCubit, OrderState>(
         builder: (context, state) {
