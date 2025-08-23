@@ -95,9 +95,10 @@ class MenuCubit extends Cubit<MenuState> {
 
   /// Search items by name
   Future<void> searchItems(String query) async {
-    print('=== SEARCHING ITEMS: "$query" ===');
+    final trimmedQuery = query.trim();
+    print('=== SEARCHING ITEMS: "$trimmedQuery" ===');
 
-    if (query.trim().isEmpty) {
+    if (trimmedQuery.isEmpty) {
       // Reset to current category filter or all items
       final currentCategory = selectedCategory;
       if (currentCategory != null) {
@@ -114,8 +115,8 @@ class MenuCubit extends Cubit<MenuState> {
     emit(state.copyWith(isLoading: true, errorMessage: null));
 
     try {
-      final searchResults = await _menuRepository.searchMenuItems(query);
-      print('✓ Found ${searchResults.length} items matching "$query"');
+      final searchResults = await _menuRepository.searchMenuItems(trimmedQuery);
+      print('✓ Found ${searchResults.length} items matching "$trimmedQuery"');
       emit(state.copyWith(
         filteredItems: searchResults,
         isLoading: false,
