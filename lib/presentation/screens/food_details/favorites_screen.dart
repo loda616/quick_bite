@@ -41,7 +41,7 @@ class FavoritesScreen extends StatelessWidget {
             );
           }
           return const Center(
-            child: Text('Something went wrong.'),
+            child: Text('Something went wrong. Please try again.'),
           );
         },
       ),
