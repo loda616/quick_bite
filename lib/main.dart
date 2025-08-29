@@ -17,6 +17,10 @@ import 'package:quick_bite/presentation/view_models/cubit/order_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/language_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/notification_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/theme_cubit.dart';
+import 'package:quick_bite/presentation/view_models/cubit/favorites_cubit.dart';
+import 'package:quick_bite/data/datasources/remote/favorites_api_service.dart';
+import 'package:quick_bite/data/repository/favorites_repository_impl.dart';
+import 'package:quick_bite/domin/repository/favorites_repository.dart';
 import 'package:quick_bite/presentation/view_models/stats/auth_stat.dart';
 import 'package:quick_bite/presentation/view_models/stats/language_state.dart';
 import 'package:quick_bite/presentation/screens/auth/login_screen.dart';
@@ -88,6 +92,15 @@ class _QuickBiteAppState extends State<QuickBiteApp> {
             context.read<MenuApiService>(),
           ),
         ),
+        RepositoryProvider<FavoritesApiService>(
+          create: (context) => FavoritesApiService(DioClient.getDio()),
+        ),
+        RepositoryProvider<FavoritesRepository>(
+          create: (context) => FavoritesRepositoryImpl(
+            context.read<FavoritesApiService>(),
+            context.read<SecureStorageService>(),
+          ),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -135,6 +148,13 @@ class _QuickBiteAppState extends State<QuickBiteApp> {
           // Order Cubit
           BlocProvider<OrderCubit>(
             create: (context) => OrderCubit(),
+          ),
+
+          // Favorites Cubit
+          BlocProvider<FavoritesCubit>(
+            create: (context) => FavoritesCubit(
+              context.read<FavoritesRepository>(),
+            )..initializeFavorites(),
           ),
         ],
         child: Builder(
