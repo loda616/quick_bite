@@ -94,55 +94,40 @@ class MenuCubit extends Cubit<MenuState> {
   }
 
   /// Search items by name
-  void searchItems(String query) {
-    print('=== SEARCHING ITEMS: "$query" ===');
+  Future<void> searchItems(String query) async {
+    final trimmedQuery = query.trim();
+    print('=== SEARCHING ITEMS: "$trimmedQuery" ===');
 
-    if (query.trim().isEmpty) {
+    if (trimmedQuery.isEmpty) {
       // Reset to current category filter or all items
       final currentCategory = selectedCategory;
       if (currentCategory != null) {
-        // Don't reload, just use current filtered items for the selected category
-        print('✓ Search cleared, keeping category ${currentCategory.name} filter');
-        // The filtered items should already be set for this category
-        return;
+        selectCategory(currentCategory);
       } else {
-        // Show all items
-        print('✓ Search cleared, showing all items');
         emit(state.copyWith(
           filteredItems: state.allItems,
           errorMessage: null,
         ));
-        return;
       }
+      return;
     }
 
-    final lowerQuery = query.toLowerCase();
+    emit(state.copyWith(isLoading: true, errorMessage: null));
 
-    // Search within current context (all items or current category items)
-    List<FoodItem> itemsToSearch;
-    if (state.selectedCategoryId != null && state.filteredItems.isNotEmpty) {
-      // Search within current category
-      itemsToSearch = state.filteredItems;
-      print('Searching within ${selectedCategory?.name} category');
-    } else {
-      // Search within all items
-      itemsToSearch = state.allItems;
-      print('Searching within all items');
+    try {
+      final searchResults = await _menuRepository.searchMenuItems(trimmedQuery);
+      print('✓ Found ${searchResults.length} items matching "$trimmedQuery"');
+      emit(state.copyWith(
+        filteredItems: searchResults,
+        isLoading: false,
+      ));
+    } catch (e) {
+      print('❌ Failed to search for items: $e');
+      emit(state.copyWith(
+        isLoading: false,
+        errorMessage: e.toString(),
+      ));
     }
-
-    final searchResults = itemsToSearch.where((item) {
-      return item.name.toLowerCase().contains(lowerQuery) ||
-          item.description.toLowerCase().contains(lowerQuery) ||
-          item.category.toLowerCase().contains(lowerQuery);
-    }).toList();
-
-    print('✓ Found ${searchResults.length} items matching "$query"');
-
-    emit(state.copyWith(
-      filteredItems: searchResults,
-      errorMessage: null,
-      // Keep the selected category during search
-    ));
   }
 
   /// Get item by ID

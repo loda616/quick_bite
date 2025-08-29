@@ -21,4 +21,8 @@ abstract class MenuApiService {
   /// Get items by category ID
   @GET("api/Menu/{categoryId}")
   Future<List<MenuItemModel>> getItemsByCategory(@Path("categoryId") int categoryId);
+
+  /// Search for menu items
+  @POST("api/Menu/Search/{query}")
+  Future<List<MenuItemModel>> search(@Path("query") String query);
 }
