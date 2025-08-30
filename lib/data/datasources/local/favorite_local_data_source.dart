@@ -10,6 +10,10 @@ class FavoriteLocalDataSource {
 
   Future<List<FoodItem>> getFavorites() async {
     final favoriteStrings = _prefs.getStringList(_favoritesKey) ?? [];
+    print('--- Loading Favorites ---');
+    print('Found ${favoriteStrings.length} favorites in local storage.');
+    print('Data: $favoriteStrings');
+    print('-------------------------');
     return favoriteStrings
         .map((s) => FoodItem.fromJson(jsonDecode(s)))
         .toList();
@@ -32,6 +36,10 @@ class FavoriteLocalDataSource {
   Future<void> _saveFavorites(List<FoodItem> favorites) async {
     final favoriteStrings =
         favorites.map((item) => jsonEncode(item.toJson())).toList();
+    print('--- Saving Favorites ---');
+    print('Saving ${favoriteStrings.length} favorites to local storage.');
+    print('Data: $favoriteStrings');
+    print('------------------------');
     await _prefs.setStringList(_favoritesKey, favoriteStrings);
   }
 }
