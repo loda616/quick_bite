@@ -16,9 +16,9 @@ class CartCubit extends Cubit<CartState> {
       }) {
     final items = Map<String, CartItem>.from(state.items);
 
-    if (items.containsKey(foodItem.id)) {
-      final existingItem = items[foodItem.id]!;
-      items[foodItem.id] = CartItem(
+    if (items.containsKey(foodItem.id.toString())) {
+      final existingItem = items[foodItem.id.toString()]!;
+      items[foodItem.id.toString()] = CartItem(
         item: existingItem.item,
         quantity: existingItem.quantity + quantity,
         customizations: customizations.isEmpty
@@ -26,7 +26,7 @@ class CartCubit extends Cubit<CartState> {
             : customizations,
       );
     } else {
-      items[foodItem.id] = CartItem(
+      items[foodItem.id.toString()] = CartItem(
         item: foodItem,
         quantity: quantity,
         customizations: customizations,

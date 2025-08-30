@@ -43,7 +43,7 @@ class MenuApiTest {
       if (allItems.isNotEmpty) {
         final firstItem = allItems.first;
         print('\n4. Testing getItemById for "${firstItem.name}"...');
-        final foundItem = await menuRepository.getItemById(firstItem.id);
+        final foundItem = await menuRepository.getItemById(firstItem.id.toString());
         if (foundItem != null) {
           print('✅ Item found: ${foundItem.name}');
           print('   Description: ${foundItem.description}');
