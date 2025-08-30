@@ -26,8 +26,8 @@ class FavoriteApiService {
       } else {
         throw Exception('Failed to load favorites: ${response.statusCode}');
       }
-    } catch (e) {
-      rethrow;
+    } on DioError catch (e) {
+      throw Exception('Failed to load favorites: ${e.response?.data ?? e.message}');
     }
   }
 
@@ -45,8 +45,8 @@ class FavoriteApiService {
       if (response.statusCode != 200) {
         throw Exception('Failed to add favorite: ${response.statusCode}');
       }
-    } catch (e) {
-      rethrow;
+    } on DioError catch (e) {
+      throw Exception('Failed to add favorite: ${e.response?.data ?? e.message}');
     }
   }
 
@@ -64,8 +64,8 @@ class FavoriteApiService {
       if (response.statusCode != 200) {
         throw Exception('Failed to remove favorite: ${response.statusCode}');
       }
-    } catch (e) {
-      rethrow;
+    } on DioError catch (e) {
+      throw Exception('Failed to remove favorite: ${e.response?.data ?? e.message}');
     }
   }
 

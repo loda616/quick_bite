@@ -52,7 +52,7 @@ class _MainScreenState extends State<MainScreen> {
       NavigationDestination(
         icon: const Icon(Icons.favorite_border),
         selectedIcon: const Icon(Icons.favorite),
-        label: 'Favorites',
+        label: l10n.favorites,
       ),
       NavigationDestination(
         icon: const Icon(Icons.shopping_cart_outlined),
