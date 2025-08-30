@@ -26,11 +26,15 @@ class FavoriteCubit extends Cubit<FavoriteState> {
       emit(FavoriteLoaded(updatedFavorites));
       try {
         await _favoriteRepository.addFavorite(foodItem);
-        emit(const FavoriteUpdateSuccess('Added to favorites!'));
+        emit(FavoriteLoaded(
+          updatedFavorites,
+          successMessage: 'Added to favorites!',
+        ));
       } catch (e) {
-        final restoredFavorites = List<FoodItem>.from(currentState.favorites);
-        emit(FavoriteLoaded(restoredFavorites));
-        emit(FavoriteUpdateFailure(e.toString()));
+        emit(FavoriteLoaded(
+          currentState.favorites,
+          errorMessage: e.toString(),
+        ));
       }
     }
   }
@@ -43,11 +47,15 @@ class FavoriteCubit extends Cubit<FavoriteState> {
       emit(FavoriteLoaded(updatedFavorites));
       try {
         await _favoriteRepository.removeFavorite(foodItem.id);
-        emit(const FavoriteUpdateSuccess('Removed from favorites!'));
+        emit(FavoriteLoaded(
+          updatedFavorites,
+          successMessage: 'Removed from favorites!',
+        ));
       } catch (e) {
-        final restoredFavorites = List<FoodItem>.from(currentState.favorites);
-        emit(FavoriteLoaded(restoredFavorites));
-        emit(FavoriteUpdateFailure(e.toString()));
+        emit(FavoriteLoaded(
+          currentState.favorites,
+          errorMessage: e.toString(),
+        ));
       }
     }
   }

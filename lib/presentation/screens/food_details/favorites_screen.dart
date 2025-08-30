@@ -13,47 +13,69 @@ class FavoritesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Scaffold(
-      appBar: StandardAppBar(
-        title: l10n.favorites,
-      ),
-      body: BlocBuilder<FavoriteCubit, FavoriteState>(
-        builder: (context, state) {
-          if (state is FavoriteLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (state is FavoriteLoaded) {
-            if (state.favorites.isEmpty) {
-              return Center(
-                child: Text(l10n.noFavoritesYet),
-              );
-            }
-            return ListView.builder(
-              itemCount: state.favorites.length,
-              itemBuilder: (context, index) {
-                final foodItem = state.favorites[index];
-                return FoodItemCard(
-                  item: foodItem,
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      AppRoutes.foodDetails,
-                      arguments: foodItem,
-                    );
-                  },
-                );
-              },
-            );
-          } else if (state is FavoriteError) {
-            return Center(
-              child: Text(state.message),
+    return BlocListener<FavoriteCubit, FavoriteState>(
+      listener: (context, state) {
+        if (state is FavoriteLoaded) {
+          if (state.successMessage != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.successMessage!),
+                backgroundColor: Colors.green,
+              ),
             );
           }
-          return Center(
-            child: Text(l10n.favoritesError),
-          );
-        },
+          if (state.errorMessage != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.errorMessage!),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        }
+      },
+      child: Scaffold(
+        appBar: StandardAppBar(
+          title: l10n.favorites,
+        ),
+        body: BlocBuilder<FavoriteCubit, FavoriteState>(
+          builder: (context, state) {
+            if (state is FavoriteLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (state is FavoriteLoaded) {
+              if (state.favorites.isEmpty) {
+                return Center(
+                  child: Text(l10n.noFavoritesYet),
+                );
+              }
+              return ListView.builder(
+                itemCount: state.favorites.length,
+                itemBuilder: (context, index) {
+                  final foodItem = state.favorites[index];
+                  return FoodItemCard(
+                    item: foodItem,
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.foodDetails,
+                        arguments: foodItem,
+                      );
+                    },
+                  );
+                },
+              );
+            } else if (state is FavoriteError) {
+              return Center(
+                child: Text(state.message),
+              );
+            }
+            return Center(
+              child: Text(l10n.favoritesError),
+            );
+          },
+        ),
       ),
     );
   }
