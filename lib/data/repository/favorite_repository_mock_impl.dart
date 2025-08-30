@@ -12,7 +12,7 @@ class FavoriteRepositoryMockImpl implements FavoriteRepository {
   @override
   Future<List<FoodItem>> getFavorites() async {
     final favoriteIds = await _localDataSource.getFavoriteIds();
-    final allItems = await _menuRepository.getMenuItems();
+    final allItems = await _menuRepository.getAllItems();
     return allItems
         .where((item) => favoriteIds.contains(item.id.toString()))
         .toList();
