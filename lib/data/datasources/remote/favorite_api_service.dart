@@ -24,7 +24,7 @@ class FavoriteApiService {
         final List<dynamic> data = response.data;
         return data.map((json) => FoodItem.fromJson(json)).toList();
       } else {
-        throw Exception('Failed to load favorites');
+        throw Exception('Failed to load favorites: ${response.statusCode}');
       }
     } catch (e) {
       rethrow;
@@ -33,7 +33,7 @@ class FavoriteApiService {
 
   Future<void> addFavorite(int foodItemId) async {
     try {
-      await _dio.post(
+      final response = await _dio.post(
         '${_baseUrl}api/Favourite/$foodItemId',
         options: Options(
           headers: {
@@ -42,6 +42,9 @@ class FavoriteApiService {
           },
         ),
       );
+      if (response.statusCode != 200) {
+        throw Exception('Failed to add favorite: ${response.statusCode}');
+      }
     } catch (e) {
       rethrow;
     }
@@ -49,7 +52,7 @@ class FavoriteApiService {
 
   Future<void> removeFavorite(int foodItemId) async {
     try {
-      await _dio.delete(
+      final response = await _dio.delete(
         '${_baseUrl}api/Favourite/$foodItemId',
         options: Options(
           headers: {
@@ -58,6 +61,9 @@ class FavoriteApiService {
           },
         ),
       );
+      if (response.statusCode != 200) {
+        throw Exception('Failed to remove favorite: ${response.statusCode}');
+      }
     } catch (e) {
       rethrow;
     }

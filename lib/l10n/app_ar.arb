@@ -173,5 +173,8 @@
         "type": "String"
       }
     }
-  }
+  },
+  "favorites": "المفضلة",
+  "noFavoritesYet": "ليس لديك مفضلات حتى الآن.",
+  "favoritesError": "هناك خطأ ما. حاول مرة أخرى."
 }

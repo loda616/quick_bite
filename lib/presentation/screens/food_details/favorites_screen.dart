@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quick_bite/l10n/generated/app_localizations.dart';
 import 'package:quick_bite/presentation/view_models/cubit/favorite_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/favorite_state.dart';
 import 'package:quick_bite/presentation/widgets/food_item_card.dart';
@@ -10,9 +11,10 @@ class FavoritesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: const StandardAppBar(
-        title: 'Favorites',
+      appBar: StandardAppBar(
+        title: l10n.favorites,
       ),
       body: BlocBuilder<FavoriteCubit, FavoriteState>(
         builder: (context, state) {
@@ -22,8 +24,8 @@ class FavoritesScreen extends StatelessWidget {
             );
           } else if (state is FavoriteLoaded) {
             if (state.favorites.isEmpty) {
-              return const Center(
-                child: Text('You have no favorites yet.'),
+              return Center(
+                child: Text(l10n.noFavoritesYet),
               );
             }
             return ListView.builder(
@@ -40,8 +42,8 @@ class FavoritesScreen extends StatelessWidget {
               child: Text(state.message),
             );
           }
-          return const Center(
-            child: Text('Something went wrong. Please try again.'),
+          return Center(
+            child: Text(l10n.favoritesError),
           );
         },
       ),

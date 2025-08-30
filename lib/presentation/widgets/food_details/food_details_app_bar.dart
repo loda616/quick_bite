@@ -48,7 +48,27 @@ class FoodDetailsAppBar extends StatelessWidget {
         ),
       ),
       actions: [
-        BlocBuilder<FavoriteCubit, FavoriteState>(
+        BlocConsumer<FavoriteCubit, FavoriteState>(
+          listener: (context, state) {
+            if (state is FavoriteUpdateSuccess) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            } else if (state is FavoriteUpdateFailure) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+          },
+          buildWhen: (previous, current) {
+            return current is FavoriteLoaded || current is FavoriteInitial;
+          },
           builder: (context, state) {
             bool isFavorite = false;
             if (state is FavoriteLoaded) {
@@ -60,9 +80,9 @@ class FoodDetailsAppBar extends StatelessWidget {
               ),
               onPressed: () {
                 if (isFavorite) {
-                  context.read<FavoriteCubit>().removeFavorite(item.id);
+                  context.read<FavoriteCubit>().removeFavorite(item);
                 } else {
-                  context.read<FavoriteCubit>().addFavorite(item.id);
+                  context.read<FavoriteCubit>().addFavorite(item);
                 }
               },
               tooltip: 'Add to Favorites',
