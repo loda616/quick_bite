@@ -28,7 +28,7 @@ class MenuItemModel {
   /// Convert to FoodItem for UI layer
   FoodItem toFoodItem() {
     return FoodItem(
-      id: id.toString(),
+      id: id,
       name: name,
       description: description,
       price: price,

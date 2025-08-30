@@ -31,7 +31,7 @@ class FavoritesScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final foodItem = state.favorites[index];
                 return FoodItemCard(
-                  foodItem: foodItem,
+                  item: foodItem,
                 );
               },
             );
