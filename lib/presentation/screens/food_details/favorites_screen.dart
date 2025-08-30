@@ -4,6 +4,7 @@ import 'package:quick_bite/l10n/generated/app_localizations.dart';
 import 'package:quick_bite/presentation/view_models/cubit/favorite_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/favorite_state.dart';
 import 'package:quick_bite/presentation/widgets/food_item_card.dart';
+import '../../../core/routs/app_routs.dart';
 import '../../widgets/common/standard_app_bar.dart';
 
 class FavoritesScreen extends StatelessWidget {
@@ -34,6 +35,13 @@ class FavoritesScreen extends StatelessWidget {
                 final foodItem = state.favorites[index];
                 return FoodItemCard(
                   item: foodItem,
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.foodDetails,
+                      arguments: foodItem,
+                    );
+                  },
                 );
               },
             );

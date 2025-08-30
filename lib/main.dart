@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:quick_bite/data/datasources/local/favorite_local_data_source.dart';
 import 'package:quick_bite/data/datasources/local/secure_storage_service.dart';
 import 'package:quick_bite/data/datasources/remote/api_service.dart';
 import 'package:quick_bite/data/datasources/remote/checkout_api_service.dart';
@@ -10,6 +11,7 @@ import 'package:quick_bite/data/datasources/remote/menu_api_service.dart';
 import 'package:quick_bite/data/repository/auth_repository_impl.dart';
 import 'package:quick_bite/data/repository/checkout_repository_impl.dart';
 import 'package:quick_bite/data/repository/favorite_repository_impl.dart';
+import 'package:quick_bite/data/repository/favorite_repository_mock_impl.dart';
 import 'package:quick_bite/data/repository/menu_repository_impl.dart';
 import 'package:quick_bite/domin/repository/auth_repository.dart';
 import 'package:quick_bite/domin/repository/checkout_repository.dart';
@@ -91,6 +93,9 @@ class _QuickBiteAppState extends State<QuickBiteApp> {
         RepositoryProvider<FavoriteApiService>(
           create: (context) => FavoriteApiService(DioClient.getDio()),
         ),
+        RepositoryProvider<FavoriteLocalDataSource>(
+          create: (context) => FavoriteLocalDataSource(widget.prefs),
+        ),
 
         // Repositories
         RepositoryProvider<AuthRepository>(
@@ -110,8 +115,9 @@ class _QuickBiteAppState extends State<QuickBiteApp> {
           ),
         ),
         RepositoryProvider<FavoriteRepository>(
-          create: (context) => FavoriteRepositoryImpl(
-            context.read<FavoriteApiService>(),
+          create: (context) => FavoriteRepositoryMockImpl(
+            context.read<FavoriteLocalDataSource>(),
+            context.read<MenuRepository>(),
           ),
         ),
       ],
