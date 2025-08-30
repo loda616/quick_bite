@@ -50,21 +50,30 @@ class FoodDetailsAppBar extends StatelessWidget {
       actions: [
         BlocConsumer<FavoriteCubit, FavoriteState>(
           listener: (context, state) {
-            if (state is FavoriteUpdateSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: Colors.green,
-                ),
-              );
-            } else if (state is FavoriteUpdateFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: Colors.red,
-                ),
-              );
+            if (state is FavoriteLoaded) {
+              if (state.successMessage != null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.successMessage!),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              }
+              if (state.errorMessage != null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.errorMessage!),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
             }
+          },
+          listenWhen: (previous, current) {
+            if (current is FavoriteLoaded) {
+              return current.successMessage != null || current.errorMessage != null;
+            }
+            return false;
           },
           buildWhen: (previous, current) {
             return current is FavoriteLoaded || current is FavoriteInitial;
