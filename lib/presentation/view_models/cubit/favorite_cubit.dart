@@ -25,7 +25,7 @@ class FavoriteCubit extends Cubit<FavoriteState> {
         ..add(foodItem);
       emit(FavoriteLoaded(updatedFavorites));
       try {
-        await _favoriteRepository.addFavorite(foodItem.id);
+        await _favoriteRepository.addFavorite(foodItem);
         emit(const FavoriteUpdateSuccess('Added to favorites!'));
       } catch (e) {
         final restoredFavorites = List<FoodItem>.from(currentState.favorites);

@@ -117,7 +117,6 @@ class _QuickBiteAppState extends State<QuickBiteApp> {
         RepositoryProvider<FavoriteRepository>(
           create: (context) => FavoriteRepositoryMockImpl(
             context.read<FavoriteLocalDataSource>(),
-            context.read<MenuRepository>(),
           ),
         ),
       ],

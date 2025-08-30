@@ -110,6 +110,9 @@ class FoodItemCard extends StatelessWidget {
   }
 
   Widget _buildItemImage() {
+    if (item.imageUrl.startsWith('data:')) {
+      return _buildPlaceholderImage();
+    }
     // Check if it's a network URL
     if (item.imageUrl.startsWith('http')) {
       return Image.network(
@@ -182,7 +185,7 @@ class FoodItemCard extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 item.category,
-.                style: TextStyle(
+                style: TextStyle(
                   fontSize: 10,
                   color: theme.colorScheme.onSurface.withOpacity(0.6),
                   fontWeight: FontWeight.w500,

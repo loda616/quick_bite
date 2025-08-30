@@ -13,8 +13,8 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
   }
 
   @override
-  Future<void> addFavorite(int foodItemId) {
-    return _favoriteApiService.addFavorite(foodItemId);
+  Future<void> addFavorite(FoodItem foodItem) {
+    return _favoriteApiService.addFavorite(foodItem.id);
   }
 
   @override

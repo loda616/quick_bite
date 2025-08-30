@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:quick_bite/data/models/food_item.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FavoriteLocalDataSource {
@@ -6,23 +8,30 @@ class FavoriteLocalDataSource {
 
   FavoriteLocalDataSource(this._prefs);
 
-  Future<List<String>> getFavoriteIds() async {
-    return _prefs.getStringList(_favoritesKey) ?? [];
+  Future<List<FoodItem>> getFavorites() async {
+    final favoriteStrings = _prefs.getStringList(_favoritesKey) ?? [];
+    return favoriteStrings
+        .map((s) => FoodItem.fromJson(jsonDecode(s)))
+        .toList();
   }
 
-  Future<void> addFavorite(int foodItemId) async {
-    final favorites = await getFavoriteIds();
-    if (!favorites.contains(foodItemId.toString())) {
-      favorites.add(foodItemId.toString());
-      await _prefs.setStringList(_favoritesKey, favorites);
+  Future<void> addFavorite(FoodItem foodItem) async {
+    final favorites = await getFavorites();
+    if (!favorites.any((item) => item.id == foodItem.id)) {
+      favorites.add(foodItem);
+      await _saveFavorites(favorites);
     }
   }
 
   Future<void> removeFavorite(int foodItemId) async {
-    final favorites = await getFavoriteIds();
-    if (favorites.contains(foodItemId.toString())) {
-      favorites.remove(foodItemId.toString());
-      await _prefs.setStringList(_favoritesKey, favorites);
-    }
+    final favorites = await getFavorites();
+    favorites.removeWhere((item) => item.id == foodItemId);
+    await _saveFavorites(favorites);
+  }
+
+  Future<void> _saveFavorites(List<FoodItem> favorites) async {
+    final favoriteStrings =
+        favorites.map((item) => jsonEncode(item.toJson())).toList();
+    await _prefs.setStringList(_favoritesKey, favoriteStrings);
   }
 }
