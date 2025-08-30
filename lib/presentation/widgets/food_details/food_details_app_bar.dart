@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quick_bite/data/models/food_item.dart';
+import 'package:quick_bite/presentation/view_models/cubit/favorite_cubit.dart';
+import 'package:quick_bite/presentation/view_models/stats/favorite_state.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -45,17 +48,55 @@ class FoodDetailsAppBar extends StatelessWidget {
         ),
       ),
       actions: [
-        IconButton(
-          icon: const Icon(Icons.favorite_border),
-          onPressed: () {
-            // TODO: Implement favorite functionality
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Favorites feature coming soon!'),
+        BlocConsumer<FavoriteCubit, FavoriteState>(
+          listener: (context, state) {
+            if (state is FavoriteLoaded) {
+              if (state.successMessage != null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.successMessage!),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              }
+              if (state.errorMessage != null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.errorMessage!),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            }
+          },
+          listenWhen: (previous, current) {
+            if (current is FavoriteLoaded) {
+              return current.successMessage != null || current.errorMessage != null;
+            }
+            return false;
+          },
+          buildWhen: (previous, current) {
+            return current is FavoriteLoaded || current is FavoriteInitial;
+          },
+          builder: (context, state) {
+            bool isFavorite = false;
+            if (state is FavoriteLoaded) {
+              isFavorite = state.favorites.any((fav) => fav.id == item.id);
+            }
+            return IconButton(
+              icon: Icon(
+                isFavorite ? Icons.favorite : Icons.favorite_border,
               ),
+              onPressed: () {
+                if (isFavorite) {
+                  context.read<FavoriteCubit>().removeFavorite(item);
+                } else {
+                  context.read<FavoriteCubit>().addFavorite(item);
+                }
+              },
+              tooltip: 'Add to Favorites',
             );
           },
-          tooltip: 'Add to Favorites',
         ),
         IconButton(
           icon: const Icon(Icons.share),

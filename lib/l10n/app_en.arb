@@ -215,5 +215,8 @@
         "type": "String"
       }
     }
-  }
+  },
+  "favorites": "Favorites",
+  "noFavoritesYet": "You have no favorites yet.",
+  "favoritesError": "Something went wrong. Please try again."
 }

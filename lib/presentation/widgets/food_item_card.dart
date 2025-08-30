@@ -18,95 +18,101 @@ class FoodItemCard extends StatelessWidget {
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
 
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      elevation: 3,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Image Container with fixed height
-            Expanded(
-              flex: 3, // Takes 3/5 of the card height
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primary.withOpacity(0.1),
+    return SizedBox(
+      height: 250,
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        elevation: 3,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Image Container with fixed height
+              Expanded(
+                flex: 3, // Takes 3/5 of the card height
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary.withOpacity(0.1),
+                  ),
+                  child: _buildItemImage(),
                 ),
-                child: _buildItemImage(),
               ),
-            ),
 
-            // Content Container with flexible height
-            Expanded(
-              flex: 2, // Takes 2/5 of the card height
-              child: Padding(
-                padding: const EdgeInsets.all(6.0), // Reduced padding
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Item Name - Single line with ellipsis
-                    Flexible(
-                      child: Text(
-                        item.name,
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: theme.colorScheme.onSurface,
-                          fontSize: 13, // Slightly smaller
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-
-                    const SizedBox(height: 2), // Reduced spacing
-
-                    // Price
-                    Text(
-                      '\${item.price.toStringAsFixed(2)}',
-                      style: theme.textTheme.titleSmall?.copyWith( // Changed from titleMedium
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      ),
-                    ),
-
-                    const SizedBox(height: 2),
-
-                    // Rating
-                    if (item.rating != null)
-                      Row(
-                        children: [
-                          Icon(Icons.star, color: Colors.amber, size: 16),
-                          const SizedBox(width: 4),
-                          Text(
-                            item.rating.toString(),
-                            style: theme.textTheme.bodySmall,
+              // Content Container with flexible height
+              Expanded(
+                flex: 2, // Takes 2/5 of the card height
+                child: Padding(
+                  padding: const EdgeInsets.all(6.0), // Reduced padding
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Item Name - Single line with ellipsis
+                      Flexible(
+                        child: Text(
+                          item.name,
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.onSurface,
+                            fontSize: 13, // Slightly smaller
                           ),
-                          const SizedBox(width: 4),
-                          if (item.reviewCount != null)
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+
+                      const SizedBox(height: 2), // Reduced spacing
+
+                      // Price
+                      Text(
+                        '\$${item.price.toStringAsFixed(2)}',
+                        style: theme.textTheme.titleSmall?.copyWith( // Changed from titleMedium
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+
+                      const SizedBox(height: 2),
+
+                      // Rating
+                      if (item.rating != null)
+                        Row(
+                          children: [
+                            Icon(Icons.star, color: Colors.amber, size: 16),
+                            const SizedBox(width: 4),
                             Text(
-                              '(${item.reviewCount} reviews)',
+                              item.rating.toString(),
                               style: theme.textTheme.bodySmall,
                             ),
-                        ],
-                      ),
-                  ],
+                            const SizedBox(width: 4),
+                            if (item.reviewCount != null)
+                              Text(
+                                '(${item.reviewCount} reviews)',
+                                style: theme.textTheme.bodySmall,
+                              ),
+                          ],
+                        ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildItemImage() {
+    if (item.imageUrl.startsWith('data:')) {
+      return _buildPlaceholderImage();
+    }
     // Check if it's a network URL
     if (item.imageUrl.startsWith('http')) {
       return Image.network(
@@ -120,7 +126,7 @@ class FoodItemCard extends StatelessWidget {
             child: CircularProgressIndicator(
               value: loadingProgress.expectedTotalBytes != null
                   ? loadingProgress.cumulativeBytesLoaded /
-                  loadingProgress.expectedTotalBytes!
+                      loadingProgress.expectedTotalBytes!
                   : null,
               strokeWidth: 2,
             ),

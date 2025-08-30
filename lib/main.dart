@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:quick_bite/data/datasources/local/favorite_local_data_source.dart';
 import 'package:quick_bite/data/datasources/local/secure_storage_service.dart';
 import 'package:quick_bite/data/datasources/remote/api_service.dart';
 import 'package:quick_bite/data/datasources/remote/checkout_api_service.dart';
+import 'package:quick_bite/data/datasources/remote/favorite_api_service.dart';
 import 'package:quick_bite/data/datasources/remote/menu_api_service.dart';
 import 'package:quick_bite/data/repository/auth_repository_impl.dart';
 import 'package:quick_bite/data/repository/checkout_repository_impl.dart';
+import 'package:quick_bite/data/repository/favorite_repository_impl.dart';
+import 'package:quick_bite/data/repository/favorite_repository_mock_impl.dart';
 import 'package:quick_bite/data/repository/menu_repository_impl.dart';
 import 'package:quick_bite/domin/repository/auth_repository.dart';
 import 'package:quick_bite/domin/repository/checkout_repository.dart';
+import 'package:quick_bite/domin/repository/favorite_repository.dart';
 import 'package:quick_bite/domin/repository/menu_repository.dart';
 import 'package:quick_bite/presentation/view_models/cubit/auth_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
@@ -19,6 +24,7 @@ import 'package:quick_bite/presentation/view_models/cubit/profile_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/order_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/language_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/notification_cubit.dart';
+import 'package:quick_bite/presentation/view_models/cubit/favorite_cubit.dart';
 import 'package:quick_bite/presentation/view_models/cubit/theme_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/auth_stat.dart';
 import 'package:quick_bite/presentation/view_models/stats/language_state.dart';
@@ -84,6 +90,12 @@ class _QuickBiteAppState extends State<QuickBiteApp> {
             context.read<SecureStorageService>(),
           ),
         ),
+        RepositoryProvider<FavoriteApiService>(
+          create: (context) => FavoriteApiService(DioClient.getDio()),
+        ),
+        RepositoryProvider<FavoriteLocalDataSource>(
+          create: (context) => FavoriteLocalDataSource(widget.prefs),
+        ),
 
         // Repositories
         RepositoryProvider<AuthRepository>(
@@ -100,6 +112,11 @@ class _QuickBiteAppState extends State<QuickBiteApp> {
         RepositoryProvider<CheckoutRepository>(
           create: (context) => CheckoutRepositoryImpl(
             context.read<CheckoutApiService>(),
+          ),
+        ),
+        RepositoryProvider<FavoriteRepository>(
+          create: (context) => FavoriteRepositoryMockImpl(
+            context.read<FavoriteLocalDataSource>(),
           ),
         ),
       ],
@@ -149,6 +166,11 @@ class _QuickBiteAppState extends State<QuickBiteApp> {
           // Order Cubit
           BlocProvider<OrderCubit>(
             create: (context) => OrderCubit(),
+          ),
+          BlocProvider<FavoriteCubit>(
+            create: (context) => FavoriteCubit(
+              context.read<FavoriteRepository>(),
+            )..getFavorites(),
           ),
         ],
         child: Builder(

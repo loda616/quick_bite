@@ -28,7 +28,7 @@ class MenuItemModel {
   /// Convert to FoodItem for UI layer
   FoodItem toFoodItem() {
     return FoodItem(
-      id: id.toString(),
+      id: id,
       name: name,
       description: description,
       price: price,
@@ -46,7 +46,7 @@ class MenuItemModel {
     final lowerName = name.toLowerCase();
 
     if (lowerName.contains('pizza') || lowerName.contains('margherita')) {
-      return 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=200&fit=crop';
+      return 'https://placehold.co/300x200/E91E63/FFFFFF/png?text=Pizza';
     } else if (lowerName.contains('burger') || lowerName.contains('cheeseburger')) {
       return 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&h=200&fit=crop';
     } else if (lowerName.contains('shawarma') || lowerName.contains('wrap')) {
