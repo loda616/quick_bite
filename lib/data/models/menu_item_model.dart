@@ -46,9 +46,9 @@ class MenuItemModel {
     final lowerName = name.toLowerCase();
 
     if (lowerName.contains('pizza') || lowerName.contains('margherita')) {
-      return 'assets/images/pizza.png';
+      return 'assets/images/pizza.jpg';
     } else if (lowerName.contains('burger') || lowerName.contains('cheeseburger')) {
-      return 'assets/images/burger.png';
+      return 'assets/images/burger.jpg';
     } else if (lowerName.contains('shawarma') || lowerName.contains('wrap')) {
       return 'https://images.unsplash.com/photo-1565299585323-38174c5be9b8?w=300&h=200&fit=crop';
     } else if (lowerName.contains('chicken')) {

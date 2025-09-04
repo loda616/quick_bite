@@ -26,7 +26,7 @@ class CartItemQuantityControls extends StatelessWidget {
             icon: Icon(Icons.add,
                 color: Theme.of(context).colorScheme.onPrimary, size: 18),
             onPressed: () {
-              context.read<CartCubit>().incrementItem(item.item.id);
+              context.read<CartCubit>().incrementItem(item.item.id as String);
             },
             constraints: const BoxConstraints(
               minWidth: 32,
@@ -55,7 +55,7 @@ class CartItemQuantityControls extends StatelessWidget {
             icon: Icon(Icons.remove,
                 color: Theme.of(context).colorScheme.onSurface, size: 18),
             onPressed: () {
-              context.read<CartCubit>().decrementItem(item.item.id);
+              context.read<CartCubit>().decrementItem(item.item.id as String);
             },
             constraints: const BoxConstraints(
               minWidth: 32,
