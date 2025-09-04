@@ -156,25 +156,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   textAlign: TextAlign.center,
                                 ),
                                 const SizedBox(height: 4),
-                                // User Role
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: (isDarkMode ? Colors.black : Colors.white).withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Text(
-                                    state.role ?? l10n.role,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: isDarkMode ? Colors.black : Colors.white,
-                                    ),
-                                  ),
-                                ),
                               ],
                             ),
                           ),
@@ -210,10 +191,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           title: l10n.accountInformation,
                           icon: Icons.person,
                           items: {
-                            l10n.userId: state.userId ?? 'N/A',
                             l10n.fullName: state.name ?? 'N/A',
                             l10n.email: state.email ?? 'N/A',
-                            l10n.role: state.role ?? l10n.role,
                           },
                           onEditPressed: () => _showEditProfileDialog(context),
                         ),
@@ -232,32 +211,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const SizedBox(height: 16),
 
-                        // App Preferences Card
-                        ProfileInfoCard(
-                          l10n: l10n,
-                          title: l10n.appPreferences,
-                          icon: Icons.settings,
-                          items: {
-                            l10n.language: l10n.english,
-                            l10n.notifications: l10n.enabled,
-                            l10n.theme: isDarkMode ? l10n.dark : l10n.light,
-                          },
-                        ),
-                        const SizedBox(height: 16),
 
-                        // Account Status Card
-                        ProfileInfoCard(
-                          l10n: l10n,
-                          title: l10n.accountStatus,
-                          icon: Icons.info_outline,
-                          items: {
-                            l10n.status: l10n.active,
-                            l10n.memberSince: '2023',
-                            l10n.lastLogin: l10n.today,
-                          },
-                        ),
-
-                        const SizedBox(height: 32),
 
                         // Logout Button
                         SizedBox(
