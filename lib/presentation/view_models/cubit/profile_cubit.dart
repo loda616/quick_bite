@@ -27,25 +27,21 @@ class ProfileCubit extends Cubit<ProfileState> {
 
       // Extract user info from JWT token
       final userName = JwtHelper.getUserName(token);
-      final userRole = JwtHelper.getUserRole(token);
       final tokenData = JwtHelper.decodeToken(token);
 
       print('=== PROFILE DATA FROM JWT ===');
       print('User ID: $userId');
       print('User Name: $userName');
-      print('User Role: $userRole');
       print('Full token data: $tokenData');
       print('=============================');
 
       // For now, we'll use the data from JWT.
       // In a real app, you might want to fetch additional profile data from an API
       emit(ProfileState(
-        userId: userId,
         name: userName ?? "Unknown User",
         email: "N/A", // Email not available in current JWT, would need separate API call
         phone: "N/A", // Phone not available in current JWT
         address: "N/A", // Address not available in current JWT
-        role: userRole ?? "User",
         isLoading: false,
       ));
 
@@ -72,12 +68,10 @@ class ProfileCubit extends Cubit<ProfileState> {
       await Future.delayed(const Duration(seconds: 1));
 
       emit(ProfileState(
-        userId: state.userId,
         name: name ?? state.name,
         email: email ?? state.email,
         phone: phone ?? state.phone,
         address: address ?? state.address,
-        role: state.role,
         isLoading: false,
       ));
 

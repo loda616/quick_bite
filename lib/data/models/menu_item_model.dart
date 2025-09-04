@@ -46,9 +46,9 @@ class MenuItemModel {
     final lowerName = name.toLowerCase();
 
     if (lowerName.contains('pizza') || lowerName.contains('margherita')) {
-      return 'https://placehold.co/300x200/E91E63/FFFFFF/png?text=Pizza';
+      return 'assets/images/pizza.jpg';
     } else if (lowerName.contains('burger') || lowerName.contains('cheeseburger')) {
-      return 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&h=200&fit=crop';
+      return 'assets/images/burger.jpg';
     } else if (lowerName.contains('shawarma') || lowerName.contains('wrap')) {
       return 'https://images.unsplash.com/photo-1565299585323-38174c5be9b8?w=300&h=200&fit=crop';
     } else if (lowerName.contains('chicken')) {

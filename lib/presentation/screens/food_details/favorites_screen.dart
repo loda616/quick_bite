@@ -5,6 +5,7 @@ import 'package:quick_bite/presentation/view_models/cubit/favorite_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/favorite_state.dart';
 import 'package:quick_bite/presentation/widgets/food_item_card.dart';
 import '../../../core/routs/app_routs.dart';
+import '../../../core/routs/routes.dart';
 import '../../widgets/common/standard_app_bar.dart';
 
 class FavoritesScreen extends StatelessWidget {
