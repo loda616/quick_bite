@@ -158,10 +158,6 @@
   "networkError": "خطأ في الشبكة. يرجى التحقق من اتصالك.",
   "serverError": "خطأ في الخادم. يرجى المحاولة لاحقاً.",
 
-  "demoCredentials": "بيانات تجريبية:",
-  "demoEmail": "البريد الإلكتروني: mohamed@gmail.com",
-  "demoPassword": "كلمة المرور: Fouad@2463187",
-
   "loadingDeliciousFood": "جاري تحميل الطعام اللذيذ...",
   "noItemsFound": "لم يتم العثور على عناصر",
   "tryDifferentCategory": "جرب اختيار فئة مختلفة",

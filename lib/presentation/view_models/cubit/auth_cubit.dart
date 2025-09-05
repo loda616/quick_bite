@@ -161,7 +161,7 @@ class AuthCubit extends Cubit<AuthState> {
       emit(state.copyWith(
         isAuthenticated: false,
         isLoading: false,
-        errorMessage: 'An unexpected error occurred. Please try again.',
+        errorMessage: e.toString(),
         userName: null,
         userEmail: null,
         userId: null,
