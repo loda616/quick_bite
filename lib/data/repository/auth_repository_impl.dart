@@ -104,17 +104,26 @@ class AuthRepositoryImpl implements AuthRepository {
       print('Error Message: ${dioError.message}');
 
       // Handle DioException errors by throwing custom server exceptions
+      final responseData = dioError.response?.data;
+      String errorMessage = 'An unknown error occurred';
+
+      if (responseData is Map<String, dynamic> && responseData.containsKey('message')) {
+        errorMessage = responseData['message'];
+      } else if (dioError.message != null) {
+        errorMessage = dioError.message!;
+      }
+
       switch (dioError.response?.statusCode) {
         case 400:
-          throw const BadRequestException('Invalid request format.');
+          throw BadRequestException(errorMessage);
         case 401:
-          throw const InvalidCredentialsException('Invalid email or password.');
+          throw InvalidCredentialsException(errorMessage);
         case 404:
-          throw const NotFoundException('Login service not found.');
+          throw NotFoundException('Login service not found.');
         case 500:
-          throw const InternalServerErrorException('An unexpected server error occurred.');
+          throw InternalServerErrorException('An unexpected server error occurred.');
         case null:
-          throw const NetworkException('Please check your internet connection.');
+          throw NetworkException('Please check your internet connection.');
         default:
           throw UnknownServerException('An unknown error occurred: ${dioError.message}');
       }

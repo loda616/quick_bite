@@ -298,37 +298,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
 
                     const SizedBox(height: 20),
-
-                    // Demo Credentials (for testing)
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.blue[50],
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.blue.shade200),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            l10n.demoCredentials,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blue[800],
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            l10n.demoEmail,
-                            style: TextStyle(color: Colors.blue[700]),
-                          ),
-                          Text(
-                            l10n.demoPassword,
-                            style: TextStyle(color: Colors.blue[700]),
-                          ),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
               ),
