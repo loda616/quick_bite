@@ -22,4 +22,30 @@ class Review {
       createdAt: DateTime.parse(json['createdAt'] as String),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'author': author,
+      'rating': rating,
+      'review': review,
+      'createdAt': createdAt.toIso8601String(),
+    };
+  }
+
+  Review copyWith({
+    String? id,
+    String? author,
+    double? rating,
+    String? review,
+    DateTime? createdAt,
+  }) {
+    return Review(
+      id: id ?? this.id,
+      author: author ?? this.author,
+      rating: rating ?? this.rating,
+      review: review ?? this.review,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
 }

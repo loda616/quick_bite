@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:quick_bite/data/models/food_item.dart';
 import 'package:quick_bite/data/models/review.dart';
-import 'package:quick_bite/data/datasources/remote/review_service.dart';
+import 'package:quick_bite/data/datasources/mock/review_service_mock.dart';
 import 'package:quick_bite/presentation/view_models/cubit/cart_cubit.dart';
 import '../../../core/routs/routes.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -27,7 +27,7 @@ class _FoodItemDetailsScreenState extends State<FoodItemDetailsScreen> {
   int _quantity = 1;
   final Set<String> _selectedCustomizations = {};
   late Future<List<Review>> _reviewsFuture;
-  final ReviewService _reviewService = ReviewService();
+  final ReviewServiceMock _reviewService = ReviewServiceMock();
 
   @override
   void initState() {
