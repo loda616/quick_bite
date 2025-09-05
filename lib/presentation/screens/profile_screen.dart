@@ -4,6 +4,7 @@ import 'package:quick_bite/presentation/view_models/cubit/profile_cubit.dart';
 import 'package:quick_bite/presentation/view_models/stats/profile_state.dart';
 import 'package:quick_bite/presentation/widgets/profile/profile_info_card.dart';
 
+import '../../core/routs/app_routs.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../widgets/common/standard_app_bar.dart';
 
@@ -359,20 +360,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: Text(l10n.logout),
         content: Text(l10n.logoutConfirm),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: Text(l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.pop(context);
-              // Navigate back and trigger logout
-              Navigator.pop(context);
-              // You can trigger logout here or let the parent handle it
+              // Dismiss the dialog first
+              Navigator.of(dialogContext).pop();
+
+              // Call the logout method from the cubit
+              context.read<ProfileCubit>().logout().then((_) {
+                // Ensure the widget is still mounted before navigating
+                if (!mounted) return;
+                // Navigate to the auth screen and remove all previous routes
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  AppRouts.auth,
+                  (Route<dynamic> route) => false,
+                );
+              });
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
