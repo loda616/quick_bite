@@ -86,4 +86,8 @@ class ProfileCubit extends Cubit<ProfileState> {
   Future<void> refreshProfile() async {
     await loadProfile();
   }
+
+  Future<void> logout() async {
+    await _authRepository.logout();
+  }
 }
