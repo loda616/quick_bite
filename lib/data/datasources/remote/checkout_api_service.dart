@@ -34,7 +34,7 @@ class CheckoutApiService {
       );
 
       print('✓ Checkout API call successful');
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       print('❌ Checkout API call failed: $e');
       if (e.response != null) {
         print('Error response: ${e.response!.data}');
