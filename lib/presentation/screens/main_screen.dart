@@ -92,29 +92,34 @@ class _MainScreenState extends State<MainScreen> {
           children: _screens,
         ),
         bottomNavigationBar: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
             boxShadow: [
               BoxShadow(
-                color: Theme.of(context).shadowColor.withOpacity(0.1),
-                blurRadius: 10,
-                offset: const Offset(0, -5),
+                color: Theme.of(context).shadowColor.withOpacity(0.15),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
               ),
             ],
           ),
-          child: NavigationBar(
-            selectedIndex: _currentIndex,
-            onDestinationSelected: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-            destinations: _destinations,
-            backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
-            indicatorColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
-            surfaceTintColor: Colors.transparent,
-            elevation: 0,
-            height: 65,
-            labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(30),
+            child: NavigationBar(
+              selectedIndex: _currentIndex,
+              onDestinationSelected: (index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+              destinations: _destinations,
+              backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+              indicatorColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+              surfaceTintColor: Colors.transparent,
+              elevation: 0,
+              height: 65,
+              labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+            ),
           ),
         ),
       ),

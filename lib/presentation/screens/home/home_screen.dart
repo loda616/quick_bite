@@ -223,32 +223,37 @@ class _HomeScreenState extends State<HomeScreen> {
                           final isSelected = menuState.isShowingAllItems;
                           return Padding(
                             padding: const EdgeInsets.only(right: 12),
-                            child: FilterChip(
-                              label: Text(
-                                'All',
-                                style: TextStyle(
-                                  color: isSelected
-                                      ? (isDarkMode ? Colors.black : Colors.white)
-                                      : theme.colorScheme.onSurface,
-                                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                ),
-                              ),
-                              selected: isSelected,
-                              selectedColor: theme.colorScheme.primary,
-                              backgroundColor: theme.colorScheme.surface,
-                              checkmarkColor: isDarkMode ? Colors.black : Colors.white,
-                              side: BorderSide(
-                                color: isSelected
-                                    ? theme.colorScheme.primary
-                                    : theme.colorScheme.outline.withOpacity(0.3),
-                              ),
-                              onSelected: (selected) {
-                                if (selected && !isSelected) {
-                                  // Clear search when selecting "All"
+                            child: InkWell(
+                              onTap: () {
+                                if (!isSelected) {
                                   _searchController.clear();
                                   context.read<MenuCubit>().selectCategory(null);
                                 }
                               },
+                              borderRadius: BorderRadius.circular(20),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: isSelected ? theme.colorScheme.primary : theme.colorScheme.surface,
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: isSelected
+                                        ? theme.colorScheme.primary
+                                        : theme.colorScheme.outline.withOpacity(0.3),
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'All',
+                                    style: TextStyle(
+                                      color: isSelected
+                                          ? (isDarkMode ? Colors.black : Colors.white)
+                                          : theme.colorScheme.onSurface,
+                                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                           );
                         }
@@ -258,32 +263,37 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         return Padding(
                           padding: const EdgeInsets.only(right: 12),
-                          child: FilterChip(
-                            label: Text(
-                              category.name,
-                              style: TextStyle(
-                                color: isSelected
-                                    ? (isDarkMode ? Colors.black : Colors.white)
-                                    : theme.colorScheme.onSurface,
-                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                              ),
-                            ),
-                            selected: isSelected,
-                            selectedColor: theme.colorScheme.primary,
-                            backgroundColor: theme.colorScheme.surface,
-                            checkmarkColor: isDarkMode ? Colors.black : Colors.white,
-                            side: BorderSide(
-                              color: isSelected
-                                  ? theme.colorScheme.primary
-                                  : theme.colorScheme.outline.withOpacity(0.3),
-                            ),
-                            onSelected: (selected) {
-                              if (selected && !isSelected) {
-                                // Clear search when selecting a category
+                          child: InkWell(
+                            onTap: () {
+                              if (!isSelected) {
                                 _searchController.clear();
                                 context.read<MenuCubit>().selectCategory(category);
                               }
                             },
+                            borderRadius: BorderRadius.circular(20),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: isSelected ? theme.colorScheme.primary : theme.colorScheme.surface,
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? theme.colorScheme.primary
+                                      : theme.colorScheme.outline.withOpacity(0.3),
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  category.name,
+                                  style: TextStyle(
+                                    color: isSelected
+                                        ? (isDarkMode ? Colors.black : Colors.white)
+                                        : theme.colorScheme.onSurface,
+                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         );
                       },
@@ -382,9 +392,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           padding: const EdgeInsets.all(16),
                           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
-                            childAspectRatio: 0.8, // Adjusted ratio for better fit
-                            crossAxisSpacing: 12, // Reduced spacing
-                            mainAxisSpacing: 12,  // Reduced spacing
+                            childAspectRatio: 0.75, // Adjusted ratio for better fit
+                            crossAxisSpacing: 16, // Modern spacing
+                            mainAxisSpacing: 16,  // Modern spacing
                           ),
                           itemCount: menuState.filteredItems.length,
                           itemBuilder: (context, index) {

@@ -20,16 +20,15 @@ class MinimalFoodItemCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       elevation: 3,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         child: Column(
           children: [
-            // Image Container - Fixed height
+            // Image Container
             Expanded(
-              flex: 4, // Takes more space for image
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(

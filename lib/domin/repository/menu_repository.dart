@@ -1,4 +1,4 @@
-import 'package:quick_bite/data/models/food_item.dart';
+import '../../data/models/food_item.dart';
 import '../../data/models/category_model.dart';
 
 abstract class MenuRepository {

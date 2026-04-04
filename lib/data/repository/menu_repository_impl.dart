@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:quick_bite/data/models/food_item.dart';
+import '../models/food_item.dart';
 import '../datasources/remote/menu_api_service.dart';
 import '../models/menu_item_model.dart';
 import '../models/category_model.dart';
